@@ -460,6 +460,163 @@
                 cursor: not-allowed;
             }
 
+            /* Pending Section */
+            .pending-section {
+                margin-top: 40px;
+                background: white;
+                border-radius: 12px;
+                padding: 25px;
+                border: 1px solid var(--border-color);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            }
+
+            .pending-header {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 15px;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .pending-header h2 {
+                margin: 0;
+                font-size: 1.4rem;
+                color: var(--primary-color);
+            }
+
+            .pending-header p {
+                margin: 5px 0 0 0;
+                color: var(--text-light);
+                font-size: 0.95rem;
+            }
+
+            .pending-badge {
+                background: #f5f7fb;
+                border: 1px solid var(--border-color);
+                padding: 10px 18px;
+                border-radius: 30px;
+                font-weight: 600;
+                color: var(--secondary-color);
+            }
+
+            .pending-toolbar {
+                margin-top: 20px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .pending-search-input {
+                flex: 1;
+                min-width: 220px;
+                padding: 10px 14px;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-size: 0.95rem;
+                outline: none;
+            }
+
+            .pending-search-input:focus {
+                border-color: var(--secondary-color);
+            }
+
+            .pending-result {
+                color: var(--text-light);
+                font-size: 0.9rem;
+            }
+
+            .pending-table-wrapper {
+                margin-top: 20px;
+                overflow-x: auto;
+            }
+
+            .pending-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.95rem;
+            }
+
+            .pending-table th,
+            .pending-table td {
+                padding: 10px 12px;
+                border-bottom: 1px solid #f0f2f5;
+                text-align: left;
+            }
+
+            .pending-table th {
+                background-color: #f8f9fb;
+                font-weight: 700;
+                color: var(--primary-color);
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+            }
+
+            .pending-table tbody tr:hover {
+                background-color: #fdfefe;
+            }
+
+            .pending-table tbody tr:nth-child(even) {
+                background-color: #fcfcfe;
+            }
+
+            .pending-table tbody tr:nth-child(even):hover {
+                background-color: #f8fbff;
+            }
+
+            .pending-pagination {
+                margin-top: 15px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                justify-content: flex-end;
+            }
+
+            .pending-page-btn {
+                padding: 6px 12px;
+                border: 1px solid #dcdfe6;
+                background: white;
+                border-radius: 4px;
+                font-size: 0.85rem;
+                cursor: pointer;
+                color: var(--primary-color);
+            }
+
+            .pending-page-btn.active {
+                background-color: var(--secondary-color);
+                color: white;
+                border-color: var(--secondary-color);
+            }
+
+            .pending-page-btn:disabled {
+                background-color: #f4f6fb;
+                color: #bdc3c7;
+                cursor: not-allowed;
+            }
+
+            .empty-state {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-light);
+                font-size: 0.9rem;
+                height: 100%;
+                text-align: center;
+            }
+
+            #pending-chart-empty {
+                position: absolute;
+                inset: 0;
+                background: rgba(255, 255, 255, 0.9);
+            }
+
+            .pending-chart-card {
+                margin-top: 10px;
+            }
+
             /* Back to Top */
             #back-to-top {
                 position: fixed;
@@ -500,6 +657,17 @@
             @media (max-width: 768px) {
                 .charts-row {
                     grid-template-columns: 1fr;
+                }
+                .pending-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .pending-toolbar {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                .pending-pagination {
+                    justify-content: center;
                 }
             }
         </style>
@@ -589,6 +757,71 @@
 
             <div id="card-container" class="card-list"></div>
             <div id="pagination" class="pagination"></div>
+
+            <section class="pending-section" id="pending-section">
+                <div class="pending-header">
+                    <div>
+                        <h2>Mahasiswa Belum Submit Tema</h2>
+                        <p id="pending-description">
+                            Menunggu hasil perbandingan data...
+                        </p>
+                    </div>
+                    <div class="pending-badge">
+                        <span id="pending-total">0</span>
+                        /
+                        <span id="pending-total-master">0</span>
+                    </div>
+                </div>
+
+                <div class="chart-card pending-chart-card">
+                    <div class="chart-title">
+                        Distribusi Belum Submit per Pembimbing
+                    </div>
+                    <div class="chart-wrapper" style="height: 320px">
+                        <div
+                            id="pending-chart-empty"
+                            class="empty-state"
+                        >
+                            Menunggu data...
+                        </div>
+                        <canvas id="pendingChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="pending-toolbar">
+                    <input
+                        type="text"
+                        id="pending-search"
+                        class="pending-search-input"
+                        placeholder="Cari NIM, Nama, atau Dosen..."
+                    />
+                    <div id="pending-result-count" class="pending-result">
+                        Menampilkan 0 mahasiswa
+                    </div>
+                </div>
+
+                <div class="pending-table-wrapper">
+                    <table class="pending-table" id="pending-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px">No</th>
+                                <th style="width: 140px">NIM</th>
+                                <th>Nama</th>
+                                <th style="width: 220px">Dosen Pembimbing</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-table-body">
+                            <tr>
+                                <td colspan="4" style="text-align: center">
+                                    Menunggu data...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="pending-pagination" class="pending-pagination"></div>
+            </section>
         </div>
 
         <!-- Back to Top Button -->
@@ -618,12 +851,20 @@
             // URL CSV Google Sheets
             const csvUrl =
                 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTByDo6WQAT0rQMEVcL24WyJdm4gMKm4Zfjm6RYQ-prEaLvEcruqmRXKKNWXesxReA-nPqyhmH_BMAg/pub?gid=14519582&single=true&output=csv";
+            const masterCsvPath =
+                "KK E.xlsx - Mahasiswa Skripsi -TGL-02-10-20.csv";
 
             // State Management
             let allData = [];
             let filteredData = [];
             let currentPage = 1;
             const itemsPerPage = 10;
+            let masterStudents = [];
+            let pendingStudents = [];
+            let pendingFilteredStudents = [];
+            let pendingCurrentPage = 1;
+            const pendingItemsPerPage = 10;
+            let pendingChartInstance = null;
 
             // Stop Words Indonesia (untuk analisis keyword)
             const stopWords = new Set([
@@ -675,42 +916,42 @@
                 "mobile",
             ]);
 
-            function loadData() {
-                Papa.parse(csvUrl, {
-                    download: true,
-                    header: false,
-                    complete: function (results) {
-                        const rawData = results.data;
-                        const loadingDiv = document.getElementById("loading");
+            async function loadData() {
+                const loadingDiv = document.getElementById("loading");
+                const errorDiv = document.getElementById("error");
+                loadingDiv.style.display = "block";
+                errorDiv.style.display = "none";
 
-                        if (!rawData || rawData.length === 0) {
-                            loadingDiv.style.display = "none";
-                            showError("Tidak ada data ditemukan.");
-                            return;
-                        }
+                try {
+                    const [submissionRows, masterList] = await Promise.all([
+                        fetchSubmissionData(),
+                        fetchMasterStudents(),
+                    ]);
 
-                        // Filter empty rows and header
-                        allData = rawData
-                            .slice(1)
-                            .filter((row) => row.length > 1 && row[1] !== "");
+                    masterStudents = masterList;
+                    allData = submissionRows;
+                    filteredData = [...allData];
 
-                        populateDropdown(allData);
-                        renderCharts(allData);
+                    populateDropdown(allData);
+                    renderCharts(allData);
+                    applyFilters();
 
-                        // Initialize List
-                        filteredData = [...allData];
-                        loadingDiv.style.display = "none";
-                        applyFilters(); // Panggil ini untuk update count awal
-                    },
-                    error: function (err) {
-                        console.error(err);
-                        document.getElementById("loading").style.display =
-                            "none";
-                        showError(
-                            "Gagal memuat data. Pastikan dijalankan via Server (python -m http.server).",
-                        );
-                    },
-                });
+                    pendingStudents = computePendingStudents(
+                        masterStudents,
+                        allData,
+                    );
+                    renderPendingSection(
+                        pendingStudents,
+                        masterStudents.length,
+                    );
+                } catch (err) {
+                    console.error(err);
+                    showError(
+                        "Gagal memuat data. Pastikan menjalankan via server lokal dan file master CSV tersedia.",
+                    );
+                } finally {
+                    loadingDiv.style.display = "none";
+                }
             }
 
             function renderCharts(data) {
@@ -855,6 +1096,384 @@
                         },
                     },
                 });
+            }
+
+            function fetchSubmissionData() {
+                return new Promise((resolve, reject) => {
+                    Papa.parse(csvUrl, {
+                        download: true,
+                        header: false,
+                        complete: function (results) {
+                            const rawData = results.data;
+                            if (!rawData || rawData.length === 0) {
+                                reject(new Error("Tidak ada data submit."));
+                                return;
+                            }
+                            const cleaned = rawData
+                                .slice(1)
+                                .filter(
+                                    (row) =>
+                                        Array.isArray(row) &&
+                                        row.length > 1 &&
+                                        row[1] !== "",
+                                );
+                            resolve(cleaned);
+                        },
+                        error: reject,
+                    });
+                });
+            }
+
+            async function fetchMasterStudents() {
+                const response = await fetch(masterCsvPath);
+                if (!response.ok) {
+                    throw new Error(
+                        "File master mahasiswa belum tersedia di direktori yang sama.",
+                    );
+                }
+                const text = await response.text();
+                const normalizedCsv = normalizeMasterCsv(text);
+                if (!normalizedCsv) {
+                    return [];
+                }
+                const parsed = Papa.parse(normalizedCsv, {
+                    header: true,
+                    skipEmptyLines: true,
+                });
+                return parsed.data
+                    .map((row) => {
+                        const nim = normalizeNim(row["NIM"]);
+                        return {
+                            nim,
+                            rawNim: row["NIM"] || "",
+                            nama: (row["NAMA"] || "").trim(),
+                            dosen:
+                                (row["Dosen Pembimbing"] || "").trim() ||
+                                "Belum Ditentukan",
+                            kk: (row["KK"] || "").trim(),
+                            tema: (row["Nama Tema"] || "").trim() || "-",
+                        };
+                    })
+                    .filter((student) => student.nim);
+            }
+
+            function normalizeMasterCsv(text) {
+                const lines = text
+                    .split(/\r?\n/)
+                    .filter((line) => line.trim().length > 0);
+                if (lines.length === 0) {
+                    return "";
+                }
+                const [headerRaw, ...body] = lines;
+                const header = headerRaw.replace(/^[\uFEFF]+/, "");
+                const cleanedBody = body.map((line) => {
+                    let trimmed = line.trim();
+                    if (
+                        trimmed.startsWith('"') &&
+                        trimmed.endsWith('"') &&
+                        trimmed.length >= 2
+                    ) {
+                        trimmed = trimmed.slice(1, -1);
+                    }
+                    return trimmed.replace(/""/g, '"');
+                });
+                return [header, ...cleanedBody].join("\n");
+            }
+
+            function normalizeNim(nimValue) {
+                if (!nimValue) return "";
+                return nimValue.toString().replace(/[^0-9]/g, "");
+            }
+
+            function computePendingStudents(masterList, submissions) {
+                const submissionSet = new Set(
+                    submissions
+                        .map((row) => normalizeNim(row[1]))
+                        .filter((nim) => nim),
+                );
+                return masterList
+                    .filter((student) => !submissionSet.has(student.nim))
+                    .sort((a, b) => {
+                        if (a.dosen === b.dosen) {
+                            return a.nama.localeCompare(b.nama);
+                        }
+                        return a.dosen.localeCompare(b.dosen);
+                    });
+            }
+
+            function renderPendingSection(list, totalMaster) {
+                pendingStudents = Array.isArray(list) ? list : [];
+                pendingFilteredStudents = [...pendingStudents];
+                pendingCurrentPage = 1;
+                updatePendingSummary(totalMaster);
+                updatePendingTableView();
+                renderPendingChart(pendingStudents);
+            }
+
+            function updatePendingSummary(totalMaster) {
+                const description = document.getElementById(
+                    "pending-description",
+                );
+                const pendingTotal = document.getElementById("pending-total");
+                const pendingMaster = document.getElementById(
+                    "pending-total-master",
+                );
+                if (!description || !pendingTotal || !pendingMaster) return;
+
+                const totalPending = pendingStudents.length;
+                pendingTotal.textContent = totalPending;
+                pendingMaster.textContent = totalMaster || 0;
+
+                if (!totalMaster) {
+                    description.textContent =
+                        "Data mahasiswa belum tersedia.";
+                } else if (totalPending === 0) {
+                    description.textContent =
+                        "Seluruh mahasiswa KK E telah melakukan submit tema proposal.";
+                } else {
+                    let percentage = ((totalPending / totalMaster) * 100).toFixed(1);
+                    if (percentage.endsWith(".0")) {
+                        percentage = percentage.slice(0, -2);
+                    }
+                    description.textContent = `${totalPending} mahasiswa belum submit (${percentage}%)`;
+                }
+            }
+
+            function updatePendingTableView() {
+                const totalItems = pendingFilteredStudents.length;
+                const totalPages = Math.max(
+                    1,
+                    Math.ceil(totalItems / pendingItemsPerPage) || 1,
+                );
+                if (pendingCurrentPage > totalPages) {
+                    pendingCurrentPage = totalPages;
+                }
+                if (pendingCurrentPage < 1) {
+                    pendingCurrentPage = 1;
+                }
+
+                const startIndex = (pendingCurrentPage - 1) * pendingItemsPerPage;
+                const pageData = pendingFilteredStudents.slice(
+                    startIndex,
+                    startIndex + pendingItemsPerPage,
+                );
+
+                renderPendingTableRows(pageData, startIndex);
+                renderPendingPagination(totalItems);
+                updatePendingResultCount(totalItems, startIndex, pageData.length);
+
+                const searchInput = document.getElementById("pending-search");
+                if (searchInput) {
+                    if (pendingStudents.length === 0) {
+                        searchInput.value = "";
+                        searchInput.disabled = true;
+                        searchInput.placeholder = "Data mahasiswa belum tersedia";
+                    } else {
+                        searchInput.disabled = false;
+                        searchInput.placeholder =
+                            "Cari NIM, Nama, atau Dosen...";
+                    }
+                }
+            }
+
+            function updatePendingResultCount(totalItems, startIndex, count) {
+                const resultDiv = document.getElementById(
+                    "pending-result-count",
+                );
+                if (!resultDiv) return;
+
+                if (totalItems === 0) {
+                    resultDiv.textContent =
+                        pendingStudents.length === 0
+                            ? "Tidak ada data mahasiswa"
+                            : "Tidak ada data sesuai pencarian";
+                    return;
+                }
+
+                const start = startIndex + 1;
+                const end = startIndex + count;
+                resultDiv.textContent = `Menampilkan ${start}-${end} dari ${totalItems} mahasiswa`;
+            }
+
+            function renderPendingTableRows(pageData, startIndex) {
+                const tbody = document.getElementById("pending-table-body");
+                if (!tbody) return;
+                tbody.innerHTML = "";
+
+                if (!pageData || pageData.length === 0) {
+                    const row = document.createElement("tr");
+                    const message =
+                        pendingStudents.length === 0
+                            ? "Tidak ada mahasiswa yang belum submit."
+                            : "Tidak ada data yang cocok dengan pencarian.";
+                    row.innerHTML = `<td colspan="4" style="text-align:center; color:#888;">${message}</td>`;
+                    tbody.appendChild(row);
+                    return;
+                }
+
+                pageData.forEach((student, index) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${startIndex + index + 1}</td>
+                        <td>${student.rawNim || student.nim}</td>
+                        <td>${student.nama || "-"}</td>
+                        <td>${student.dosen}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            function renderPendingPagination(totalItems) {
+                const paginationEl = document.getElementById(
+                    "pending-pagination",
+                );
+                if (!paginationEl) return;
+                paginationEl.innerHTML = "";
+
+                if (totalItems <= pendingItemsPerPage) {
+                    return;
+                }
+
+                const totalPages = Math.ceil(totalItems / pendingItemsPerPage);
+
+                const createBtn = (label, page, disabled = false, active = false) => {
+                    const btn = document.createElement("button");
+                    btn.textContent = label;
+                    btn.className = `pending-page-btn ${active ? "active" : ""}`;
+                    btn.disabled = disabled;
+                    if (!disabled && page) {
+                        btn.addEventListener("click", () => goToPendingPage(page));
+                    }
+                    return btn;
+                };
+
+                paginationEl.appendChild(
+                    createBtn("«", pendingCurrentPage - 1, pendingCurrentPage === 1),
+                );
+
+                let startPage = Math.max(1, pendingCurrentPage - 2);
+                let endPage = Math.min(totalPages, pendingCurrentPage + 2);
+
+                if (startPage > 1) {
+                    paginationEl.appendChild(createBtn("1", 1));
+                }
+                if (startPage > 2) {
+                    const ellipsis = document.createElement("span");
+                    ellipsis.textContent = "...";
+                    ellipsis.style.color = "#95a5a6";
+                    paginationEl.appendChild(ellipsis);
+                }
+
+                for (let page = startPage; page <= endPage; page++) {
+                    paginationEl.appendChild(
+                        createBtn(page, page, false, page === pendingCurrentPage),
+                    );
+                }
+
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement("span");
+                    ellipsis.textContent = "...";
+                    ellipsis.style.color = "#95a5a6";
+                    paginationEl.appendChild(ellipsis);
+                }
+                if (endPage < totalPages) {
+                    paginationEl.appendChild(createBtn(totalPages, totalPages));
+                }
+
+                paginationEl.appendChild(
+                    createBtn(
+                        "»",
+                        pendingCurrentPage + 1,
+                        pendingCurrentPage === totalPages,
+                    ),
+                );
+            }
+
+            function goToPendingPage(page) {
+                pendingCurrentPage = page;
+                updatePendingTableView();
+            }
+
+            function handlePendingSearch(event) {
+                const keyword = (event.target.value || "").toLowerCase().trim();
+                if (!keyword) {
+                    pendingFilteredStudents = [...pendingStudents];
+                } else {
+                    pendingFilteredStudents = pendingStudents.filter((student) => {
+                        const haystack = `${student.nim} ${student.nama} ${student.dosen}`
+                            .toLowerCase();
+                        return haystack.includes(keyword);
+                    });
+                }
+                pendingCurrentPage = 1;
+                updatePendingTableView();
+            }
+
+            function renderPendingChart(list) {
+                const canvas = document.getElementById("pendingChart");
+                const emptyState = document.getElementById(
+                    "pending-chart-empty",
+                );
+                if (!canvas || !emptyState) return;
+
+                if (pendingChartInstance) {
+                    pendingChartInstance.destroy();
+                    pendingChartInstance = null;
+                }
+
+                if (!list || list.length === 0) {
+                    emptyState.style.display = "flex";
+                    canvas.style.display = "none";
+                    return;
+                }
+
+                emptyState.style.display = "none";
+                canvas.style.display = "block";
+
+                const counts = {};
+                list.forEach((student) => {
+                    const key = student.dosen || "Belum Ditentukan";
+                    counts[key] = (counts[key] || 0) + 1;
+                });
+                const sortedEntries = Object.entries(counts).sort(
+                    (a, b) => b[1] - a[1],
+                );
+
+                pendingChartInstance = new Chart(
+                    canvas.getContext("2d"),
+                    {
+                        type: "bar",
+                        data: {
+                            labels: sortedEntries.map((item) => item[0]),
+                            datasets: [
+                                {
+                                    label: "Belum submit",
+                                    data: sortedEntries.map((item) => item[1]),
+                                    backgroundColor: "#e67e22",
+                                    borderRadius: 4,
+                                },
+                            ],
+                        },
+                        options: {
+                            indexAxis: "y",
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { beginAtZero: true },
+                                y: { grid: { display: false } },
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: (context) =>
+                                            `${context.parsed.x} mahasiswa`,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                );
             }
 
             function populateDropdown(data) {
@@ -1344,6 +1963,16 @@
             document
                 .getElementById("filter-dosen")
                 .addEventListener("change", applyFilters);
+
+            const pendingSearchInput = document.getElementById(
+                "pending-search",
+            );
+            if (pendingSearchInput) {
+                pendingSearchInput.addEventListener(
+                    "input",
+                    handlePendingSearch,
+                );
+            }
 
             document.addEventListener("DOMContentLoaded", loadData);
         </script>

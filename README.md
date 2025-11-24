@@ -21,10 +21,19 @@ Akses website monitoring secara online melalui tautan berikut:
     *   Grafik Donat: Distribusi bidang peminatan.
     *   Grafik Batang: Beban bimbingan per dosen.
     *   Grafik Tren Kata Kunci: Analisis topik yang sedang populer.
+*   **Monitoring Keterisian:** Menggabungkan data Google Sheets (yang sudah submit) dengan file CSV lokal master mahasiswa untuk menampilkan daftar siapa saja yang belum submit, lengkap dengan pencarian, pagination, dan grafik distribusi per pembimbing.
 *   **Export Laporan:**
     *   📄 **PDF:** Laporan ringkas daftar absensi/monitoring (Landscape).
     *   📊 **Excel (.xlsx):** Laporan detail lengkap dengan format rapi.
 *   **Responsive Design:** Tampilan nyaman diakses baik melalui Laptop maupun Smartphone.
+
+## 💾 Mode Offline & Data Master
+
+1. Simpan file `KK E.xlsx - Mahasiswa Skripsi -TGL-02-10-20.csv` di direktori yang sama dengan `index.html`.
+2. Jalankan server lokal agar browser mengizinkan pembacaan file (contoh: `python -m http.server 8000`).
+3. Akses `http://localhost:8000` melalui peramban; dashboard akan memuat data Google Sheets dan langsung membandingkannya dengan CSV lokal untuk menampilkan daftar mahasiswa yang belum submit.
+
+> Catatan: Jika file CSV tidak ditemukan, bagian monitoring “Belum Submit” akan menampilkan pesan bahwa data master belum tersedia.
 
 ## 🛠️ Teknologi
 
