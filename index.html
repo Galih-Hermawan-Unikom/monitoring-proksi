@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Daftar Proposal Skripsi</title>
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="favicon-16x16.png"
+        />
+        <link rel="manifest" href="site.webmanifest" />
+        <link rel="shortcut icon" href="favicon.ico" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+            :root {
+                --primary-color: #2c3e50;
+                --secondary-color: #3498db;
+                --accent-color: #e74c3c;
+                --success-color: #27ae60;
+                --bg-color: #f0f2f5;
+                --card-bg: #ffffff;
+                --text-color: #333;
+                --text-light: #666;
+                --border-color: #e1e4e8;
+            }
+
+            body {
+                font-family:
+                    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                line-height: 1.6;
+            }
+
+            header {
+                background: linear-gradient(
+                    135deg,
+                    var(--primary-color),
+                    #34495e
+                );
+                color: white;
+                padding: 25px 0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                position: relative;
+            }
+
+            .header-content {
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 0 15px;
+                text-align: center;
+            }
+
+            header h1 {
+                margin: 0;
+                font-size: 1.8rem;
+                font-weight: 800;
+                letter-spacing: -0.5px;
+            }
+
+            header p {
+                margin: 8px 0 0;
+                opacity: 0.9;
+                font-size: 1rem;
+                font-weight: 300;
+            }
+
+            /* Footer */
+            footer {
+                background-color: #2c3e50;
+                color: #ecf0f1;
+                padding: 40px 0;
+                margin-top: 60px;
+                font-size: 0.95rem;
+            }
+
+            .footer-content {
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 0 15px;
+                text-align: center;
+                line-height: 1.8;
+            }
+
+            .footer-content a {
+                color: var(--secondary-color);
+                text-decoration: none;
+                font-weight: 600;
+                transition: color 0.2s;
+            }
+
+            .footer-content a:hover {
+                color: #5dade2;
+                text-decoration: underline;
+            }
+
+            .footer-meta {
+                margin-top: 15px;
+                font-size: 0.85rem;
+                color: #bdc3c7;
+            }
+
+            .container {
+                max-width: 1000px;
+                margin: 20px auto;
+                padding: 0 15px 60px 15px;
+            }
+
+            /* Charts */
+            .charts-section {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            .charts-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .chart-card {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--border-color);
+            }
+
+            .chart-wrapper {
+                position: relative;
+                height: 300px;
+                width: 100%;
+            }
+
+            .chart-title {
+                text-align: center;
+                margin-bottom: 15px;
+                font-weight: 700;
+                color: var(--primary-color);
+                font-size: 1rem;
+                border-bottom: 2px solid #f0f2f5;
+                padding-bottom: 10px;
+            }
+
+            /* Search & Filter Bar */
+            .search-wrapper {
+                margin-bottom: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            }
+
+            .input-group {
+                display: flex;
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            #search-input,
+            #filter-dosen {
+                padding: 10px 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-size: 16px;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+            #search-input {
+                flex: 2;
+            }
+
+            #filter-dosen {
+                flex: 1;
+                background-color: white;
+                cursor: pointer;
+            }
+
+            #search-input:focus,
+            #filter-dosen:focus {
+                border-color: var(--secondary-color);
+            }
+
+            .search-actions {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            #result-count {
+                font-size: 0.9rem;
+                color: var(--text-light);
+            }
+
+            .button-group {
+                display: flex;
+                gap: 10px;
+            }
+
+            .btn-export {
+                background-color: var(--success-color);
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background-color 0.2s;
+            }
+
+            .btn-export:hover {
+                background-color: #219150;
+            }
+
+            .btn-pdf {
+                background-color: var(--accent-color);
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background-color 0.2s;
+            }
+
+            .btn-pdf:hover {
+                background-color: #c0392b;
+            }
+
+            /* Loading & Error */
+            #loading,
+            #error {
+                text-align: center;
+                padding: 40px;
+                font-size: 1.1rem;
+                color: var(--text-light);
+            }
+            #error {
+                color: var(--accent-color);
+                display: none;
+            }
+
+            /* Card List */
+            .card-list {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            /* Expandable Card Styles */
+            .card {
+                background: var(--card-bg);
+                border-radius: 8px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                transition: box-shadow 0.2s;
+                border: 1px solid var(--border-color);
+            }
+
+            .card:hover {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .card-header {
+                padding: 15px 20px;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                background-color: #fff;
+                transition: background-color 0.2s;
+            }
+
+            .card-header:hover {
+                background-color: #f8f9fa;
+            }
+
+            .card-summary {
+                flex: 1;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 8px;
+                line-height: 1.4;
+            }
+
+            .student-meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                font-size: 0.9rem;
+                color: var(--text-light);
+                align-items: center;
+            }
+
+            .student-meta span {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .student-meta i {
+                font-style: normal;
+                font-weight: bold;
+            }
+
+            .badge {
+                background-color: #eef2f7;
+                color: var(--secondary-color);
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                border: 1px solid #dbe4ef;
+            }
+
+            .toggle-icon {
+                margin-left: 15px;
+                color: #bbb;
+                font-size: 1.2rem;
+                transition: transform 0.3s ease;
+                min-width: 20px;
+                text-align: center;
+            }
+
+            .card.expanded .toggle-icon {
+                transform: rotate(180deg);
+                color: var(--secondary-color);
+            }
+
+            .card-details {
+                display: none;
+                padding: 0 20px 20px 20px;
+                border-top: 1px solid var(--border-color);
+                background-color: #fafbfc;
+                animation: slideDown 0.3s ease-out;
+            }
+
+            .card.expanded .card-details {
+                display: block;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .details-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .detail-group {
+                background: white;
+                padding: 15px;
+                border-radius: 6px;
+                border: 1px solid #eee;
+            }
+
+            .detail-label {
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #888;
+                font-weight: 700;
+                margin-bottom: 8px;
+                display: block;
+            }
+
+            .detail-content {
+                font-size: 0.95rem;
+                color: #444;
+                white-space: pre-wrap;
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+
+            /* Pagination */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                gap: 5px;
+                margin-top: 30px;
+            }
+            .page-btn {
+                padding: 6px 12px;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                cursor: pointer;
+                color: var(--primary-color);
+                font-size: 0.9rem;
+            }
+            .page-btn:hover:not(:disabled) {
+                background-color: var(--secondary-color);
+                color: white;
+                border-color: var(--secondary-color);
+            }
+            .page-btn.active {
+                background-color: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+            .page-btn:disabled {
+                background-color: #f5f5f5;
+                color: #ccc;
+                cursor: not-allowed;
+            }
+
+            /* Back to Top */
+            #back-to-top {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background-color: var(--secondary-color);
+                color: white;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                border: none;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                display: none; /* Hidden by default */
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                transition:
+                    transform 0.2s,
+                    background-color 0.2s;
+                z-index: 999;
+            }
+
+            #back-to-top:hover {
+                background-color: #2980b9;
+                transform: translateY(-3px);
+            }
+
+            /* Responsive */
+            @media (min-width: 768px) {
+                .details-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+                .input-group {
+                    flex-direction: row;
+                }
+            }
+            @media (max-width: 768px) {
+                .charts-row {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <h1>Monitoring Proposal Skripsi</h1>
+                <div style="margin: 10px 0 5px 0">
+                    <span
+                        style="
+                            background: rgba(255, 255, 255, 0.15);
+                            padding: 4px 12px;
+                            border-radius: 15px;
+                            font-size: 0.85rem;
+                            border: 1px solid rgba(255, 255, 255, 0.3);
+                        "
+                    >
+                        KK E (Ilmu Komputer)
+                    </span>
+                </div>
+                <p>
+                    Daftar Topik Proposal Skripsi<br />
+                    <strong>Semester Ganjil Tahun Akademik 2025-2026</strong>
+                </p>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Dashboard Visualisasi -->
+            <div class="charts-section">
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <div class="chart-title">
+                            Distribusi Bidang Peminatan
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chartBidang"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">
+                            Distribusi Mahasiswa per Pembimbing
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chartDosen"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Chart Row 2: Keywords -->
+                <div class="chart-card">
+                    <div class="chart-title">Tren Kata Kunci Judul Skripsi</div>
+                    <div class="chart-wrapper" style="height: 250px">
+                        <canvas id="chartKeyword"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kontrol Pencarian -->
+            <div class="search-wrapper">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Cari Nama, NIM, atau Kata Kunci Judul..."
+                    />
+                    <select id="filter-dosen">
+                        <option value="">Semua Pembimbing</option>
+                    </select>
+                </div>
+                <div class="search-actions">
+                    <div id="result-count">Menyiapkan data...</div>
+                    <div class="button-group">
+                        <button class="btn-export" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> Download Excel
+                            (.xlsx)
+                        </button>
+                        <button class="btn-pdf" onclick="exportToPDF()">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading">Memuat data...</div>
+            <div id="error"></div>
+
+            <div id="card-container" class="card-list"></div>
+            <div id="pagination" class="pagination"></div>
+        </div>
+
+        <!-- Back to Top Button -->
+        <button id="back-to-top" onclick="scrollToTop()">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+
+        <footer>
+            <div class="footer-content">
+                <div>
+                    Dikembangkan oleh
+                    <a href="https://galih.eu" target="_blank"
+                        >Galih Hermawan</a
+                    >
+                </div>
+                <div>
+                    Program Studi Teknik Informatika. Universitas Komputer
+                    Indonesia.
+                </div>
+                <div class="footer-meta">
+                    Terakhir diperbarui: 24 November 2025
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // URL CSV Google Sheets
+            const csvUrl =
+                "https://docs.google.com/spreadsheets/d/e/2PACX-1vTByDo6WQAT0rQMEVcL24WyJdm4gMKm4Zfjm6RYQ-prEaLvEcruqmRXKKNWXesxReA-nPqyhmH_BMAg/pub?gid=14519582&single=true&output=csv";
+
+            // State Management
+            let allData = [];
+            let filteredData = [];
+            let currentPage = 1;
+            const itemsPerPage = 10;
+
+            // Stop Words Indonesia (untuk analisis keyword)
+            const stopWords = new Set([
+                "dan",
+                "yang",
+                "di",
+                "pada",
+                "untuk",
+                "dengan",
+                "ini",
+                "itu",
+                "dari",
+                "ke",
+                "dalam",
+                "atau",
+                "juga",
+                "sebagai",
+                "oleh",
+                "adalah",
+                "karena",
+                "bagi",
+                "tentang",
+                "serta",
+                "terhadap",
+                "melalui",
+                "berbasis",
+                "menggunakan",
+                "penerapan",
+                "implementasi",
+                "rancang",
+                "bangun",
+                "perancangan",
+                "pembuatan",
+                "pengembangan",
+                "analisis",
+                "studi",
+                "kasus",
+                "pt",
+                "cv",
+                "kota",
+                "kabupaten",
+                "sistem",
+                "aplikasi",
+                "informasi",
+                "metode",
+                "algoritma",
+                "web",
+                "website",
+                "mobile",
+            ]);
+
+            function loadData() {
+                Papa.parse(csvUrl, {
+                    download: true,
+                    header: false,
+                    complete: function (results) {
+                        const rawData = results.data;
+                        const loadingDiv = document.getElementById("loading");
+
+                        if (!rawData || rawData.length === 0) {
+                            loadingDiv.style.display = "none";
+                            showError("Tidak ada data ditemukan.");
+                            return;
+                        }
+
+                        // Filter empty rows and header
+                        allData = rawData
+                            .slice(1)
+                            .filter((row) => row.length > 1 && row[1] !== "");
+
+                        populateDropdown(allData);
+                        renderCharts(allData);
+
+                        // Initialize List
+                        filteredData = [...allData];
+                        loadingDiv.style.display = "none";
+                        applyFilters(); // Panggil ini untuk update count awal
+                    },
+                    error: function (err) {
+                        console.error(err);
+                        document.getElementById("loading").style.display =
+                            "none";
+                        showError(
+                            "Gagal memuat data. Pastikan dijalankan via Server (python -m http.server).",
+                        );
+                    },
+                });
+            }
+
+            function renderCharts(data) {
+                // 1. Distribusi Bidang & Dosen
+                const bidangCounts = {};
+                const dosenCounts = {};
+                const wordCounts = {};
+
+                data.forEach((row) => {
+                    // Bidang
+                    let bidang = row[4];
+                    if (!bidang || bidang.trim() === "") bidang = "Lainnya";
+                    bidang = bidang.trim();
+                    bidangCounts[bidang] = (bidangCounts[bidang] || 0) + 1;
+
+                    // Dosen
+                    let dosen = row[13];
+                    if (!dosen || dosen.trim() === "")
+                        dosen = "Belum Ada Pembimbing";
+                    dosen = dosen.trim();
+                    dosenCounts[dosen] = (dosenCounts[dosen] || 0) + 1;
+
+                    // Keywords (Judul ada di index 3)
+                    const judul = row[3] || "";
+                    const words = judul
+                        .toLowerCase()
+                        .replace(/[^\w\s]/gi, "") // Hapus tanda baca
+                        .split(/\s+/);
+
+                    words.forEach((w) => {
+                        if (w.length > 2 && !stopWords.has(w)) {
+                            wordCounts[w] = (wordCounts[w] || 0) + 1;
+                        }
+                    });
+                });
+
+                // Render Chart Bidang
+                const ctxBidang = document
+                    .getElementById("chartBidang")
+                    .getContext("2d");
+                new Chart(ctxBidang, {
+                    type: "doughnut",
+                    data: {
+                        labels: Object.keys(bidangCounts),
+                        datasets: [
+                            {
+                                data: Object.values(bidangCounts),
+                                backgroundColor: [
+                                    "#3498db",
+                                    "#e74c3c",
+                                    "#f1c40f",
+                                    "#2ecc71",
+                                    "#9b59b6",
+                                    "#34495e",
+                                    "#16a085",
+                                    "#d35400",
+                                ],
+                                borderWidth: 1,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                                labels: { boxWidth: 12, font: { size: 11 } },
+                            },
+                        },
+                    },
+                });
+
+                // Render Chart Dosen
+                const sortedDosen = Object.entries(dosenCounts).sort(
+                    (a, b) => b[1] - a[1],
+                );
+                const ctxDosen = document
+                    .getElementById("chartDosen")
+                    .getContext("2d");
+                new Chart(ctxDosen, {
+                    type: "bar",
+                    data: {
+                        labels: sortedDosen.map((item) => item[0]),
+                        datasets: [
+                            {
+                                label: "Mahasiswa",
+                                data: sortedDosen.map((item) => item[1]),
+                                backgroundColor: "#3498db",
+                                borderRadius: 4,
+                            },
+                        ],
+                    },
+                    options: {
+                        indexAxis: "y",
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { beginAtZero: true },
+                            y: { grid: { display: false } },
+                        },
+                        plugins: { legend: { display: false } },
+                    },
+                });
+
+                // Render Chart Keywords (Top 15)
+                const sortedWords = Object.entries(wordCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 15);
+
+                const ctxKey = document
+                    .getElementById("chartKeyword")
+                    .getContext("2d");
+                new Chart(ctxKey, {
+                    type: "bar",
+                    data: {
+                        labels: sortedWords.map((item) => item[0]),
+                        datasets: [
+                            {
+                                label: "Frekuensi",
+                                data: sortedWords.map((item) => item[1]),
+                                backgroundColor: "#27ae60",
+                                borderRadius: 4,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true },
+                            x: { grid: { display: false } },
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: (ctx) =>
+                                        "Kata Kunci: " + ctx[0].label,
+                                },
+                            },
+                        },
+                    },
+                });
+            }
+
+            function populateDropdown(data) {
+                const dosenSet = new Set();
+                data.forEach((row) => {
+                    const dosenName = row[13];
+                    if (dosenName && dosenName.trim() !== "") {
+                        dosenSet.add(dosenName.trim());
+                    }
+                });
+                const sortedDosen = Array.from(dosenSet).sort();
+                const select = document.getElementById("filter-dosen");
+                sortedDosen.forEach((nama) => {
+                    const option = document.createElement("option");
+                    option.value = nama;
+                    option.textContent = nama;
+                    select.appendChild(option);
+                });
+            }
+
+            function applyFilters() {
+                const keyword = document
+                    .getElementById("search-input")
+                    .value.toLowerCase();
+                const selectedDosen =
+                    document.getElementById("filter-dosen").value;
+
+                filteredData = allData.filter((row) => {
+                    const textToCheck = (
+                        (row[1] || "") +
+                        " " + // NIM
+                        (row[2] || "") +
+                        " " + // Nama
+                        (row[3] || "") +
+                        " " + // Judul
+                        (row[4] || "")
+                    ).toLowerCase();
+                    const matchesKeyword = textToCheck.includes(keyword);
+                    const dosen = row[13] || "";
+                    const matchesDosen =
+                        selectedDosen === "" || dosen === selectedDosen;
+
+                    return matchesKeyword && matchesDosen;
+                });
+
+                updateResultCount();
+                renderPage(1);
+            }
+
+            function updateResultCount() {
+                const countDiv = document.getElementById("result-count");
+                countDiv.textContent = `Menampilkan ${filteredData.length} proposal`;
+            }
+
+            function renderPage(page) {
+                currentPage = page;
+                const container = document.getElementById("card-container");
+                container.innerHTML = "";
+
+                if (filteredData.length === 0) {
+                    container.innerHTML =
+                        '<div style="text-align:center; color:#666; padding:20px;">Data tidak ditemukan.</div>';
+                    document.getElementById("pagination").innerHTML = "";
+                    return;
+                }
+
+                const startIndex = (page - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const pageData = filteredData.slice(startIndex, endIndex);
+
+                pageData.forEach((row) => {
+                    container.appendChild(createCardElement(row));
+                });
+
+                if (window.scrollY > 400) {
+                    // Scroll back to search bar if user was deep down
+                    document
+                        .querySelector(".search-wrapper")
+                        .scrollIntoView({ behavior: "smooth" });
+                }
+
+                renderPagination();
+            }
+
+            function createCardElement(row) {
+                // Mapping
+                const nim = row[1] || "-";
+                const nama = row[2] || "Tanpa Nama";
+                const judul = row[3] || "Belum ada judul";
+                const bidang = row[4] || "Umum";
+                const deskripsi = row[5] || "-";
+                const masalah = row[6] || "-";
+                const metode = row[7] || "-";
+                const dataset = row[8] || "-";
+                const sumberDataset = row[9] || "-";
+                const tools = row[10] || "-";
+                const output = row[11] || "-";
+                const referensi = row[12] || "-";
+                const dosen = row[13] || "-";
+
+                const card = document.createElement("div");
+                card.className = "card";
+
+                card.innerHTML = `
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="card-summary">
+                            <div class="card-title">${judul}</div>
+                            <div class="student-meta">
+                                <span><b>${nama}</b></span>
+                                <span>${nim}</span>
+                                <span class="badge">${bidang}</span>
+                                <span style="border-left: 1px solid #ddd; padding-left: 12px;">
+                                    Pembimbing: <b>${dosen}</b>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="toggle-icon">▼</div>
+                    </div>
+                    <div class="card-details">
+                        <div class="details-grid">
+                            <div class="detail-group full-width">
+                                <span class="detail-label">Deskripsi Singkat</span>
+                                <div class="detail-content">${deskripsi}</div>
+                            </div>
+                            <div class="detail-group">
+                                <span class="detail-label">Rumusan Masalah</span>
+                                <div class="detail-content">${masalah}</div>
+                            </div>
+                            <div class="detail-group">
+                                <span class="detail-label">Metode / Pendekatan</span>
+                                <div class="detail-content">${metode}</div>
+                            </div>
+                            <div class="detail-group">
+                                <span class="detail-label">Dataset</span>
+                                <div class="detail-content">${dataset}</div>
+                            </div>
+                            <div class="detail-group">
+                                <span class="detail-label">Sumber Dataset</span>
+                                <div class="detail-content"><a href="${sumberDataset.startsWith("http") ? sumberDataset : "#"}" target="_blank" style="color:#3498db;text-decoration:none;">${sumberDataset}</a></div>
+                            </div>
+                            <div class="detail-group">
+                                <span class="detail-label">Tools Komputasi</span>
+                                <div class="detail-content">${tools}</div>
+                            </div>
+                             <div class="detail-group">
+                                <span class="detail-label">Target Output</span>
+                                <div class="detail-content">${output}</div>
+                            </div>
+                            <div class="detail-group full-width">
+                                <span class="detail-label">Referensi Utama</span>
+                                <div class="detail-content" style="font-size:0.85rem">${referensi}</div>
+                            </div>
+                            <div class="detail-group full-width">
+                                <span class="detail-label">Dosen Pembimbing</span>
+                                <div class="detail-content"><b>${dosen}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return card;
+            }
+
+            window.toggleCard = function (headerElement) {
+                const card = headerElement.parentElement;
+                card.classList.toggle("expanded");
+            };
+
+            function renderPagination() {
+                const paginationDiv = document.getElementById("pagination");
+                paginationDiv.innerHTML = "";
+                const totalPages = Math.ceil(
+                    filteredData.length / itemsPerPage,
+                );
+                if (totalPages <= 1) return;
+
+                const createBtn = (text, page, isActive, isDisabled) => {
+                    const btn = document.createElement("button");
+                    btn.className = `page-btn ${isActive ? "active" : ""}`;
+                    btn.textContent = text;
+                    btn.disabled = isDisabled;
+                    if (!isDisabled) btn.onclick = () => renderPage(page);
+                    return btn;
+                };
+
+                paginationDiv.appendChild(
+                    createBtn("«", currentPage - 1, false, currentPage === 1),
+                );
+
+                let start = Math.max(1, currentPage - 2);
+                let end = Math.min(totalPages, currentPage + 2);
+
+                if (start > 1)
+                    paginationDiv.appendChild(createBtn("1", 1, false, false));
+                if (start > 2)
+                    paginationDiv.appendChild(
+                        createBtn("...", null, false, true),
+                    );
+
+                for (let i = start; i <= end; i++) {
+                    paginationDiv.appendChild(
+                        createBtn(i, i, i === currentPage, false),
+                    );
+                }
+
+                if (end < totalPages - 1)
+                    paginationDiv.appendChild(
+                        createBtn("...", null, false, true),
+                    );
+                if (end < totalPages)
+                    paginationDiv.appendChild(
+                        createBtn(totalPages, totalPages, false, false),
+                    );
+
+                paginationDiv.appendChild(
+                    createBtn(
+                        "»",
+                        currentPage + 1,
+                        false,
+                        currentPage === totalPages,
+                    ),
+                );
+            }
+
+            function showError(msg) {
+                const errDiv = document.getElementById("error");
+                errDiv.textContent = msg;
+                errDiv.style.display = "block";
+            }
+
+            // --- Fitur Baru: Export Excel (.xlsx) ---
+            async function exportToExcel() {
+                if (!filteredData || filteredData.length === 0) {
+                    alert("Tidak ada data untuk diunduh");
+                    return;
+                }
+
+                const workbook = new ExcelJS.Workbook();
+                const worksheet = workbook.addWorksheet("Data Proposal");
+
+                // 1. Judul Laporan di Baris Atas
+                worksheet.mergeCells("A1:N1");
+                const titleCell = worksheet.getCell("A1");
+                titleCell.value =
+                    "Rekap Data Proposal Skripsi - KK E (Ilmu Komputer)";
+                titleCell.font = {
+                    size: 16,
+                    bold: true,
+                    color: { argb: "FFFFFFFF" },
+                };
+                titleCell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: "FF2C3E50" }, // Primary Color
+                };
+                titleCell.alignment = {
+                    vertical: "middle",
+                    horizontal: "center",
+                };
+
+                // 2. Info Tanggal
+                worksheet.mergeCells("A2:N2");
+                const dateCell = worksheet.getCell("A2");
+                dateCell.value =
+                    "Tanggal Download: " + new Date().toLocaleString("id-ID");
+                dateCell.font = { italic: true, size: 10 };
+                dateCell.alignment = {
+                    vertical: "middle",
+                    horizontal: "center",
+                };
+
+                // 3. Definisi Header Kolom & Lebar
+                worksheet.getRow(4).values = [
+                    "Timestamp",
+                    "NIM",
+                    "Nama",
+                    "Judul Proposal",
+                    "Bidang",
+                    "Deskripsi Singkat",
+                    "Rumusan Masalah",
+                    "Metode",
+                    "Dataset",
+                    "Sumber Dataset",
+                    "Tools",
+                    "Output",
+                    "Referensi",
+                    "Pembimbing",
+                ];
+
+                // Atur Lebar Kolom (Width)
+                worksheet.columns = [
+                    { key: "ts", width: 15 }, // Timestamp
+                    { key: "nim", width: 12 }, // NIM
+                    { key: "nama", width: 25 }, // Nama
+                    { key: "judul", width: 40 }, // Judul
+                    { key: "bidang", width: 15 }, // Bidang
+                    { key: "desk", width: 35 }, // Deskripsi
+                    { key: "masalah", width: 35 }, // Masalah
+                    { key: "metode", width: 25 }, // Metode
+                    { key: "dataset", width: 20 }, // Dataset
+                    { key: "sumber", width: 20 }, // Sumber
+                    { key: "tools", width: 15 }, // Tools
+                    { key: "output", width: 20 }, // Output
+                    { key: "ref", width: 30 }, // Referensi
+                    { key: "dosen", width: 20 }, // Pembimbing
+                ];
+
+                // Styling Header (Baris 4)
+                const headerRow = worksheet.getRow(4);
+                headerRow.font = { bold: true, color: { argb: "FFFFFFFF" } };
+                headerRow.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: "FF3498DB" }, // Secondary Color
+                };
+                headerRow.alignment = {
+                    vertical: "middle",
+                    horizontal: "center",
+                };
+
+                // 4. Masukkan Data
+                filteredData.forEach((row) => {
+                    worksheet.addRow([
+                        row[0], // Timestamp
+                        row[1], // NIM
+                        row[2], // Nama
+                        row[3], // Judul
+                        row[4], // Bidang
+                        row[5], // Deskripsi
+                        row[6], // Masalah
+                        row[7], // Metode
+                        row[8], // Dataset
+                        row[9], // Sumber
+                        row[10], // Tools
+                        row[11], // Output
+                        row[12], // Referensi
+                        row[13], // Dosen
+                    ]);
+                });
+
+                // 5. Styling Data Rows (Alignment & Wrap Text)
+                worksheet.eachRow((row, rowNumber) => {
+                    if (rowNumber > 4) {
+                        // Mulai dari baris data
+                        row.alignment = {
+                            vertical: "top",
+                            horizontal: "left",
+                            wrapText: true, // Penting agar teks panjang turun ke bawah
+                        };
+                        // Selang-seling warna (Zebra Striping)
+                        if (rowNumber % 2 === 0) {
+                            row.fill = {
+                                type: "pattern",
+                                pattern: "solid",
+                                fgColor: { argb: "FFF7F9F9" },
+                            };
+                        }
+                        // Border tipis untuk semua sel
+                        row.eachCell((cell) => {
+                            cell.border = {
+                                top: {
+                                    style: "thin",
+                                    color: { argb: "FFCCCCCC" },
+                                },
+                                left: {
+                                    style: "thin",
+                                    color: { argb: "FFCCCCCC" },
+                                },
+                                bottom: {
+                                    style: "thin",
+                                    color: { argb: "FFCCCCCC" },
+                                },
+                                right: {
+                                    style: "thin",
+                                    color: { argb: "FFCCCCCC" },
+                                },
+                            };
+                        });
+                    }
+                });
+
+                // 6. Generate & Save File
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                });
+                saveAs(
+                    blob,
+                    "Rekap_Proposal_Skripsi_" +
+                        new Date().toISOString().slice(0, 10) +
+                        ".xlsx",
+                );
+            }
+
+            // --- Fitur Baru: Back to Top ---
+            window.onscroll = function () {
+                const btn = document.getElementById("back-to-top");
+                if (
+                    document.body.scrollTop > 300 ||
+                    document.documentElement.scrollTop > 300
+                ) {
+                    btn.style.display = "flex";
+                } else {
+                    btn.style.display = "none";
+                }
+            };
+
+            window.scrollToTop = function () {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            };
+
+            // --- Fitur Baru: Export PDF ---
+            function exportToPDF() {
+                if (!filteredData || filteredData.length === 0) {
+                    alert("Tidak ada data untuk diunduh");
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF("landscape"); // Landscape agar muat banyak kolom
+
+                // Judul
+                doc.setFontSize(16);
+                doc.text(
+                    "Rekap Proposal Skripsi - KK E (Ilmu Komputer)",
+                    14,
+                    15,
+                );
+
+                doc.setFontSize(10);
+                doc.text(
+                    "Tanggal Download: " + new Date().toLocaleString("id-ID"),
+                    14,
+                    22,
+                );
+
+                // Siapkan Data Table
+                const tableColumn = [
+                    "No",
+                    "NIM",
+                    "Nama",
+                    "Judul Proposal",
+                    "Bidang",
+                    "Pembimbing",
+                ];
+                const tableRows = [];
+
+                filteredData.forEach((row, index) => {
+                    const rowData = [
+                        index + 1,
+                        row[1], // NIM
+                        row[2], // Nama
+                        row[3], // Judul
+                        row[4], // Bidang
+                        row[13], // Pembimbing
+                    ];
+                    tableRows.push(rowData);
+                });
+
+                doc.autoTable({
+                    head: [tableColumn],
+                    body: tableRows,
+                    startY: 30,
+                    theme: "grid",
+                    styles: { fontSize: 9, cellPadding: 3 },
+                    headStyles: { fillColor: [44, 62, 80] }, // Primary Color
+                    columnStyles: {
+                        0: { cellWidth: 10 }, // No
+                        1: { cellWidth: 25 }, // NIM
+                        2: { cellWidth: 45 }, // Nama
+                        3: { cellWidth: "auto" }, // Judul (sisa ruang)
+                        4: { cellWidth: 30 }, // Bidang
+                        5: { cellWidth: 40 }, // Pembimbing
+                    },
+                });
+
+                doc.save(
+                    "Rekap_Proposal_Skripsi_" +
+                        new Date().toISOString().slice(0, 10) +
+                        ".pdf",
+                );
+            }
+
+            // Event Listeners
+            document
+                .getElementById("search-input")
+                .addEventListener("input", applyFilters);
+            document
+                .getElementById("filter-dosen")
+                .addEventListener("change", applyFilters);
+
+            document.addEventListener("DOMContentLoaded", loadData);
+        </script>
+    </body>
+</html>
