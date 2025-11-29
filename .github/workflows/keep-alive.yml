@@ -2,8 +2,8 @@ name: Keep HF Space Alive
 
 on:
   schedule:
-    # Setiap 5 menit
-    - cron: '*/5 * * * *'
+    # Setiap 14 menit (agar tidak melebihi quota GitHub Actions)
+    - cron: '*/14 * * * *'
   workflow_dispatch:  # Manual trigger
 
 jobs:
