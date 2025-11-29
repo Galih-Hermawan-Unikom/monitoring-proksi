@@ -1,0 +1,33 @@
+name: Keep HF Space Alive
+
+on:
+  schedule:
+    # Setiap 5 menit
+    - cron: '*/5 * * * *'
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping HF Space
+        run: |
+          echo "Pinging HF Space to keep it awake..."
+          
+          # Simple GET request ke Space
+          curl -s -o /dev/null -w "%{http_code}" \
+            "https://galihboy-semantic-embedding-api.hf.space/" \
+            || echo "Space might be starting up..."
+          
+          echo "Ping completed at $(date)"
+      
+      - name: Test API endpoint
+        run: |
+          # Test embedding endpoint untuk warm up model
+          response=$(curl -s -X POST \
+            "https://galihboy-semantic-embedding-api.hf.space/gradio_api/call/get_embedding" \
+            -H "Content-Type: application/json" \
+            -d '{"data": ["test"]}' \
+            --max-time 120)
+          
+          echo "API Response: $response"

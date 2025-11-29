@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic Similarity Analysis - KK E UNIKOM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #7c3aed;
+            --primary-dark: #5b21b6;
+            --secondary-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .header-content h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-content p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .nav-links {
+            margin-top: 1rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            transition: background 0.3s;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Info Banner */
+        .info-banner {
+            background: linear-gradient(135deg, #ddd6fe 0%, #c7d2fe 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-banner i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .info-banner-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-banner-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Status Banner */
+        .status-banner {
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-item i {
+            width: 20px;
+        }
+
+        .status-ok { color: var(--success-color); }
+        .status-warning { color: var(--warning-color); }
+        .status-error { color: var(--danger-color); }
+        .status-loading { color: var(--secondary-color); }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .progress-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar-container {
+            background: var(--border-color);
+            border-radius: 1rem;
+            height: 12px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 1rem;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Summary Cards */
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--border-color);
+        }
+
+        .summary-card.total { border-left-color: var(--primary-color); }
+        .summary-card.high { border-left-color: var(--danger-color); }
+        .summary-card.medium { border-left-color: var(--warning-color); }
+        .summary-card.low { border-left-color: var(--success-color); }
+
+        .summary-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .summary-card.total .number { color: var(--primary-color); }
+        .summary-card.high .number { color: var(--danger-color); }
+        .summary-card.medium .number { color: var(--warning-color); }
+        .summary-card.low .number { color: var(--success-color); }
+
+        .summary-card .label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .control-panel h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .threshold-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .threshold-slider {
+            flex: 1;
+            min-width: 200px;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .threshold-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .threshold-value {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .results-header h2 {
+            font-size: 1.1rem;
+        }
+
+        .results-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .cache-info {
+            font-size: 0.8rem;
+            color: var(--success-color);
+            background: #d1fae5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        /* Table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .results-table th {
+            background: var(--bg-primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .results-table tr:hover {
+            background: var(--bg-primary);
+        }
+
+        .similarity-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .similarity-badge.high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .similarity-badge.medium {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .similarity-badge.low {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-name {
+            font-weight: 600;
+        }
+
+        .student-nim {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .student-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-detail {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+        }
+
+        .btn-detail:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--success-color);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+        }
+
+        .modal-header h3 {
+            font-size: 1.1rem;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .comparison-card {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .comparison-card h4 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .comparison-item {
+            margin-bottom: 1rem;
+        }
+
+        .comparison-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .comparison-text {
+            font-size: 0.9rem;
+        }
+
+        .semantic-note {
+            background: #ede9fe;
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .semantic-note h4 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .semantic-note p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .page-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: #a78bfa;
+            text-decoration: none;
+        }
+
+        .footer-meta {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .results-table th:nth-child(3),
+            .results-table td:nth-child(3) {
+                display: none;
+            }
+
+            .student-title {
+                max-width: 150px;
+            }
+
+            .info-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .status-banner {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-brain"></i> Semantic Similarity Analysis</h1>
+            <p>Analisis Kemiripan Tema Berbasis AI - KK Ilmu Komputer UNIKOM</p>
+            <span class="header-badge"><i class="fas fa-database"></i> Powered by Supabase Cache</span>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="similarity.html"><i class="fas fa-search"></i> TF-IDF Similarity</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <div class="info-banner-content">
+                <h3>Analisis Semantik dengan Shared Cache</h3>
+                <p>Menggunakan <strong>Supabase</strong> sebagai shared cache. Embedding yang sudah diproses akan tersimpan di cloud dan dapat digunakan oleh semua user.</p>
+            </div>
+        </div>
+
+        <!-- Status Banner -->
+        <div class="status-banner" id="status-banner">
+            <div class="status-item" id="status-supabase">
+                <i class="fas fa-circle-notch fa-spin status-loading"></i>
+                <span>Supabase: Checking...</span>
+            </div>
+            <div class="status-item" id="status-api">
+                <i class="fas fa-circle-notch fa-spin status-loading"></i>
+                <span>Embedding API: Checking...</span>
+            </div>
+            <div class="status-item" id="status-cache">
+                <i class="fas fa-database"></i>
+                <span>Cache: -</span>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="progress-section">
+            <i class="fas fa-cogs progress-icon"></i>
+            <div class="progress-title" id="progress-title">Memuat Data...</div>
+            <div class="progress-subtitle" id="progress-subtitle">Mengambil data proposal dari server</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0%</div>
+            <div class="progress-stats">
+                <span id="stats-supabase"><i class="fas fa-cloud"></i> From Cache: 0</span>
+                <span id="stats-api"><i class="fas fa-microchip"></i> From API: 0</span>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel hidden" id="control-panel">
+            <h2><i class="fas fa-sliders-h"></i> Pengaturan & Pencarian</h2>
+            <div class="control-row" style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-end;">
+                <div class="threshold-control">
+                    <label for="threshold-slider">Tampilkan kemiripan di atas:</label>
+                    <input type="range" id="threshold-slider" class="threshold-slider" min="20" max="80" value="40" />
+                    <span id="threshold-value" class="threshold-value">40%</span>
+                </div>
+                <div class="search-control" style="flex: 1; min-width: 250px;">
+                    <label for="search-input"><i class="fas fa-search"></i> Cari NIM / Nama:</label>
+                    <input type="text" id="search-input" placeholder="Ketik NIM atau nama..." 
+                           style="width: 100%; padding: 0.5rem 1rem; border: 2px solid var(--border-color); border-radius: 0.5rem; font-size: 1rem; margin-top: 0.25rem;" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-section hidden" id="summary-section">
+            <div class="summary-card total">
+                <div class="number" id="total-proposals">-</div>
+                <div class="label">Total Proposal</div>
+            </div>
+            <div class="summary-card high">
+                <div class="number" id="high-similarity">-</div>
+                <div class="label">Kemiripan Tinggi (≥70%)</div>
+            </div>
+            <div class="summary-card medium">
+                <div class="number" id="medium-similarity">-</div>
+                <div class="label">Kemiripan Sedang (50-69%)</div>
+            </div>
+            <div class="summary-card low">
+                <div class="number" id="low-similarity">-</div>
+                <div class="label">Kemiripan Rendah (&lt;50%)</div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section hidden" id="results-section">
+            <div class="results-header">
+                <h2><i class="fas fa-brain"></i> Hasil Analisis Semantik</h2>
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <span class="results-info" id="results-info">Memuat...</span>
+                    <span class="cache-info" id="cache-info"></span>
+                </div>
+            </div>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <i class="fas fa-check-circle"></i>
+                <p>Tidak ditemukan pasangan proposal dengan kemiripan di atas threshold.</p>
+            </div>
+
+            <table class="results-table" id="results-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">Kemiripan</th>
+                        <th>Mahasiswa 1</th>
+                        <th>Mahasiswa 2</th>
+                        <th style="width: 100px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                </tbody>
+            </table>
+
+            <div class="pagination" id="pagination" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Modal Detail -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-brain"></i> Detail Perbandingan Semantik</h3>
+                <button class="btn-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div><strong>Monitoring Proposal Skripsi</strong> - KK Ilmu Komputer</div>
+            <div><a href="https://galih.eu" target="_blank">Galih Hermawan</a> | Teknik Informatika UNIKOM</div>
+            <div class="footer-meta">Semantic Similarity v2.0 | Supabase Cache | Terakhir diperbarui: 29 November 2025</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="embedding-service.js"></script>
+    <script>
+        // ==================== INITIALIZATION ====================
+        let embeddingService = null;
+        let allProposals = [];
+        let embeddings = {};
+        let similarityPairs = [];
+        let filteredPairs = [];
+        let currentPage = 1;
+        let threshold = CONFIG.DEFAULT_THRESHOLD;
+
+        // ==================== STARTUP ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize embedding service (connects to HF Space which proxies to Supabase)
+            embeddingService = new EmbeddingService(CONFIG.GRADIO_API_URL);
+
+            // Setup event listeners
+            setupEventListeners();
+
+            // Check connections
+            await checkConnections();
+
+            // Start main process
+            await startAnalysis();
+        });
+
+        function setupEventListeners() {
+            // Threshold slider
+            document.getElementById('threshold-slider').addEventListener('input', (e) => {
+                threshold = parseInt(e.target.value);
+                document.getElementById('threshold-value').textContent = threshold + '%';
+                applyFilter();
+            });
+
+            // Search input
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                applyFilter();
+            });
+
+            // Modal close on overlay click
+            document.getElementById('modal-overlay').addEventListener('click', (e) => {
+                if (e.target.id === 'modal-overlay') closeModal();
+            });
+
+            // ESC to close modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+        }
+
+        // ==================== CONNECTION CHECK ====================
+        async function checkConnections() {
+            // Check HF Space API
+            try {
+                const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/info`);
+                const apiOk = response.ok;
+                updateStatus('status-api', apiOk,
+                    apiOk ? 'HF Space API: Ready' : 'HF Space API: Error');
+            } catch (e) {
+                updateStatus('status-api', false, 'HF Space API: Offline');
+            }
+
+            // Check Supabase via HF Space proxy
+            const dbStatus = await embeddingService.checkDbConnection();
+            updateStatus('status-supabase', dbStatus.connected, 
+                dbStatus.connected ? 'Supabase: Connected' : 'Supabase: ' + (dbStatus.error || 'Error'));
+
+            if (dbStatus.connected) {
+                const cached = await embeddingService.getAllCachedEmbeddings();
+                updateStatus('status-cache', true, `Cache: ${cached.length} embeddings`);
+            }
+        }
+
+        function updateStatus(elementId, isOk, text) {
+            const el = document.getElementById(elementId);
+            const icon = el.querySelector('i');
+            const span = el.querySelector('span');
+            
+            icon.className = isOk ? 'fas fa-check-circle status-ok' : 'fas fa-times-circle status-error';
+            span.textContent = text;
+        }
+
+        // ==================== MAIN ANALYSIS ====================
+        async function startAnalysis() {
+            try {
+                // 0. Wake up HF Space jika sedang idle
+                updateProgress(0, 'Mengecek server...', 'Memastikan HF Space aktif');
+                
+                const isAwake = await embeddingService.wakeUpSpace((status) => {
+                    updateProgress(0, 'Mengecek server...', status);
+                });
+
+                if (!isAwake) {
+                    showError('Server tidak merespons. HF Space mungkin sedang dalam masalah. Silakan coba lagi nanti atau refresh halaman.');
+                    return;
+                }
+
+                // 1. Load CSV data
+                updateProgress(5, 'Memuat data proposal...', 'Mengambil dari Google Sheets');
+                allProposals = await loadCSVData();
+                
+                if (allProposals.length === 0) {
+                    showError('Tidak ada data proposal yang valid');
+                    return;
+                }
+
+                // 2. Get embeddings (from Supabase via HF Space or generate new)
+                updateProgress(15, 'Memproses embeddings...', 'Memeriksa cache server');
+                embeddingService.resetStats();
+                
+                embeddings = await embeddingService.getEmbeddingsForAllProposals(
+                    allProposals,
+                    (progress, title, subtitle) => {
+                        updateProgress(15 + (progress * 0.75), title, subtitle);
+                        const stats = embeddingService.getStats();
+                        updateStats(stats.fromCache, stats.fromApi);
+                    }
+                );
+
+                // 3. Calculate similarities
+                updateProgress(95, 'Menghitung kemiripan...', 'Membandingkan semua pasangan');
+                calculateAllSimilarities();
+
+                // 4. Show results
+                updateProgress(100, 'Selesai!', '');
+                showResults();
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showError(error.message);
+            }
+        }
+
+        // ==================== CSV LOADING ====================
+        async function loadCSVData() {
+            const response = await fetch(CONFIG.CSV_URL);
+            const text = await response.text();
+            const rows = parseCSV(text);
+            
+            const proposals = [];
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.length > CONFIG.CSV_COLUMNS.METODE) {
+                    const nim = row[CONFIG.CSV_COLUMNS.NIM]?.trim();
+                    const nama = row[CONFIG.CSV_COLUMNS.NAMA]?.trim();
+                    const judul = row[CONFIG.CSV_COLUMNS.JUDUL]?.trim();
+                    
+                    if (nim && nama && judul) {
+                        proposals.push({
+                            nim,
+                            nama,
+                            judul,
+                            deskripsi: row[CONFIG.CSV_COLUMNS.DESKRIPSI]?.trim() || '',
+                            problem: row[CONFIG.CSV_COLUMNS.PROBLEM]?.trim() || '',
+                            metode: row[CONFIG.CSV_COLUMNS.METODE]?.trim() || ''
+                        });
+                    }
+                }
+            }
+            
+            return proposals;
+        }
+
+        function parseCSV(text) {
+            const rows = [];
+            let currentRow = [];
+            let currentCell = '';
+            let insideQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+
+                if (insideQuotes) {
+                    if (char === '"' && nextChar === '"') {
+                        currentCell += '"';
+                        i++;
+                    } else if (char === '"') {
+                        insideQuotes = false;
+                    } else {
+                        currentCell += char;
+                    }
+                } else {
+                    if (char === '"') {
+                        insideQuotes = true;
+                    } else if (char === ',') {
+                        currentRow.push(currentCell);
+                        currentCell = '';
+                    } else if (char === '\n' || (char === '\r' && nextChar === '\n')) {
+                        currentRow.push(currentCell);
+                        rows.push(currentRow);
+                        currentRow = [];
+                        currentCell = '';
+                        if (char === '\r') i++;
+                    } else if (char !== '\r') {
+                        currentCell += char;
+                    }
+                }
+            }
+
+            if (currentCell || currentRow.length > 0) {
+                currentRow.push(currentCell);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        // ==================== SIMILARITY CALCULATION ====================
+        function cosineSimilarity(vecA, vecB) {
+            if (!vecA || !vecB || vecA.length !== vecB.length) return 0;
+
+            let dotProduct = 0;
+            let normA = 0;
+            let normB = 0;
+
+            for (let i = 0; i < vecA.length; i++) {
+                dotProduct += vecA[i] * vecB[i];
+                normA += vecA[i] * vecA[i];
+                normB += vecB[i] * vecB[i];
+            }
+
+            normA = Math.sqrt(normA);
+            normB = Math.sqrt(normB);
+
+            if (normA === 0 || normB === 0) return 0;
+            return dotProduct / (normA * normB);
+        }
+
+        function calculateAllSimilarities() {
+            similarityPairs = [];
+            const n = allProposals.length;
+
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    const emb1 = embeddings[allProposals[i].nim];
+                    const emb2 = embeddings[allProposals[j].nim];
+
+                    if (emb1 && emb2 && emb1.combined && emb2.combined) {
+                        const similarity = cosineSimilarity(emb1.combined, emb2.combined);
+                        const percentage = Math.round(similarity * 100);
+
+                        // Per-field similarities
+                        const details = {
+                            judul: emb1.judul && emb2.judul ? 
+                                   Math.round(cosineSimilarity(emb1.judul, emb2.judul) * 100) : null,
+                            deskripsi: emb1.deskripsi && emb2.deskripsi ? 
+                                       Math.round(cosineSimilarity(emb1.deskripsi, emb2.deskripsi) * 100) : null,
+                            problem: emb1.problem && emb2.problem ? 
+                                     Math.round(cosineSimilarity(emb1.problem, emb2.problem) * 100) : null,
+                            metode: emb1.metode && emb2.metode ? 
+                                    Math.round(cosineSimilarity(emb1.metode, emb2.metode) * 100) : null
+                        };
+
+                        if (percentage > 0) {
+                            similarityPairs.push({
+                                index1: i,
+                                index2: j,
+                                proposal1: allProposals[i],
+                                proposal2: allProposals[j],
+                                similarity: percentage,
+                                details: details
+                            });
+                        }
+                    }
+                }
+            }
+
+            similarityPairs.sort((a, b) => b.similarity - a.similarity);
+        }
+
+        // ==================== UI FUNCTIONS ====================
+        function updateProgress(percent, title, subtitle) {
+            document.getElementById('progress-bar').style.width = percent + '%';
+            document.getElementById('progress-text').textContent = Math.round(percent) + '%';
+            if (title) document.getElementById('progress-title').textContent = title;
+            if (subtitle !== undefined) document.getElementById('progress-subtitle').textContent = subtitle;
+        }
+
+        function updateStats(fromSupabase, fromApi) {
+            document.getElementById('stats-supabase').innerHTML = 
+                `<i class="fas fa-cloud"></i> From Cache: ${fromSupabase}`;
+            document.getElementById('stats-api').innerHTML = 
+                `<i class="fas fa-microchip"></i> From API: ${fromApi}`;
+        }
+
+        function showError(message) {
+            document.getElementById('progress-section').innerHTML = `
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--danger-color);"></i>
+                <div class="progress-title" style="color: var(--danger-color);">Error</div>
+                <div class="progress-subtitle">${message}</div>
+                <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 0.5rem; cursor: pointer;">
+                    <i class="fas fa-redo"></i> Coba Lagi
+                </button>
+            `;
+        }
+
+        function showResults() {
+            document.getElementById('progress-section').classList.add('hidden');
+            document.getElementById('control-panel').classList.remove('hidden');
+            document.getElementById('summary-section').classList.remove('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+
+            // Update cache info
+            const stats = embeddingService.getStats();
+            document.getElementById('cache-info').textContent = 
+                `✓ ${stats.fromCache} dari cache, ${stats.fromApi} baru diproses`;
+
+            // Update summary
+            document.getElementById('total-proposals').textContent = allProposals.length;
+
+            applyFilter();
+        }
+
+        function applyFilter() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            
+            filteredPairs = similarityPairs.filter(p => {
+                // Filter by threshold
+                if (p.similarity < threshold) return false;
+                
+                // Filter by search term (NIM atau Nama)
+                if (searchTerm) {
+                    const matchProposal1 = 
+                        p.proposal1.nim.toLowerCase().includes(searchTerm) ||
+                        p.proposal1.nama.toLowerCase().includes(searchTerm);
+                    const matchProposal2 = 
+                        p.proposal2.nim.toLowerCase().includes(searchTerm) ||
+                        p.proposal2.nama.toLowerCase().includes(searchTerm);
+                    
+                    // Tampilkan jika salah satu atau kedua proposal match
+                    if (!matchProposal1 && !matchProposal2) return false;
+                }
+                
+                return true;
+            });
+            
+            currentPage = 1;
+
+            // Update summary counts (dari hasil filter)
+            const high = filteredPairs.filter(p => p.similarity >= 70).length;
+            const medium = filteredPairs.filter(p => p.similarity >= 50 && p.similarity < 70).length;
+            const low = filteredPairs.filter(p => p.similarity < 50).length;
+
+            document.getElementById('high-similarity').textContent = high;
+            document.getElementById('medium-similarity').textContent = medium;
+            document.getElementById('low-similarity').textContent = low;
+
+            const searchInfo = searchTerm ? ` (pencarian: "${searchTerm}")` : '';
+            document.getElementById('results-info').textContent = 
+                `Menampilkan ${filteredPairs.length} pasangan dengan kemiripan ≥${threshold}%${searchInfo}`;
+
+            renderTable();
+            renderPagination();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('results-body');
+            const table = document.getElementById('results-table');
+            const emptyState = document.getElementById('empty-state');
+
+            if (filteredPairs.length === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            table.style.display = 'table';
+            emptyState.style.display = 'none';
+
+            const startIdx = (currentPage - 1) * CONFIG.ITEMS_PER_PAGE;
+            const endIdx = Math.min(startIdx + CONFIG.ITEMS_PER_PAGE, filteredPairs.length);
+            const pageData = filteredPairs.slice(startIdx, endIdx);
+
+            tbody.innerHTML = pageData.map((pair, idx) => {
+                const simClass = pair.similarity >= 70 ? 'high' : 
+                                 pair.similarity >= 50 ? 'medium' : 'low';
+                return `
+                    <tr>
+                        <td>
+                            <span class="similarity-badge ${simClass}">
+                                ${pair.similarity}%
+                            </span>
+                        </td>
+                        <td>
+                            <div class="student-info">
+                                <span class="student-name">${escapeHtml(pair.proposal1.nama)}</span>
+                                <span class="student-nim">${escapeHtml(pair.proposal1.nim)}</span>
+                                <span class="student-title" title="${escapeHtml(pair.proposal1.judul)}">${escapeHtml(pair.proposal1.judul)}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="student-info">
+                                <span class="student-name">${escapeHtml(pair.proposal2.nama)}</span>
+                                <span class="student-nim">${escapeHtml(pair.proposal2.nim)}</span>
+                                <span class="student-title" title="${escapeHtml(pair.proposal2.judul)}">${escapeHtml(pair.proposal2.judul)}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn-detail" onclick="openModal(${startIdx + idx})">
+                                <i class="fas fa-eye"></i> Detail
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredPairs.length / CONFIG.ITEMS_PER_PAGE);
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+            let html = '';
+
+            html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                     <i class="fas fa-chevron-left"></i></button>`;
+
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            startPage = Math.max(1, endPage - 4);
+
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span style="padding: 0.5rem;">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span style="padding: 0.5rem;">...</span>`;
+                html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                     <i class="fas fa-chevron-right"></i></button>`;
+
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredPairs.length / CONFIG.ITEMS_PER_PAGE);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderTable();
+            renderPagination();
+            document.querySelector('.results-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== MODAL ====================
+        function openModal(pairIndex) {
+            const pair = filteredPairs[pairIndex];
+            if (!pair) return;
+
+            const simClass = pair.similarity >= 70 ? 'high' : 
+                             pair.similarity >= 50 ? 'medium' : 'low';
+
+            // Per-field similarity badges
+            const getSimClass = (val) => val >= 70 ? 'high' : val >= 50 ? 'medium' : 'low';
+            
+            let detailsHtml = '';
+            if (pair.details) {
+                detailsHtml = `
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 0.75rem;">
+                        ${pair.details.judul !== null ? `<span class="similarity-badge ${getSimClass(pair.details.judul)}" style="font-size: 0.85rem;">Judul: ${pair.details.judul}%</span>` : ''}
+                        ${pair.details.deskripsi !== null ? `<span class="similarity-badge ${getSimClass(pair.details.deskripsi)}" style="font-size: 0.85rem;">Deskripsi: ${pair.details.deskripsi}%</span>` : ''}
+                        ${pair.details.problem !== null ? `<span class="similarity-badge ${getSimClass(pair.details.problem)}" style="font-size: 0.85rem;">Problem: ${pair.details.problem}%</span>` : ''}
+                        ${pair.details.metode !== null ? `<span class="similarity-badge ${getSimClass(pair.details.metode)}" style="font-size: 0.85rem;">Metode: ${pair.details.metode}%</span>` : ''}
+                    </div>
+                `;
+            }
+
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = `
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <span class="similarity-badge ${simClass}" style="font-size: 1.2rem; padding: 0.5rem 1.5rem;">
+                        <i class="fas fa-brain"></i> Kemiripan Semantik: ${pair.similarity}%
+                    </span>
+                    ${detailsHtml}
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4><i class="fas fa-user"></i> ${escapeHtml(pair.proposal1.nama)}</h4>
+                        <div class="comparison-item">
+                            <div class="comparison-label">NIM</div>
+                            <div class="comparison-text">${escapeHtml(pair.proposal1.nim)}</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Judul</div>
+                            <div class="comparison-text">${escapeHtml(pair.proposal1.judul)}</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Deskripsi</div>
+                            <div class="comparison-text">${escapeHtml(truncate(pair.proposal1.deskripsi, 300))}</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Problem Statement</div>
+                            <div class="comparison-text">${escapeHtml(truncate(pair.proposal1.problem, 300))}</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Metode</div>
+                            <div class="comparison-text">${escapeHtml(pair.proposal1.metode)}</div>
+                        </div>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4><i class="fas fa-user"></i> ${escapeHtml(pair.proposal2.nama)}</h4>
+                        <div class="comparison-item">
+                            <div class="comparison-label">NIM</div>
+                            <div class="comparison-text">${escapeHtml(pair.proposal2.nim)}</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Judul</div>
+                            <div class="comparison-text">${escapeHtml(pair.proposal2.judul)}</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Deskripsi</div>
+                            <div class="comparison-text">${escapeHtml(truncate(pair.proposal2.deskripsi, 300))}</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Problem Statement</div>
+                            <div class="comparison-text">${escapeHtml(truncate(pair.proposal2.problem, 300))}</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Metode</div>
+                            <div class="comparison-text">${escapeHtml(pair.proposal2.metode)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="semantic-note">
+                    <h4><i class="fas fa-info-circle"></i> Tentang Analisis Semantik</h4>
+                    <p>Skor kemiripan dihitung berdasarkan <strong>makna dan konteks</strong> teks menggunakan model AI Sentence Transformers. Embedding disimpan di Supabase untuk akses cepat oleh semua user.</p>
+                </div>
+            `;
+
+            document.getElementById('modal-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ==================== UTILITIES ====================
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function truncate(text, maxLength) {
+            if (!text) return '';
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+    </script>
+</body>
+</html>
