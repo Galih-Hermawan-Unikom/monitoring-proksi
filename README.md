@@ -12,6 +12,19 @@ Akses website monitoring secara online melalui tautan berikut:
 
 ---
 
+## 📊 Infografis Sistem
+
+### Dashboard
+![Dashboard](Monitoring%20Proksi%20-%20Dashboard.png)
+
+### Deteksi Kemiripan TF-IDF
+![TF-IDF Similarity](Monitoring%20Proksi%20-%20TF%20IDF%20Similarity.png)
+
+### Semantic Similarity (AI)
+![Semantic Similarity](Monitoring%20Proksi%20-%20Semantic%20Similarity.png)
+
+---
+
 ## ✨ Fitur Utama
 
 *   **Real-time Data:** Terhubung langsung dengan Google Sheets; data otomatis terupdate setiap kali halaman dimuat.
@@ -49,34 +62,53 @@ Analisis kemiripan berbasis **frekuensi kata** menggunakan metode TF-IDF (Term F
 - 🌐 Tidak butuh koneksi API
 - 💻 Sepenuhnya berjalan di browser
 
-**Akses:** `http://localhost:8000/similarity.html`
+**Akses:** [similarity.html](https://galih-hermawan-unikom.github.io/monitoring-proksi/similarity.html)
 
 ---
 
 ### 2. Semantic Similarity dengan AI (`semantic_similarity.html`)
 
-Analisis kemiripan berbasis **makna dan konteks** menggunakan model AI Sentence Transformers dari Hugging Face.
+Analisis kemiripan berbasis **makna dan konteks** menggunakan model AI Sentence Transformers.
 
-**Model:** `paraphrase-multilingual-MiniLM-L12-v2`
+**Arsitektur:**
+```
+Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
+```
+
+**Model:** `paraphrase-multilingual-MiniLM-L12-v2` (384 dimensi, multilingual)
+
+**Komponen:**
+| Komponen | Fungsi |
+|----------|--------|
+| GitHub Pages | Hosting website |
+| Google Sheets | Sumber data proposal |
+| HF Space | AI model + API proxy |
+| Supabase | Shared cache database |
+| GitHub Actions | Keep-alive ping (14 menit) |
 
 **Kelebihan:**
 - 🧠 Memahami makna, bukan hanya kata
 - 🌍 Mendukung Bahasa Indonesia
-- 💾 Smart caching (menyimpan hasil di localStorage)
-- 🔄 Otomatis mendeteksi perubahan data
+- 💾 Shared cache (Supabase) - user berikutnya lebih cepat
+- 🔒 API key aman di server (tidak terekspos ke browser)
+- 🔄 Keep-alive otomatis via GitHub Actions
+- 💰 100% Gratis (semua layanan free tier)
 
 **Cara Kerja:**
 1. Data proposal diambil dari Google Sheets
-2. Setiap proposal dikonversi menjadi vektor embedding via Hugging Face API
-3. Kemiripan dihitung dengan Cosine Similarity
-4. Hasil di-cache untuk kunjungan berikutnya (expire 7 hari)
+2. Cek cache di Supabase (via HF Space proxy)
+3. Jika tidak ada, generate embedding via AI model
+4. Simpan ke Supabase untuk user berikutnya
+5. Hitung Cosine Similarity di browser
+6. Tampilkan hasil dengan detail per komponen
 
-**Catatan:**
-- Membutuhkan koneksi internet untuk API
-- Loading pertama ~10-30 detik (tergantung jumlah data)
-- Kunjungan berikutnya lebih cepat (menggunakan cache)
+**Waktu Proses:**
+| Skenario | Waktu |
+|----------|-------|
+| User pertama (cold start) | ~2-3 menit |
+| User berikutnya (warm + cache) | ~5 detik |
 
-**Akses:** `http://localhost:8000/semantic_similarity.html`
+**Akses:** [semantic_similarity.html](https://galih-hermawan-unikom.github.io/monitoring-proksi/semantic_similarity.html)
 
 ---
 
@@ -113,9 +145,13 @@ data-proksi/
 ├── index.html                 # Dashboard utama
 ├── similarity.html            # Deteksi kemiripan (TF-IDF)
 ├── semantic_similarity.html   # Deteksi kemiripan (AI/Semantic)
+├── config.js                  # Konfigurasi HF Space URL
+├── embedding-service.js       # Service untuk embedding API
 ├── KK E.xlsx - ....csv        # Data master mahasiswa
 ├── README.md                  # Dokumentasi
-└── favicon.ico                # Icon website
+├── .github/workflows/
+│   └── keep-alive.yml         # GitHub Actions keep-alive
+└── Monitoring Proksi - *.png  # Infografis sistem
 ```
 
 ---
@@ -131,8 +167,10 @@ Aplikasi ini dibangun menggunakan teknologi web standar tanpa backend (Serverles
     *   [Chart.js](https://www.chartjs.org/) (Data Visualization)
     *   [ExcelJS](https://github.com/exceljs/exceljs) (Excel Export)
     *   [jsPDF & AutoTable](https://github.com/parallax/jsPDF) (PDF Export)
-*   **API:**
-    *   [Hugging Face Inference API](https://huggingface.co/inference-api) (Semantic Similarity)
+*   **API & Services:**
+    *   [Hugging Face Space](https://huggingface.co/spaces/galihboy/semantic-embedding-api) (AI Embedding API)
+    *   [Supabase](https://supabase.com/) (PostgreSQL Cache Database)
+    *   [GitHub Actions](https://github.com/features/actions) (Keep-alive Scheduler)
 
 ---
 
@@ -142,7 +180,7 @@ Aplikasi ini dibangun menggunakan teknologi web standar tanpa backend (Serverles
 *   🌐 Website: [galih.eu](https://galih.eu)
 *   🏫 Program Studi Teknik Informatika
 *   🎓 Universitas Komputer Indonesia (UNIKOM)
-*   📅 Terakhir Diperbarui: November 2025
+*   📅 Terakhir Diperbarui: 30 November 2025
 
 ---
 *Dibuat untuk memudahkan pengelolaan dan transparansi data proposal skripsi semester Ganjil TA 2025-2026.*
