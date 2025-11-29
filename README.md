@@ -1,6 +1,6 @@
 # Monitoring Proposal Skripsi - KK E (Ilmu Komputer)
 
-Dashboard web sederhana untuk memantau pengajuan topik dan judul proposal skripsi mahasiswa di lingkungan Kelompok Keahlian (KK) E - Ilmu Komputer, Universitas Komputer Indonesia.
+Dashboard web sederhana untuk memantau pengajuan topik dan judul proposal skripsi mahasiswa di lingkungan Kelompok Keahlian (KK) E - Ilmu Komputer, Prodi Teknik Informatika, Universitas Komputer Indonesia.
 
 Website ini mengambil data secara **real-time** dari Google Spreadsheet hasil input Google Form mahasiswa.
 
