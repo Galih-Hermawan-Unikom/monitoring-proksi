@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Similarity Analysis - KK E UNIKOM</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ea580c;
+            --primary-dark: #c2410c;
+            --secondary-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-primary: #fffbeb;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #fed7aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .header-content h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-content p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .nav-links {
+            margin-top: 1rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            transition: background 0.3s;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Info Banner */
+        .info-banner {
+            background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .info-banner i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .info-banner-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-banner-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Status Banner */
+        .status-banner {
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-item i { width: 20px; }
+        .status-ok { color: var(--success-color); }
+        .status-warning { color: var(--warning-color); }
+        .status-error { color: var(--danger-color); }
+        .status-loading { color: var(--secondary-color); }
+
+        /* Selection Section - Compact Design */
+        .selection-section {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .selection-section h2 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        /* Selected Proposals Preview */
+        .selected-proposals {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            align-items: stretch;
+        }
+
+        .selected-slot {
+            flex: 1;
+            background: var(--bg-primary);
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .selected-slot:hover { border-color: var(--primary-color); }
+        .selected-slot.active { border-color: var(--primary-color); border-style: solid; background: #fff7ed; }
+        .selected-slot.filled { border-style: solid; border-color: var(--primary-color); }
+
+        .selected-slot .slot-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .selected-slot .slot-empty {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .selected-slot .slot-content {
+            font-size: 0.8rem;
+        }
+
+        .selected-slot .slot-content .nama {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .selected-slot .slot-content .judul {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .vs-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Search Box */
+        .search-section {
+            margin-bottom: 0.75rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .search-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            text-align: center;
+        }
+
+        /* Proposal List */
+        .proposal-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: white;
+        }
+
+        .proposal-item {
+            padding: 0.6rem 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+
+        .proposal-item:last-child { border-bottom: none; }
+        .proposal-item:hover { background: #fff7ed; }
+        .proposal-item.selected { background: #ffedd5; }
+
+        .proposal-item .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .proposal-item .nim {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.8rem;
+        }
+
+        .proposal-item .nama {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .proposal-item .judul {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 0.15rem;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            header { padding: 1.5rem 1rem; }
+            .header-content h1 { font-size: 1.3rem; }
+            .header-content p { font-size: 0.85rem; }
+            .nav-links a { 
+                padding: 0.4rem 0.6rem; 
+                margin: 0.2rem;
+                font-size: 0.75rem;
+            }
+            .container { padding: 1rem 0.75rem; }
+            .info-banner { padding: 0.75rem; }
+            .info-banner h3 { font-size: 0.9rem; }
+            .info-banner p { font-size: 0.8rem; }
+            .selected-proposals { flex-direction: column; }
+            .vs-badge { padding: 0.25rem 0; }
+            .selection-section { padding: 1rem; }
+            .btn-analyze { padding: 0.75rem 1.5rem; font-size: 1rem; }
+        }
+
+        /* Analyze Button */
+        .analyze-section {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-analyze {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-analyze:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn-analyze:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-analyze i {
+            margin-right: 0.5rem;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results Section */
+        .results-section {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .cache-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .cache-badge.fresh {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Score Display */
+        .score-display {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1rem;
+            color: white;
+        }
+
+        .score-circle.aman {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .score-circle.perlu-review {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .score-circle.bermasalah {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .score-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .verdict-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .verdict-badge.aman {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .verdict-badge.perlu-review {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .verdict-badge.bermasalah {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Aspects Grid */
+        .aspects-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .aspects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .aspect-item {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: var(--bg-primary);
+        }
+
+        .aspect-item.same {
+            background: #fee2e2;
+        }
+
+        .aspect-item.different {
+            background: #d1fae5;
+        }
+
+        .aspect-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .aspect-item.same i { color: var(--danger-color); }
+        .aspect-item.different i { color: var(--success-color); }
+
+        .aspect-item .label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Detail Cards */
+        .detail-card {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-card h4 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-card h4 i {
+            margin-right: 0.5rem;
+        }
+
+        .detail-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .detail-card.reasoning {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .detail-card.saran {
+            border-left: 4px solid var(--warning-color);
+            background: #fffbeb;
+        }
+
+        .detail-card.saran h4 {
+            color: #92400e;
+        }
+
+        /* Proposal Comparison */
+        .proposal-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .proposal-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .proposal-card {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .proposal-card h4 {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .proposal-card .field {
+            margin-bottom: 0.5rem;
+        }
+
+        .proposal-card .field-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .proposal-card .field-value {
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #94a3b8;
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-meta {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-robot"></i> LLM Similarity Analysis</h1>
+            <p>KK E (Ilmu Komputer). Prodi Teknik Informatika. UNIKOM</p>
+            <span class="header-badge"><i class="fas fa-brain"></i> Powered by Google Gemini</span>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-chart-bar"></i> Dashboard</a>
+                <a href="similarity.html"><i class="fas fa-search"></i> TF-IDF</a>
+                <a href="semantic_similarity.html"><i class="fas fa-brain"></i> Semantic</a>
+                <a href="llm_batch.html"><i class="fas fa-layer-group"></i> LLM Batch</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <i class="fas fa-lightbulb"></i>
+            <div class="info-banner-content">
+                <h3>Analisis Berbasis AI</h3>
+                <p>Menggunakan Google Gemini untuk analisis mendalam dengan penjelasan dan saran. 
+                   Berbeda dengan Semantic Similarity yang hanya menghitung kemiripan vektor, 
+                   LLM Analysis memberikan reasoning seperti penilai manusia.</p>
+            </div>
+        </div>
+
+        <!-- Status Banner -->
+        <div class="status-banner">
+            <div class="status-item" id="status-api">
+                <i class="fas fa-spinner fa-spin status-loading"></i>
+                <span>Mengecek API...</span>
+            </div>
+            <div class="status-item" id="status-gemini">
+                <i class="fas fa-spinner fa-spin status-loading"></i>
+                <span>Mengecek Gemini...</span>
+            </div>
+            <div class="status-item" id="status-data">
+                <i class="fas fa-spinner fa-spin status-loading"></i>
+                <span>Memuat data...</span>
+            </div>
+        </div>
+
+        <!-- Selection Section -->
+        <div class="selection-section">
+            <h2><i class="fas fa-users"></i> Pilih Dua Proposal</h2>
+            
+            <!-- Selected Proposals Preview -->
+            <div class="selected-proposals">
+                <div class="selected-slot" id="slot1" onclick="setActiveSlot(1)">
+                    <div class="slot-label">Proposal 1</div>
+                    <div class="slot-empty" id="slot1-empty">Klik untuk pilih</div>
+                    <div class="slot-content" id="slot1-content" style="display:none;"></div>
+                </div>
+                <div class="vs-badge">VS</div>
+                <div class="selected-slot" id="slot2" onclick="setActiveSlot(2)">
+                    <div class="slot-label">Proposal 2</div>
+                    <div class="slot-empty" id="slot2-empty">Klik untuk pilih</div>
+                    <div class="slot-content" id="slot2-content" style="display:none;"></div>
+                </div>
+            </div>
+            
+            <!-- Search -->
+            <div class="search-section">
+                <input type="text" class="search-input" id="search-proposal" placeholder="Cari NIM atau Nama...">
+                <div class="search-hint" id="search-hint">Pilih slot di atas, lalu pilih proposal dari daftar</div>
+            </div>
+            
+            <!-- Proposal List -->
+            <div class="proposal-list" id="proposal-list"></div>
+        </div>
+
+        <!-- Analyze Button -->
+        <div class="analyze-section">
+            <button class="btn-analyze" id="btn-analyze" disabled>
+                <i class="fas fa-robot"></i> Analisis dengan Gemini
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results-section">
+            <div class="results-header">
+                <h2><i class="fas fa-poll"></i> Hasil Analisis</h2>
+                <span class="cache-badge" id="cache-badge">Fresh</span>
+            </div>
+
+            <div class="score-display">
+                <div class="score-circle" id="score-circle">
+                    <span class="score-number" id="score-number">-</span>
+                    <span class="score-label">SCORE</span>
+                </div>
+                <span class="verdict-badge" id="verdict-badge">-</span>
+            </div>
+
+            <div class="aspects-grid" id="aspects-grid"></div>
+
+            <div class="detail-card reasoning">
+                <h4><i class="fas fa-brain"></i> Analisis & Reasoning</h4>
+                <p id="reasoning-text">-</p>
+            </div>
+
+            <div class="detail-card saran">
+                <h4><i class="fas fa-lightbulb"></i> Saran untuk Mahasiswa</h4>
+                <p id="saran-text">-</p>
+            </div>
+
+            <div class="proposal-comparison" id="proposal-comparison"></div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-box">
+            <div class="loading-spinner"></div>
+            <h3>Menganalisis dengan Gemini...</h3>
+            <p id="loading-text">Mohon tunggu, AI sedang berpikir...</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                Dikembangkan oleh <a href="https://galih.eu" target="_blank">Galih Hermawan</a>
+                (<a href="https://github.com/galihboy" target="_blank"><i class="fab fa-github"></i> galihboy</a>)
+            </div>
+            <div>Program Studi Teknik Informatika. Universitas Komputer Indonesia.</div>
+            <div class="footer-meta">Terakhir diperbarui: 30 November 2025</div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script>
+        // ==================== STATE ====================
+        let allProposals = [];
+        let selectedProposal1 = null;
+        let selectedProposal2 = null;
+        let activeSlot = 1; // Which slot is being filled
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            setupEventListeners();
+            setActiveSlot(1);
+            await checkConnections();
+            await loadProposals();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('search-proposal').addEventListener('input', filterList);
+            document.getElementById('btn-analyze').addEventListener('click', analyzeProposals);
+        }
+
+        // ==================== CONNECTION CHECK ====================
+        async function checkConnections() {
+            // Check HF Space API
+            try {
+                const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/info`);
+                updateStatus('status-api', response.ok, response.ok ? 'API: Ready' : 'API: Error');
+            } catch (e) {
+                updateStatus('status-api', false, 'API: Offline');
+            }
+
+            // Check Gemini via HF Space
+            try {
+                const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/call/llm_check_status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: [] })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const eventId = result.event_id;
+                    
+                    const statusResponse = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/call/llm_check_status/${eventId}`);
+                    const statusText = await statusResponse.text();
+                    const lines = statusText.trim().split('\n');
+                    const dataLine = lines.find(l => l.startsWith('data:'));
+                    
+                    if (dataLine) {
+                        const data = JSON.parse(dataLine.substring(5));
+                        const status = data[0];
+                        
+                        if (status.configured && status.status === 'connected') {
+                            updateStatus('status-gemini', true, 'Gemini: Ready');
+                        } else {
+                            updateStatus('status-gemini', false, 'Gemini: ' + (status.error || 'Error'));
+                        }
+                    }
+                } else {
+                    updateStatus('status-gemini', false, 'Gemini: Error');
+                }
+            } catch (e) {
+                updateStatus('status-gemini', false, 'Gemini: Error');
+            }
+        }
+
+        function updateStatus(elementId, isOk, text) {
+            const el = document.getElementById(elementId);
+            const icon = el.querySelector('i');
+            const span = el.querySelector('span');
+            icon.className = isOk ? 'fas fa-check-circle status-ok' : 'fas fa-times-circle status-error';
+            span.textContent = text;
+        }
+
+        // ==================== LOAD PROPOSALS ====================
+        async function loadProposals() {
+            try {
+                const response = await fetch(CONFIG.CSV_URL);
+                const text = await response.text();
+                allProposals = parseCSV(text);
+                
+                updateStatus('status-data', true, `Data: ${allProposals.length} proposal`);
+                renderList(allProposals);
+            } catch (e) {
+                updateStatus('status-data', false, 'Data: Error loading');
+                console.error('Error loading proposals:', e);
+            }
+        }
+
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const cols = CONFIG.CSV_COLUMNS;
+            
+            const proposals = [];
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                
+                const nim = values[cols.NIM]?.trim() || '';
+                const nama = values[cols.NAMA]?.trim() || '';
+                const judul = values[cols.JUDUL]?.trim() || '';
+                const deskripsi = values[cols.DESKRIPSI]?.trim() || '';
+                const problem = values[cols.PROBLEM]?.trim() || '';
+                const metode = values[cols.METODE]?.trim() || '';
+                
+                // Skip jika NIM kosong atau tidak valid (harus angka)
+                if (!nim || !judul || !/^\d+$/.test(nim)) continue;
+                
+                proposals.push({ nim, nama, judul, deskripsi, problem, metode });
+            }
+            return proposals;
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        // ==================== SLOT MANAGEMENT ====================
+        function setActiveSlot(num) {
+            activeSlot = num;
+            document.getElementById('slot1').classList.toggle('active', num === 1);
+            document.getElementById('slot2').classList.toggle('active', num === 2);
+            document.getElementById('search-hint').textContent = `Mengisi Proposal ${num}`;
+            document.getElementById('search-proposal').focus();
+        }
+
+        function updateSlotUI() {
+            // Slot 1
+            const slot1 = document.getElementById('slot1');
+            const slot1Empty = document.getElementById('slot1-empty');
+            const slot1Content = document.getElementById('slot1-content');
+            
+            if (selectedProposal1) {
+                slot1.classList.add('filled');
+                slot1Empty.style.display = 'none';
+                slot1Content.style.display = 'block';
+                slot1Content.innerHTML = `
+                    <div class="nama">${escapeHtml(selectedProposal1.nama)}</div>
+                    <div class="judul">${escapeHtml(selectedProposal1.judul)}</div>
+                `;
+            } else {
+                slot1.classList.remove('filled');
+                slot1Empty.style.display = 'block';
+                slot1Content.style.display = 'none';
+            }
+
+            // Slot 2
+            const slot2 = document.getElementById('slot2');
+            const slot2Empty = document.getElementById('slot2-empty');
+            const slot2Content = document.getElementById('slot2-content');
+            
+            if (selectedProposal2) {
+                slot2.classList.add('filled');
+                slot2Empty.style.display = 'none';
+                slot2Content.style.display = 'block';
+                slot2Content.innerHTML = `
+                    <div class="nama">${escapeHtml(selectedProposal2.nama)}</div>
+                    <div class="judul">${escapeHtml(selectedProposal2.judul)}</div>
+                `;
+            } else {
+                slot2.classList.remove('filled');
+                slot2Empty.style.display = 'block';
+                slot2Content.style.display = 'none';
+            }
+
+            // Update analyze button
+            const btn = document.getElementById('btn-analyze');
+            btn.disabled = !(selectedProposal1 && selectedProposal2);
+        }
+
+        // ==================== RENDER LIST ====================
+        function renderList(proposals) {
+            const listEl = document.getElementById('proposal-list');
+            
+            // Mark which proposals are already selected
+            listEl.innerHTML = proposals.map(p => {
+                const idx = allProposals.indexOf(p);
+                const isSelected1 = selectedProposal1 && selectedProposal1.nim === p.nim;
+                const isSelected2 = selectedProposal2 && selectedProposal2.nim === p.nim;
+                const selectedClass = (isSelected1 || isSelected2) ? 'selected' : '';
+                const selectedLabel = isSelected1 ? ' (P1)' : (isSelected2 ? ' (P2)' : '');
+                
+                return `
+                    <div class="proposal-item ${selectedClass}" data-index="${idx}" onclick="selectProposal(${idx})">
+                        <div class="top-row">
+                            <span class="nama">${escapeHtml(p.nama)}${selectedLabel}</span>
+                            <span class="nim">${escapeHtml(p.nim)}</span>
+                        </div>
+                        <div class="judul">${escapeHtml(p.judul)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterList() {
+            const search = document.getElementById('search-proposal').value.toLowerCase();
+            const filtered = allProposals.filter(p => 
+                p.nim.toLowerCase().includes(search) || 
+                p.nama.toLowerCase().includes(search) ||
+                p.judul.toLowerCase().includes(search)
+            );
+            renderList(filtered);
+        }
+
+        function selectProposal(index) {
+            const proposal = allProposals[index];
+            
+            // Don't allow selecting same proposal for both slots
+            if (activeSlot === 1 && selectedProposal2?.nim === proposal.nim) {
+                alert('Proposal ini sudah dipilih untuk Proposal 2');
+                return;
+            }
+            if (activeSlot === 2 && selectedProposal1?.nim === proposal.nim) {
+                alert('Proposal ini sudah dipilih untuk Proposal 1');
+                return;
+            }
+
+            if (activeSlot === 1) {
+                selectedProposal1 = proposal;
+                // Auto-switch to slot 2 if not filled
+                if (!selectedProposal2) setActiveSlot(2);
+            } else {
+                selectedProposal2 = proposal;
+                // Auto-switch to slot 1 if not filled
+                if (!selectedProposal1) setActiveSlot(1);
+            }
+
+            updateSlotUI();
+            filterList(); // Refresh list to show selection markers
+        }
+
+        // ==================== ANALYZE ====================
+        async function analyzeProposals() {
+            if (!selectedProposal1 || !selectedProposal2) return;
+
+            showLoading(true);
+
+            try {
+                // Call Gradio API for LLM analysis
+                const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/call/llm_analyze_pair`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        data: [
+                            JSON.stringify(selectedProposal1),
+                            JSON.stringify(selectedProposal2),
+                            true // use_cache
+                        ]
+                    })
+                });
+
+                if (!response.ok) throw new Error('API error');
+
+                const result = await response.json();
+                const eventId = result.event_id;
+
+                // Get result
+                const resultResponse = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/call/llm_analyze_pair/${eventId}`);
+                const resultText = await resultResponse.text();
+                
+                console.log('Raw response:', resultText); // Debug
+                
+                const lines = resultText.trim().split('\n');
+                // Find data line that is NOT null (skip heartbeat)
+                const dataLine = lines.find(l => l.startsWith('data:') && !l.includes('null'));
+                
+                if (dataLine) {
+                    const data = JSON.parse(dataLine.substring(5));
+                    
+                    if (!data || !Array.isArray(data) || data.length === 0) {
+                        throw new Error('Empty response from API');
+                    }
+                    
+                    const analysisResult = data[0];
+                    
+                    if (!analysisResult) {
+                        throw new Error('No analysis result');
+                    }
+                    
+                    if (analysisResult.error) {
+                        throw new Error(analysisResult.error);
+                    }
+                    
+                    displayResults(analysisResult);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+                console.error(e);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading-overlay').classList.toggle('active', show);
+        }
+
+        // ==================== DISPLAY RESULTS ====================
+        function displayResults(result) {
+            const section = document.getElementById('results-section');
+            section.classList.add('active');
+
+            // Score circle
+            const score = result.similarity_score || 0;
+            const verdict = (result.verdict || 'AMAN').toUpperCase();
+            const scoreCircle = document.getElementById('score-circle');
+            const verdictBadge = document.getElementById('verdict-badge');
+
+            document.getElementById('score-number').textContent = score;
+            
+            let colorClass = 'aman';
+            if (verdict.includes('BERMASALAH')) colorClass = 'bermasalah';
+            else if (verdict.includes('REVIEW')) colorClass = 'perlu-review';
+            
+            scoreCircle.className = 'score-circle ' + colorClass;
+            verdictBadge.className = 'verdict-badge ' + colorClass;
+            verdictBadge.textContent = verdict;
+
+            // Cache badge
+            const cacheBadge = document.getElementById('cache-badge');
+            if (result.from_cache) {
+                cacheBadge.textContent = '📦 Dari Cache';
+                cacheBadge.className = 'cache-badge';
+            } else {
+                cacheBadge.textContent = '✨ Fresh dari Gemini';
+                cacheBadge.className = 'cache-badge fresh';
+            }
+
+            // Aspects
+            const aspects = result.similar_aspects || {};
+            const aspectsGrid = document.getElementById('aspects-grid');
+            aspectsGrid.innerHTML = `
+                <div class="aspect-item ${aspects.topik ? 'same' : 'different'}">
+                    <i class="fas ${aspects.topik ? 'fa-equals' : 'fa-not-equal'}"></i>
+                    <div class="label">Topik</div>
+                </div>
+                <div class="aspect-item ${aspects.dataset ? 'same' : 'different'}">
+                    <i class="fas ${aspects.dataset ? 'fa-equals' : 'fa-not-equal'}"></i>
+                    <div class="label">Dataset</div>
+                </div>
+                <div class="aspect-item ${aspects.metode ? 'same' : 'different'}">
+                    <i class="fas ${aspects.metode ? 'fa-equals' : 'fa-not-equal'}"></i>
+                    <div class="label">Metode</div>
+                </div>
+                <div class="aspect-item ${aspects.pendekatan ? 'same' : 'different'}">
+                    <i class="fas ${aspects.pendekatan ? 'fa-equals' : 'fa-not-equal'}"></i>
+                    <div class="label">Pendekatan</div>
+                </div>
+            `;
+
+            // Reasoning & Saran
+            document.getElementById('reasoning-text').textContent = result.reasoning || '-';
+            document.getElementById('saran-text').textContent = result.saran || '-';
+
+            // Proposal comparison
+            const comparisonEl = document.getElementById('proposal-comparison');
+            comparisonEl.innerHTML = `
+                <div class="proposal-card">
+                    <h4>Proposal 1</h4>
+                    <div class="field">
+                        <div class="field-label">NIM / Nama</div>
+                        <div class="field-value">${escapeHtml(selectedProposal1.nim)} - ${escapeHtml(selectedProposal1.nama)}</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Judul</div>
+                        <div class="field-value">${escapeHtml(selectedProposal1.judul)}</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Metode</div>
+                        <div class="field-value">${escapeHtml(selectedProposal1.metode || '-')}</div>
+                    </div>
+                </div>
+                <div class="proposal-card">
+                    <h4>Proposal 2</h4>
+                    <div class="field">
+                        <div class="field-label">NIM / Nama</div>
+                        <div class="field-value">${escapeHtml(selectedProposal2.nim)} - ${escapeHtml(selectedProposal2.nama)}</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Judul</div>
+                        <div class="field-value">${escapeHtml(selectedProposal2.judul)}</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Metode</div>
+                        <div class="field-value">${escapeHtml(selectedProposal2.metode || '-')}</div>
+                    </div>
+                </div>
+            `;
+
+            // Scroll to results
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== UTILS ====================
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

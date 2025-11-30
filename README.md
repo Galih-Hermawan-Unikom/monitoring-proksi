@@ -23,6 +23,11 @@ Akses website monitoring secara online melalui tautan berikut:
 ### Semantic Similarity (AI)
 ![Semantic Similarity](Monitoring%20Proksi%20-%20Semantic%20Similarity.png)
 
+### LLM Analysis (Gemini)
+> Halaman baru untuk analisis dengan Google Gemini:
+> - `llm_similarity.html` - Analisis manual (pilih 2 proposal)
+> - `llm_batch.html` - Analisis batch otomatis (semua pairs ≥ threshold)
+
 ---
 
 ## ✨ Fitur Utama
@@ -120,20 +125,74 @@ Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
 
 ---
 
-### Perbandingan Kedua Metode
+### 3. LLM Similarity Analysis (`llm_similarity.html`)
 
-| Aspek | TF-IDF | Semantic (AI) |
-|-------|--------|---------------|
-| **Akurasi** | ⭐⭐⭐ Berbasis kata + stemming | ⭐⭐⭐⭐ Berbasis makna |
-| **Kecepatan** | ⚡ Instan | 🕐 10-30 detik |
-| **Koneksi Internet** | Hanya untuk stopwords CDN | Diperlukan |
-| **Sinonim** | ⚠️ Terbatas (via stemming) | ✅ Terdeteksi |
-| **Konteks** | ❌ Tidak dipahami | ✅ Dipahami |
-| **Pencarian** | ✅ NIM/Nama | ✅ NIM/Nama |
+Analisis kemiripan berbasis **reasoning AI** menggunakan Google Gemini untuk memberikan penjelasan seperti penilai manusia.
+
+**Fitur:**
+- 🤖 Analisis mendalam dengan penjelasan reasoning
+- 📊 Skor kemiripan 0-100 dari perspektif akademik
+- 🏷️ Verdict (Keputusan): AMAN, PERLU REVIEW, BERMASALAH
+- 💡 Saran konkret untuk mahasiswa
+- 🎨 Tema warna Orange (berbeda dari halaman lain)
+- 📱 Mobile responsive dengan slot-based selection
+
+**Kriteria Akademik:**
+- BERMASALAH: Topik + Dataset + Metode **semua sama**
+- AMAN: Salah satu berbeda (replikasi dengan variasi = boleh)
+
+**Akses:** [llm_similarity.html](https://galih-hermawan-unikom.github.io/monitoring-proksi/llm_similarity.html)
+
+---
+
+### 4. LLM Batch Analysis (`llm_batch.html`)
+
+Analisis otomatis untuk **semua pasangan** dengan kemiripan embedding di atas threshold.
+
+**Fitur:**
+- ⚙️ Threshold konfigurasi (default 60%)
+- 📦 Cache-first approach (cek Supabase dulu)
+- 🔄 Progressive rendering (hasil muncul bertahap)
+- 📄 Pagination dengan sorting
+- 🎯 Filter by verdict + search NIM/Nama
+- 📊 Summary cards (AMAN/REVIEW/BERMASALAH)
+- 📖 Collapsible cards (auto-expand untuk non-AMAN)
+- 📋 Legend/keterangan informatif
+
+
+**Akses:** [llm_batch.html](https://galih-hermawan-unikom.github.io/monitoring-proksi/llm_batch.html)
+
+---
+
+### Perbandingan Semua Metode
+
+| Aspek | TF-IDF | Semantic (AI) | LLM (Gemini) |
+|-------|--------|---------------|--------------|
+| **Akurasi** | ⭐⭐⭐ Kata + stemming | ⭐⭐⭐⭐ Makna | ⭐⭐⭐⭐⭐ Reasoning |
+| **Kecepatan** | ⚡ Instan | 🕐 5-30 detik | 🕐 8+ detik/pair |
+| **Penjelasan** | ❌ Tidak ada | ❌ Tidak ada | ✅ Detail |
+| **Saran** | ❌ Tidak ada | ❌ Tidak ada | ✅ Ada |
+| **Biaya** | 💚 Gratis | 💚 Gratis | 💛 Free tier |
+| **Pencarian** | ✅ NIM/Nama | ✅ NIM/Nama | ✅ NIM/Nama |
 
 **Rekomendasi:**
 - Gunakan **TF-IDF** untuk pengecekan cepat
-- Gunakan **Semantic** untuk analisis mendalam dan akurat
+- Gunakan **Semantic** untuk screening awal
+- Gunakan **LLM** untuk analisis mendalam yang butuh penjelasan
+
+---
+
+### 🎨 Tema Warna Halaman
+
+Setiap halaman memiliki identitas warna yang berbeda untuk memudahkan navigasi:
+
+| Halaman | Warna | Kode |
+|---------|-------|------|
+| Dashboard | Dark Blue | #2c3e50 |
+| TF-IDF | Google Blue | #1a73e8 |
+| Semantic | Purple | #7c3aed |
+| LLM Manual | Orange | #ea580c |
+| LLM Batch | Green | #059669 |
 
 ---
 
@@ -154,14 +213,60 @@ data-proksi/
 ├── index.html                 # Dashboard utama
 ├── similarity.html            # Deteksi kemiripan (TF-IDF)
 ├── semantic_similarity.html   # Deteksi kemiripan (AI/Semantic)
-├── config.js                  # Konfigurasi HF Space URL
+├── llm_similarity.html        # Analisis LLM (manual selection)
+├── llm_batch.html             # Analisis LLM (batch otomatis)
+├── config.js                  # Konfigurasi URL & kolom CSV
 ├── embedding-service.js       # Service untuk embedding API
+├── supabase_schema.sql        # Database schema untuk Supabase
 ├── KK E.xlsx - ....csv        # Data master mahasiswa
 ├── README.md                  # Dokumentasi
 ├── .github/workflows/
 │   └── keep-alive.yml         # GitHub Actions keep-alive
+├── Semantic_Similarity/       # Kode HF Space (Gradio)
+│   ├── app.py                 # API endpoint + Gemini integration
+│   ├── requirements.txt       # Dependencies
+│   └── .env                   # API keys (local only)
 └── Monitoring Proksi - *.png  # Infografis sistem
 ```
+
+---
+
+## 🗃️ Database Schema (Supabase)
+
+Aplikasi menggunakan 2 tabel di Supabase untuk caching:
+
+### Tabel: `proposal_embeddings`
+Menyimpan embedding vektor untuk setiap proposal.
+
+| Kolom | Tipe | Deskripsi |
+|-------|------|-----------|
+| nim | VARCHAR(20) | NIM mahasiswa |
+| content_hash | VARCHAR(32) | MD5 hash konten proposal |
+| embedding_combined | FLOAT8[] | Embedding gabungan (384 dim) |
+| embedding_judul | FLOAT8[] | Embedding judul |
+| embedding_deskripsi | FLOAT8[] | Embedding deskripsi |
+| embedding_problem | FLOAT8[] | Embedding problem |
+| embedding_metode | FLOAT8[] | Embedding metode |
+| nama | VARCHAR(255) | Nama mahasiswa |
+| judul | TEXT | Judul proposal |
+
+### Tabel: `llm_analysis`
+Menyimpan hasil analisis LLM untuk pasangan proposal.
+
+| Kolom | Tipe | Deskripsi |
+|-------|------|-----------|
+| pair_hash | VARCHAR(32) | MD5 hash pasangan (unique) |
+| proposal1_judul | TEXT | Judul proposal 1 |
+| proposal2_judul | TEXT | Judul proposal 2 |
+| similarity_score | INTEGER | Skor kemiripan 0-100 |
+| verdict | VARCHAR(50) | AMAN/PERLU_REVIEW/BERMASALAH |
+| reasoning | TEXT | Penjelasan dari LLM |
+| saran | TEXT | Saran dari LLM |
+| similar_aspects | JSONB | Aspek yang mirip |
+| differentiator | TEXT | Pembeda utama |
+| model_used | VARCHAR(100) | Model yang digunakan |
+
+> File SQL lengkap: [`supabase_schema.sql`](supabase_schema.sql)
 
 ---
 
@@ -176,9 +281,11 @@ Aplikasi ini dibangun menggunakan teknologi web standar tanpa backend (Serverles
     *   [Chart.js](https://www.chartjs.org/) (Data Visualization)
     *   [ExcelJS](https://github.com/exceljs/exceljs) (Excel Export)
     *   [jsPDF & AutoTable](https://github.com/parallax/jsPDF) (PDF Export)
+    *   [stopwords-iso](https://github.com/stopwords-iso) (Stopwords ID+EN via CDN)
 *   **API & Services:**
-    *   [Hugging Face Space](https://huggingface.co/spaces/galihboy/semantic-embedding-api) (AI Embedding API)
+    *   [Hugging Face Space](https://huggingface.co/spaces/galihboy/semantic-embedding-api) (AI Embedding + LLM Proxy)
     *   [Supabase](https://supabase.com/) (PostgreSQL Cache Database)
+    *   [Google Gemini API](https://ai.google.dev/) (LLM Analysis)
     *   [GitHub Actions](https://github.com/features/actions) (Keep-alive Scheduler)
 
 ---

@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Batch Analysis - KK E UNIKOM</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #059669;
+            --primary-dark: #047857;
+            --secondary-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .header-content h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .header-content p { opacity: 0.9; font-size: 1rem; }
+
+        .header-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .nav-links { margin-top: 1rem; }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            transition: background 0.3s;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+        .nav-links a:hover { background: rgba(255,255,255,0.25); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+        .info-banner {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .info-banner i { font-size: 2rem; color: var(--primary-color); }
+        .info-banner-content h3 { color: var(--primary-dark); margin-bottom: 0.25rem; }
+        .info-banner-content p { color: var(--text-secondary); font-size: 0.9rem; }
+
+        .status-banner {
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .status-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+        .status-item i { width: 20px; }
+        .status-ok { color: var(--success-color); }
+        .status-warning { color: var(--warning-color); }
+        .status-error { color: var(--danger-color); }
+        .status-loading { color: var(--secondary-color); }
+
+        .progress-section {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .progress-title { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .progress-subtitle { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+        .progress-bar-container {
+            background: var(--border-color);
+            border-radius: 0.5rem;
+            height: 24px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+        .stat-item { display: flex; align-items: center; gap: 0.5rem; }
+        .stat-item.cache { color: var(--secondary-color); }
+        .stat-item.fresh { color: var(--warning-color); }
+        .stat-item.error { color: var(--danger-color); }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .summary-card {
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .summary-card .number { font-size: 2rem; font-weight: 700; }
+        .summary-card .label { font-size: 0.8rem; color: var(--text-secondary); }
+        .summary-card.aman .number { color: var(--success-color); }
+        .summary-card.review .number { color: var(--warning-color); }
+        .summary-card.bermasalah .number { color: var(--danger-color); }
+
+        .results-section {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .results-header h2 { font-size: 1.2rem; }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .filter-row select, .filter-row input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .result-card {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--border-color);
+            overflow: hidden;
+        }
+        .result-card.aman { border-left-color: var(--success-color); }
+        .result-card.perlu-review { border-left-color: var(--warning-color); }
+        .result-card.bermasalah { border-left-color: var(--danger-color); }
+
+        .result-summary {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+        .result-summary:hover { background: rgba(0,0,0,0.03); }
+        
+        .result-summary-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .result-scores { display: flex; gap: 0.35rem; align-items: center; flex-shrink: 0; }
+        .score-badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .score-badge.embedding { background: #e0f2fe; color: #0369a1; }
+        .score-badge.llm { background: #d1fae5; color: #047857; }
+        .score-badge.llm.review { background: #fef3c7; color: #92400e; }
+        .score-badge.llm.bermasalah { background: #fee2e2; color: #b91c1c; }
+
+        .verdict-badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .verdict-badge.aman { background: #d1fae5; color: #047857; }
+        .verdict-badge.perlu-review { background: #fef3c7; color: #92400e; }
+        .verdict-badge.bermasalah { background: #fee2e2; color: #b91c1c; }
+
+        .result-names {
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0;
+        }
+        .result-names .nim { font-weight: 600; color: var(--primary-color); }
+        
+        .expand-icon {
+            color: var(--text-secondary);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .result-card.expanded .expand-icon { transform: rotate(180deg); }
+
+        .result-detail {
+            display: none;
+            padding: 0 1rem 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .result-card.expanded .result-detail { display: block; }
+
+        .result-proposals {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin: 0.75rem 0;
+        }
+
+        .proposal-mini { 
+            font-size: 0.8rem; 
+            background: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+        .proposal-mini .nim { font-weight: 600; color: var(--primary-color); }
+        .proposal-mini .nama { color: var(--text-secondary); font-size: 0.75rem; }
+        .proposal-mini .judul {
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            margin-top: 0.25rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .result-reasoning {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        .result-reasoning strong { color: var(--primary-dark); }
+
+        .result-saran {
+            background: #fffbeb;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            border-left: 3px solid var(--warning-color);
+            line-height: 1.5;
+        }
+        .result-saran strong { color: #92400e; }
+
+        .cache-indicator {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header-content h1 { font-size: 1.4rem; }
+            .nav-links a { padding: 0.4rem 0.6rem; font-size: 0.75rem; margin: 0.2rem; }
+            .info-banner { flex-direction: column; text-align: center; }
+            .info-banner i { font-size: 1.5rem; }
+            .status-banner { flex-direction: column; align-items: flex-start; }
+            .summary-cards { grid-template-columns: repeat(2, 1fr); }
+            .filter-row { flex-direction: column; }
+            .filter-row select, .filter-row input { width: 100%; }
+            .result-proposals { grid-template-columns: 1fr; }
+            .result-names { font-size: 0.7rem; }
+            .score-badge { font-size: 0.6rem; padding: 0.15rem 0.4rem; }
+            .verdict-badge { font-size: 0.55rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .container { padding: 1rem; }
+            .summary-cards { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+            .summary-card { padding: 0.75rem; }
+            .summary-card .number { font-size: 1.5rem; }
+            .result-summary { padding: 0.5rem 0.75rem; }
+            .result-summary-left { gap: 0.5rem; }
+        }
+
+        /* Legend Box */
+        .legend-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+        }
+        .legend-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+        .legend-title i { margin-right: 0.5rem; }
+        .legend-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .legend-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .legend-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 50px;
+        }
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-secondary);
+        }
+        @media (max-width: 600px) {
+            .legend-items { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .legend-items span[style*="margin-left"] { margin-left: 0 !important; }
+        }
+
+        /* Pagination */
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .pagination-info { font-size: 0.85rem; color: var(--text-secondary); }
+        .pagination-buttons { display: flex; align-items: center; gap: 0.5rem; }
+        .btn-page {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.4rem 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-primary);
+        }
+        .btn-page:hover:not(:disabled) { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .btn-page:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-indicator { font-size: 0.85rem; font-weight: 500; min-width: 60px; text-align: center; }
+        .page-size-selector select {
+            padding: 0.4rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 0.85rem;
+            background: white;
+        }
+        @media (max-width: 600px) {
+            .pagination-controls { justify-content: center; }
+            .pagination-info { width: 100%; text-align: center; }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; color: var(--success-color); }
+
+        footer {
+            background: var(--text-primary);
+            color: #94a3b8;
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        footer a { color: var(--secondary-color); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        .footer-meta { margin-top: 1rem; font-size: 0.8rem; opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-robot"></i> LLM Batch Analysis</h1>
+            <p>KK E (Ilmu Komputer). Prodi Teknik Informatika. UNIKOM</p>
+            <span class="header-badge" id="header-threshold"><i class="fas fa-brain"></i> Auto-analyze high similarity pairs</span>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-chart-bar"></i> Dashboard</a>
+                <a href="similarity.html"><i class="fas fa-search"></i> TF-IDF</a>
+                <a href="semantic_similarity.html"><i class="fas fa-brain"></i> Semantic</a>
+                <a href="llm_similarity.html"><i class="fas fa-robot"></i> LLM</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="info-banner">
+            <i class="fas fa-magic"></i>
+            <div class="info-banner-content">
+                <h3>Analisis Otomatis dengan Cache</h3>
+                <p id="info-threshold">Mengambil semua pasangan dengan kemiripan embedding tinggi, lalu menganalisis dengan Gemini LLM.
+                   Hasil disimpan ke Supabase - refresh halaman tidak akan mengulang analisis yang sudah ada.</p>
+            </div>
+        </div>
+
+        <div class="status-banner">
+            <div class="status-item" id="status-api">
+                <i class="fas fa-spinner fa-spin status-loading"></i>
+                <span>API...</span>
+            </div>
+            <div class="status-item" id="status-data">
+                <i class="fas fa-spinner fa-spin status-loading"></i>
+                <span>Data...</span>
+            </div>
+            <div class="status-item" id="status-embedding">
+                <i class="fas fa-spinner fa-spin status-loading"></i>
+                <span>Embedding...</span>
+            </div>
+            <div class="status-item" id="status-llm">
+                <i class="fas fa-spinner fa-spin status-loading"></i>
+                <span>LLM...</span>
+            </div>
+        </div>
+
+        <div class="progress-section" id="progress-section">
+            <div class="progress-title" id="progress-title">Memulai...</div>
+            <div class="progress-subtitle" id="progress-subtitle">Mohon tunggu</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar">0%</div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item cache"><i class="fas fa-database"></i> <span id="stat-cache">0</span> dari cache</div>
+                <div class="stat-item fresh"><i class="fas fa-sparkles"></i> <span id="stat-fresh">0</span> fresh</div>
+                <div class="stat-item error"><i class="fas fa-exclamation-circle"></i> <span id="stat-error">0</span> error</div>
+            </div>
+        </div>
+
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="number" id="total-pairs">-</div>
+                <div class="label" id="label-threshold">Total Pairs</div>
+            </div>
+            <div class="summary-card aman">
+                <div class="number" id="count-aman">-</div>
+                <div class="label">AMAN</div>
+            </div>
+            <div class="summary-card review">
+                <div class="number" id="count-review">-</div>
+                <div class="label">PERLU REVIEW</div>
+            </div>
+            <div class="summary-card bermasalah">
+                <div class="number" id="count-bermasalah">-</div>
+                <div class="label">BERMASALAH</div>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="results-header">
+                <h2><i class="fas fa-list"></i> Hasil Analisis LLM</h2>
+            </div>
+            
+            <!-- Legend -->
+            <div class="legend-box">
+                <div class="legend-title"><i class="fas fa-info-circle"></i> Keterangan</div>
+                <div class="legend-content">
+                    <div class="legend-group">
+                        <div class="legend-label">Skor:</div>
+                        <div class="legend-items">
+                            <span class="score-badge embedding">Emb</span> Kemiripan Embedding (vektor semantik)
+                            <span class="score-badge llm" style="margin-left:1rem;">LLM</span> Skor dari Gemini AI (0-100)
+                        </div>
+                    </div>
+                    <div class="legend-group">
+                        <div class="legend-label">Keputusan:</div>
+                        <div class="legend-items">
+                            <span class="verdict-badge aman">AMAN</span> Berbeda signifikan, boleh lanjut
+                            <span class="verdict-badge perlu-review" style="margin-left:1rem;">PERLU REVIEW</span> Perlu dicek manual
+                            <span class="verdict-badge bermasalah" style="margin-left:1rem;">BERMASALAH</span> Terlalu mirip, perlu revisi
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-row">
+                <select id="filter-verdict">
+                    <option value="all">Semua Keputusan</option>
+                    <option value="bermasalah">BERMASALAH</option>
+                    <option value="perlu-review">PERLU REVIEW</option>
+                    <option value="aman">AMAN</option>
+                </select>
+                <select id="sort-by">
+                    <option value="emb-desc">Embedding ↓</option>
+                    <option value="emb-asc">Embedding ↑</option>
+                    <option value="llm-desc">LLM Score ↓</option>
+                    <option value="llm-asc">LLM Score ↑</option>
+                </select>
+                <input type="text" id="filter-search" placeholder="Cari NIM/Nama...">
+            </div>
+            
+            <div class="pagination-controls">
+                <div class="pagination-info">
+                    <span id="pagination-info">Menampilkan 0 dari 0</span>
+                </div>
+                <div class="pagination-buttons">
+                    <button class="btn-page" id="btn-prev" onclick="changePage(-1)" disabled><i class="fas fa-chevron-left"></i></button>
+                    <span class="page-indicator" id="page-indicator">1 / 1</span>
+                    <button class="btn-page" id="btn-next" onclick="changePage(1)" disabled><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="page-size-selector">
+                    <select id="page-size" onchange="changePageSize()">
+                        <option value="10">10 / hal</option>
+                        <option value="20" selected>20 / hal</option>
+                        <option value="50">50 / hal</option>
+                        <option value="100">100 / hal</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="results-container">
+                <div class="empty-state">
+                    <i class="fas fa-hourglass-half"></i>
+                    <p>Menunggu analisis...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                Dikembangkan oleh <a href="https://galih.eu" target="_blank">Galih Hermawan</a>
+                (<a href="https://github.com/galihboy" target="_blank"><i class="fab fa-github"></i> galihboy</a>)
+            </div>
+            <div>Program Studi Teknik Informatika. Universitas Komputer Indonesia.</div>
+            <div class="footer-meta">Terakhir diperbarui: 30 November 2025</div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="embedding-service.js"></script>
+    <script>
+        // ==================== KONFIGURASI ====================
+        const SIMILARITY_THRESHOLD = 63; // Batas ambang kemiripan embedding (%)
+
+        // ==================== STATE ====================
+        let embeddingService = null;
+        let allProposals = [];
+        let highSimilarityPairs = [];
+        let llmResults = [];
+        let stats = { cache: 0, fresh: 0, error: 0 };
+        
+        // Pagination state
+        let currentPage = 1;
+        let pageSize = 20;
+        let filteredResults = []; // Store filtered & sorted results for pagination
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            embeddingService = new EmbeddingService(CONFIG.GRADIO_API_URL);
+            
+            // Update threshold texts
+            updateThresholdTexts();
+            
+            document.getElementById('filter-verdict').addEventListener('change', () => { currentPage = 1; renderResults(); });
+            document.getElementById('filter-search').addEventListener('input', () => { currentPage = 1; renderResults(); });
+            document.getElementById('sort-by').addEventListener('change', () => { currentPage = 1; renderResults(); });
+            
+            await startBatchAnalysis();
+        });
+
+        function updateThresholdTexts() {
+            // Update all texts that mention the threshold
+            document.getElementById('header-threshold').innerHTML = 
+                `<i class="fas fa-brain"></i> Auto-analyze pairs ≥${SIMILARITY_THRESHOLD}% similarity`;
+            document.getElementById('info-threshold').textContent = 
+                `Mengambil semua pasangan dengan kemiripan embedding ≥${SIMILARITY_THRESHOLD}%, lalu menganalisis dengan Gemini LLM. Hasil disimpan ke Supabase - refresh halaman tidak akan mengulang analisis yang sudah ada.`;
+            document.getElementById('label-threshold').textContent = 
+                `Total Pairs ≥${SIMILARITY_THRESHOLD}%`;
+        }
+
+        // ==================== MAIN PROCESS ====================
+        async function startBatchAnalysis() {
+            try {
+                // 1. Check API
+                updateProgress(0, 'Mengecek koneksi...', 'Memastikan API ready');
+                await checkConnections();
+
+                // 2. Load CSV data
+                updateProgress(5, 'Memuat data proposal...', 'Dari Google Sheets');
+                allProposals = await loadCSVData();
+                updateStatus('status-data', true, `${allProposals.length} proposal`);
+
+                // 3. Get embeddings
+                updateProgress(10, 'Memproses embeddings...', 'Dari cache atau generate baru');
+                const embeddings = await getEmbeddings();
+                updateStatus('status-embedding', true, 'Ready');
+
+                // 4. Calculate similarities and filter by threshold
+                updateProgress(40, 'Menghitung kemiripan...', `Filter pairs ≥${SIMILARITY_THRESHOLD}%`);
+                highSimilarityPairs = calculateHighSimilarityPairs(embeddings);
+                document.getElementById('total-pairs').textContent = highSimilarityPairs.length;
+
+                if (highSimilarityPairs.length === 0) {
+                    updateProgress(100, 'Selesai!', `Tidak ada pairs dengan similarity ≥${SIMILARITY_THRESHOLD}%`);
+                    showEmptyState(`Tidak ada pasangan proposal dengan kemiripan ≥${SIMILARITY_THRESHOLD}%`);
+                    return;
+                }
+
+                // 5. Analyze each pair with LLM (with cache check)
+                updateProgress(45, 'Menganalisis dengan LLM...', `0/${highSimilarityPairs.length} pairs`);
+                await analyzePairsWithLLM();
+
+                // 6. Done
+                updateProgress(100, 'Selesai!', `${llmResults.length} pairs dianalisis`);
+                updateStatus('status-llm', true, `${stats.cache} cache, ${stats.fresh} fresh`);
+                updateSummary();
+                renderResults();
+
+            } catch (e) {
+                console.error('Error:', e);
+                updateProgress(0, 'Error!', e.message);
+            }
+        }
+
+        // ==================== CONNECTION CHECK ====================
+        async function checkConnections() {
+            try {
+                const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/info`);
+                updateStatus('status-api', response.ok, response.ok ? 'Ready' : 'Error');
+            } catch (e) {
+                updateStatus('status-api', false, 'Offline');
+                throw new Error('API tidak tersedia');
+            }
+        }
+
+        function updateStatus(id, ok, text) {
+            const el = document.getElementById(id);
+            el.innerHTML = `<i class="fas ${ok ? 'fa-check-circle status-ok' : 'fa-times-circle status-error'}"></i><span>${text}</span>`;
+        }
+
+        function updateProgress(percent, title, subtitle) {
+            const pct = Math.round(percent);
+            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('progress-bar').textContent = pct + '%';
+            document.getElementById('progress-title').textContent = title;
+            document.getElementById('progress-subtitle').textContent = subtitle;
+        }
+
+        // ==================== LOAD DATA ====================
+        async function loadCSVData() {
+            const response = await fetch(CONFIG.CSV_URL);
+            const text = await response.text();
+            return parseCSV(text);
+        }
+
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const cols = CONFIG.CSV_COLUMNS;
+            const proposals = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                const nim = values[cols.NIM]?.trim() || '';
+                const nama = values[cols.NAMA]?.trim() || '';
+                const judul = values[cols.JUDUL]?.trim() || '';
+                const deskripsi = values[cols.DESKRIPSI]?.trim() || '';
+                const problem = values[cols.PROBLEM]?.trim() || '';
+                const metode = values[cols.METODE]?.trim() || '';
+                
+                if (nim && judul && /^\d+$/.test(nim)) {
+                    proposals.push({ nim, nama, judul, deskripsi, problem, metode });
+                }
+            }
+            return proposals;
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
+                else current += char;
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        // ==================== EMBEDDINGS ====================
+        async function getEmbeddings() {
+            // Use the batch method from EmbeddingService which handles caching
+            // Returns object keyed by NIM with { combined, judul, deskripsi, ... }
+            const rawEmbeddings = await embeddingService.getEmbeddingsForAllProposals(
+                allProposals,
+                (progress, title, subtitle) => {
+                    updateProgress(10 + (progress * 0.3), title, subtitle);
+                }
+            );
+            
+            // Convert to our format { nim: { proposal, embedding } }
+            const embeddings = {};
+            for (const p of allProposals) {
+                const emb = rawEmbeddings[p.nim];
+                if (emb && emb.combined) {
+                    embeddings[p.nim] = { 
+                        proposal: p, 
+                        embedding: emb.combined 
+                    };
+                }
+            }
+            
+            console.log(`Embeddings loaded: ${Object.keys(embeddings).length} proposals`);
+            return embeddings;
+        }
+
+        // ==================== SIMILARITY CALCULATION ====================
+        function calculateHighSimilarityPairs(embeddings) {
+            const nims = Object.keys(embeddings);
+            const pairs = [];
+
+            for (let i = 0; i < nims.length; i++) {
+                for (let j = i + 1; j < nims.length; j++) {
+                    const nim1 = nims[i], nim2 = nims[j];
+                    const emb1 = embeddings[nim1].embedding;
+                    const emb2 = embeddings[nim2].embedding;
+                    const similarity = cosineSimilarity(emb1, emb2);
+                    
+                    if (similarity >= SIMILARITY_THRESHOLD) {
+                        pairs.push({
+                            proposal1: embeddings[nim1].proposal,
+                            proposal2: embeddings[nim2].proposal,
+                            embeddingSimilarity: similarity
+                        });
+                    }
+                }
+            }
+
+            return pairs.sort((a, b) => b.embeddingSimilarity - a.embeddingSimilarity);
+        }
+
+        function cosineSimilarity(a, b) {
+            let dot = 0, normA = 0, normB = 0;
+            for (let i = 0; i < a.length; i++) {
+                dot += a[i] * b[i];
+                normA += a[i] * a[i];
+                normB += b[i] * b[i];
+            }
+            return Math.round((dot / (Math.sqrt(normA) * Math.sqrt(normB))) * 100);
+        }
+
+        // ==================== LLM ANALYSIS ====================
+        async function analyzePairsWithLLM() {
+            for (let i = 0; i < highSimilarityPairs.length; i++) {
+                const pair = highSimilarityPairs[i];
+                
+                updateProgress(
+                    45 + (i / highSimilarityPairs.length * 50),
+                    'Menganalisis dengan LLM...',
+                    `${i + 1}/${highSimilarityPairs.length}: ${pair.proposal1.nim} vs ${pair.proposal2.nim}`
+                );
+
+                try {
+                    const result = await callLLMAnalysis(pair.proposal1, pair.proposal2);
+                    
+                    if (result.from_cache) {
+                        stats.cache++;
+                    } else {
+                        stats.fresh++;
+                    }
+                    
+                    llmResults.push({
+                        ...pair,
+                        llmResult: result
+                    });
+                } catch (e) {
+                    console.error(`Error LLM ${pair.proposal1.nim} vs ${pair.proposal2.nim}:`, e);
+                    stats.error++;
+                    llmResults.push({
+                        ...pair,
+                        llmResult: { error: e.message }
+                    });
+                }
+
+                // Update stats display
+                document.getElementById('stat-cache').textContent = stats.cache;
+                document.getElementById('stat-fresh').textContent = stats.fresh;
+                document.getElementById('stat-error').textContent = stats.error;
+                
+                // Progressive rendering - tampilkan hasil secara bertahap
+                updateSummary();
+                renderResults();
+                
+                // Delay untuk rate limit Gemini Pro (2 RPM per key, 4 keys = 8 RPM)
+                // Safe delay: 60/8 = 7.5 detik, kita pakai 8 detik untuk aman
+                if (!llmResults[llmResults.length - 1]?.llmResult?.from_cache) {
+                    await new Promise(r => setTimeout(r, 8000)); // 8 detik delay untuk fresh requests
+                }
+            }
+        }
+
+        async function callLLMAnalysis(proposal1, proposal2) {
+            const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/call/llm_analyze_pair`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    data: [JSON.stringify(proposal1), JSON.stringify(proposal2), true]
+                })
+            });
+
+            if (!response.ok) throw new Error('API error');
+
+            const result = await response.json();
+            const eventId = result.event_id;
+
+            const resultResponse = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/call/llm_analyze_pair/${eventId}`);
+            const resultText = await resultResponse.text();
+            
+            const lines = resultText.trim().split('\n');
+            const dataLine = lines.find(l => l.startsWith('data:') && !l.includes('null'));
+            
+            if (dataLine) {
+                const data = JSON.parse(dataLine.substring(5));
+                if (data && data[0]) {
+                    if (data[0].error) throw new Error(data[0].error);
+                    return data[0];
+                }
+            }
+            throw new Error('Invalid response');
+        }
+
+        // ==================== DISPLAY RESULTS ====================
+        function updateSummary() {
+            const aman = llmResults.filter(r => getVerdictClass(r.llmResult?.verdict) === 'aman').length;
+            const review = llmResults.filter(r => getVerdictClass(r.llmResult?.verdict) === 'perlu-review').length;
+            const bermasalah = llmResults.filter(r => getVerdictClass(r.llmResult?.verdict) === 'bermasalah').length;
+            
+            document.getElementById('count-aman').textContent = aman;
+            document.getElementById('count-review').textContent = review;
+            document.getElementById('count-bermasalah').textContent = bermasalah;
+        }
+
+        function getVerdictClass(verdict) {
+            if (!verdict) return 'aman';
+            const v = verdict.toUpperCase();
+            if (v.includes('BERMASALAH')) return 'bermasalah';
+            if (v.includes('REVIEW')) return 'perlu-review';
+            return 'aman';
+        }
+
+        function renderResults() {
+            const container = document.getElementById('results-container');
+            const filterVerdict = document.getElementById('filter-verdict').value;
+            const filterSearch = document.getElementById('filter-search').value.toLowerCase();
+            const sortBy = document.getElementById('sort-by').value;
+            
+            // Filter
+            let filtered = llmResults;
+            
+            if (filterVerdict !== 'all') {
+                filtered = filtered.filter(r => getVerdictClass(r.llmResult?.verdict) === filterVerdict);
+            }
+            
+            if (filterSearch) {
+                filtered = filtered.filter(r => 
+                    r.proposal1.nim.includes(filterSearch) ||
+                    r.proposal1.nama.toLowerCase().includes(filterSearch) ||
+                    r.proposal2.nim.includes(filterSearch) ||
+                    r.proposal2.nama.toLowerCase().includes(filterSearch)
+                );
+            }
+
+            // Sort
+            filtered = [...filtered].sort((a, b) => {
+                const embA = a.embeddingSimilarity || 0;
+                const embB = b.embeddingSimilarity || 0;
+                const llmA = a.llmResult?.similarity_score || 0;
+                const llmB = b.llmResult?.similarity_score || 0;
+                
+                switch(sortBy) {
+                    case 'emb-desc': return embB - embA;
+                    case 'emb-asc': return embA - embB;
+                    case 'llm-desc': return llmB - llmA;
+                    case 'llm-asc': return llmA - llmB;
+                    default: return embB - embA;
+                }
+            });
+
+            // Store for pagination
+            filteredResults = filtered;
+            
+            // Update pagination
+            const totalPages = Math.ceil(filtered.length / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+            
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, filtered.length);
+            const pageResults = filtered.slice(startIdx, endIdx);
+            
+            // Update pagination UI
+            const analyzingText = highSimilarityPairs.length > 0 && llmResults.length < highSimilarityPairs.length 
+                ? ` (${llmResults.length}/${highSimilarityPairs.length} diproses)` : '';
+            document.getElementById('pagination-info').textContent = 
+                filtered.length > 0 ? `Menampilkan ${startIdx + 1}-${endIdx} dari ${filtered.length}${analyzingText}` : 'Tidak ada data';
+            document.getElementById('page-indicator').textContent = `${currentPage} / ${totalPages || 1}`;
+            document.getElementById('btn-prev').disabled = currentPage <= 1;
+            document.getElementById('btn-next').disabled = currentPage >= totalPages;
+
+            if (filtered.length === 0) {
+                // Check if analysis is still in progress
+                const isAnalyzing = highSimilarityPairs.length > 0 && llmResults.length < highSimilarityPairs.length;
+                if (isAnalyzing) {
+                    container.innerHTML = `<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Menganalisis... Hasil akan muncul di sini</p></div>`;
+                } else {
+                    container.innerHTML = `<div class="empty-state"><i class="fas fa-filter"></i><p>Tidak ada hasil yang cocok dengan filter</p></div>`;
+                }
+                return;
+            }
+
+            container.innerHTML = pageResults.map((r, idx) => {
+                const verdictClass = getVerdictClass(r.llmResult?.verdict);
+                const llmScore = r.llmResult?.similarity_score || '-';
+                const verdict = r.llmResult?.verdict || 'N/A';
+                const reasoning = r.llmResult?.reasoning || '-';
+                const saran = r.llmResult?.saran || '-';
+                const fromCache = r.llmResult?.from_cache;
+                
+                let llmBadgeClass = 'llm';
+                if (verdictClass === 'perlu-review') llmBadgeClass = 'llm review';
+                if (verdictClass === 'bermasalah') llmBadgeClass = 'llm bermasalah';
+
+                // Auto-expand if BERMASALAH or PERLU_REVIEW
+                const autoExpand = verdictClass !== 'aman' ? 'expanded' : '';
+
+                // Shorten names for display
+                const name1 = r.proposal1.nama.split(' ').slice(0, 2).join(' ');
+                const name2 = r.proposal2.nama.split(' ').slice(0, 2).join(' ');
+
+                return `
+                    <div class="result-card ${verdictClass} ${autoExpand}" data-idx="${idx}">
+                        <div class="result-summary" onclick="toggleCard(${idx})">
+                            <div class="result-summary-left">
+                                <div class="result-scores">
+                                    <span class="score-badge embedding">Emb ${r.embeddingSimilarity}%</span>
+                                    <span class="score-badge ${llmBadgeClass}">LLM ${llmScore}</span>
+                                    <span class="verdict-badge ${verdictClass}">${verdict}</span>
+                                </div>
+                                <div class="result-names">
+                                    ${escapeHtml(name1)} <span style="opacity:0.5">vs</span> ${escapeHtml(name2)}
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down expand-icon"></i>
+                        </div>
+                        <div class="result-detail">
+                            <div class="result-proposals">
+                                <div class="proposal-mini">
+                                    <div><span class="nim">${escapeHtml(r.proposal1.nim)}</span> - <span class="nama">${escapeHtml(r.proposal1.nama)}</span></div>
+                                    <div class="judul">${escapeHtml(r.proposal1.judul)}</div>
+                                </div>
+                                <div class="proposal-mini">
+                                    <div><span class="nim">${escapeHtml(r.proposal2.nim)}</span> - <span class="nama">${escapeHtml(r.proposal2.nama)}</span></div>
+                                    <div class="judul">${escapeHtml(r.proposal2.judul)}</div>
+                                </div>
+                            </div>
+                            <div class="result-reasoning"><strong>📝 Analisis:</strong> ${escapeHtml(reasoning)}</div>
+                            <div class="result-saran"><strong>💡 Saran:</strong> ${escapeHtml(saran)}</div>
+                            <div class="cache-indicator">${fromCache ? '📦 Dari cache' : '✨ Fresh dari Gemini'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleCard(idx) {
+            const card = document.querySelector(`.result-card[data-idx="${idx}"]`);
+            if (card) card.classList.toggle('expanded');
+        }
+
+        function changePage(delta) {
+            const totalPages = Math.ceil(filteredResults.length / pageSize);
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderResults();
+                // Scroll to top of results
+                document.getElementById('results-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('page-size').value);
+            currentPage = 1;
+            renderResults();
+        }
+
+        function showEmptyState(message) {
+            document.getElementById('results-container').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-check-circle"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

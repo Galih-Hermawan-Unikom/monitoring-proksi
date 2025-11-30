@@ -9,7 +9,7 @@ const CONFIG = {
     // Semua operasi (embedding + database) melalui HF Space
     // Untuk testing lokal: http://127.0.0.1:7860
     // Untuk production: URL Hugging Face Space Anda
-    GRADIO_API_URL: "https://galihboy-semantic-embedding-api.hf.space",
+    GRADIO_API_URL: "https://galihboy-semantic-embedding-api.hf.space",  // PRODUCTION
 
     // ===================
     // DATA SOURCE
