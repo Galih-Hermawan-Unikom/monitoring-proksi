@@ -89,7 +89,6 @@
                 font-weight: 300;
             }
 
-            /* Footer */
             footer {
                 background-color: #2c3e50;
                 color: #ecf0f1;
@@ -130,7 +129,6 @@
                 padding: 0 15px 60px 15px;
             }
 
-            /* Charts */
             .charts-section {
                 display: flex;
                 flex-direction: column;
@@ -168,7 +166,14 @@
                 padding-bottom: 10px;
             }
 
-            /* Search & Filter Bar */
+            .chart-subtitle {
+                text-align: center;
+                font-size: 0.8rem;
+                color: var(--text-light);
+                margin-top: -10px;
+                margin-bottom: 10px;
+            }
+
             .search-wrapper {
                 margin-bottom: 20px;
                 display: flex;
@@ -267,7 +272,6 @@
                 background-color: #c0392b;
             }
 
-            /* Loading & Error */
             #loading,
             #error {
                 text-align: center;
@@ -280,14 +284,12 @@
                 display: none;
             }
 
-            /* Card List */
             .card-list {
                 display: flex;
                 flex-direction: column;
                 gap: 15px;
             }
 
-            /* Expandable Card Styles */
             .card {
                 background: var(--card-bg);
                 border-radius: 8px;
@@ -428,7 +430,6 @@
                 grid-column: 1 / -1;
             }
 
-            /* Pagination */
             .pagination {
                 display: flex;
                 justify-content: center;
@@ -460,7 +461,6 @@
                 cursor: not-allowed;
             }
 
-            /* Pending Section */
             .pending-section {
                 margin-top: 40px;
                 background: white;
@@ -617,7 +617,6 @@
                 margin-top: 10px;
             }
 
-            /* Back to Top */
             #back-to-top {
                 position: fixed;
                 bottom: 30px;
@@ -630,7 +629,7 @@
                 border: none;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
                 cursor: pointer;
-                display: none; /* Hidden by default */
+                display: none;
                 align-items: center;
                 justify-content: center;
                 font-size: 1.2rem;
@@ -645,7 +644,19 @@
                 transform: translateY(-3px);
             }
 
-            /* Responsive */
+            /* Clickable chart bars */
+            .clickable-chart {
+                cursor: pointer;
+            }
+
+            .click-hint {
+                text-align: center;
+                font-size: 0.75rem;
+                color: #999;
+                margin-top: 5px;
+                font-style: italic;
+            }
+
             @media (min-width: 768px) {
                 .details-grid {
                     grid-template-columns: 1fr 1fr;
@@ -686,14 +697,13 @@
                             border: 1px solid rgba(255, 255, 255, 0.3);
                         "
                     >
-                        KK Ilmu Komputer
+                        KK E (Ilmu Komputer). Prodi Teknik Informatika. UNIKOM
                     </span>
                 </div>
                 <p>
                     Daftar Topik Proposal Skripsi<br />
                     <strong>Semester Ganjil Tahun Akademik 2025-2026</strong>
                 </p>
-                <!-- Navigation Links -->
                 <div style="margin-top: 15px;">
                     <a href="similarity.html" style="color: white; text-decoration: none; margin: 0 10px; padding: 8px 16px; background: rgba(255,255,255,0.2); border-radius: 20px; font-size: 0.9rem; display: inline-block; transition: background 0.3s;">
                         <i class="fas fa-search"></i> Cek Kemiripan TF-IDF
@@ -726,11 +736,27 @@
                         </div>
                     </div>
                 </div>
-                <!-- Chart Row 2: Keywords -->
-                <div class="chart-card">
-                    <div class="chart-title">Tren Kata Kunci Judul Skripsi</div>
-                    <div class="chart-wrapper" style="height: 250px">
-                        <canvas id="chartKeyword"></canvas>
+                <!-- Chart Row 2: Keywords - DUAL CHART -->
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <div class="chart-title">Top Kata Kunci (Unigram)</div>
+                        <div class="chart-subtitle">Dari Judul + Metode (dengan stemming)</div>
+                        <div class="chart-wrapper" style="height: 280px">
+                            <canvas id="chartKeywordUnigram" class="clickable-chart"></canvas>
+                        </div>
+                        <div class="click-hint">
+                            <i class="fas fa-mouse-pointer"></i> Klik bar untuk filter proposal
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Top Frasa (Bigram)</div>
+                        <div class="chart-subtitle">Dari Judul + Metode (dengan stemming)</div>
+                        <div class="chart-wrapper" style="height: 280px">
+                            <canvas id="chartKeywordBigram" class="clickable-chart"></canvas>
+                        </div>
+                        <div class="click-hint">
+                            <i class="fas fa-mouse-pointer"></i> Klik bar untuk filter proposal
+                        </div>
                     </div>
                 </div>
             </div>
@@ -761,7 +787,7 @@
                 </div>
             </div>
 
-            <div id="loading">Memuat data...</div>
+            <div id="loading">Memuat data & stop words...</div>
             <div id="error"></div>
 
             <div id="card-container" class="card-list"></div>
@@ -833,7 +859,6 @@
             </section>
         </div>
 
-        <!-- Back to Top Button -->
         <button id="back-to-top" onclick="scrollToTop()">
             <i class="fas fa-arrow-up"></i>
         </button>
@@ -842,22 +867,24 @@
             <div class="footer-content">
                 <div>
                     Dikembangkan oleh
-                    <a href="https://galih.eu" target="_blank"
-                        >Galih Hermawan</a
-                    >
+                    <a href="https://galih.eu" target="_blank">Galih Hermawan</a>
+                    (<a href="https://github.com/galihboy" target="_blank"><i class="fab fa-github"></i> galihboy</a>)
                 </div>
                 <div>
-                    Program Studi Teknik Informatika. Universitas Komputer
-                    Indonesia.
+                    Program Studi Teknik Informatika. Universitas Komputer Indonesia.
+                </div>
+                <div style="margin-top: 10px;">
+                    <a href="https://github.com/Galih-Hermawan-Unikom/monitoring-proksi" target="_blank" style="color: #bdc3c7;">
+                        <i class="fab fa-github"></i> Source Code Repository
+                    </a>
                 </div>
                 <div class="footer-meta">
-                    Terakhir diperbarui: 29 November 2025
+                    Terakhir diperbarui: 30 November 2025
                 </div>
             </div>
         </footer>
 
         <script>
-            // URL CSV Google Sheets
             const csvUrl =
                 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTByDo6WQAT0rQMEVcL24WyJdm4gMKm4Zfjm6RYQ-prEaLvEcruqmRXKKNWXesxReA-nPqyhmH_BMAg/pub?gid=14519582&single=true&output=csv";
             const masterCsvPath =
@@ -875,55 +902,467 @@
             const pendingItemsPerPage = 10;
             let pendingChartInstance = null;
 
-            // Stop Words Indonesia (untuk analisis keyword)
-            const stopWords = new Set([
-                "dan",
-                "yang",
-                "di",
-                "pada",
-                "untuk",
-                "dengan",
-                "ini",
-                "itu",
-                "dari",
-                "ke",
-                "dalam",
-                "atau",
-                "juga",
-                "sebagai",
-                "oleh",
-                "adalah",
-                "karena",
-                "bagi",
-                "tentang",
-                "serta",
-                "terhadap",
-                "melalui",
-                "berbasis",
-                "menggunakan",
-                "penerapan",
-                "implementasi",
-                "rancang",
-                "bangun",
-                "perancangan",
-                "pembuatan",
-                "pengembangan",
-                "analisis",
-                "studi",
-                "kasus",
-                "pt",
-                "cv",
-                "kota",
-                "kabupaten",
-                "sistem",
-                "aplikasi",
-                "informasi",
-                "metode",
-                "algoritma",
-                "web",
-                "website",
-                "mobile",
+            // Chart instances for cleanup
+            let unigramChartInstance = null;
+            let bigramChartInstance = null;
+
+            // ===========================================
+            // FITUR #1: Stop Words dari CDN (ID + EN)
+            // ===========================================
+            let stopWords = new Set();
+            
+            // Fallback stop words jika CDN gagal
+            const fallbackStopWords = new Set([
+                "dan", "yang", "di", "pada", "untuk", "dengan", "ini", "itu", "dari", "ke",
+                "dalam", "atau", "juga", "sebagai", "oleh", "adalah", "karena", "bagi",
+                "tentang", "serta", "terhadap", "melalui", "berbasis", "menggunakan",
+                "penerapan", "implementasi", "rancang", "bangun", "perancangan", "pembuatan",
+                "pengembangan", "analisis", "studi", "kasus", "pt", "cv", "kota", "kabupaten",
+                "the", "and", "of", "for", "in", "on", "with", "using", "based", "a", "an", "to"
             ]);
+
+            // Custom domain stop words (kata yang terlalu umum di konteks skripsi)
+            const domainStopWords = new Set([
+                // Kata umum skripsi
+                "sistem", "aplikasi", "informasi", "metode", "algoritma", "web", "website", 
+                "mobile", "data", "proses", "hasil", "dapat", "akan", "bisa", "harus",
+                "telah", "sudah", "belum", "tidak", "ada", "sangat", "lebih", "kurang",
+                // Kata hubung/preposisi yang mungkin lolos dari stopwords-iso
+                "berdasarkan", "terhadap", "antara", "menjadi", "melalui", "sampai",
+                "sebuah", "suatu", "tersebut", "yaitu", "bahwa", "agar", "sehingga",
+                "menggunakan", "digunakan", "dilakukan", "melakukan", "memiliki", "dimiliki",
+                "penelitian", "bertujuan", "tujuan", "model", "berbasis",
+                // Kata umum hasil stem yang tidak bermakna
+                "guna", "gunakan", "berguna", "pengguna", "penggunaan",
+                "buat", "pembuat", "pembuatan", "dibuat", "membuat",
+                "pakai", "pemakai", "pemakaian", "dipakai", "memakai",
+                "laku", "pelaku", "berlaku",
+                "kerja", "pekerja", "bekerja", "mengerjakan", "dikerjakan",
+                "bantu", "pembantu", "membantu", "dibantu", "bantuan",
+                "kembang", "pengembang", "pengembangan", "dikembangkan", "mengembangkan",
+                "dukung", "pendukung", "dukungan", "mendukung", "didukung",
+                // Kata penghubung yang sering salah di-stem
+                "mengenai", "terhadap", "sebagai", "merupakan", "menunjukkan",
+                "memberikan", "menyatakan", "menjelaskan", "menghasilkan",
+                // Kata keterangan waktu/umum
+                "sebelum", "sesudah", "setelah", "selama", "kemudian",
+                "pertama", "kedua", "ketiga", "terakhir", "selanjutnya",
+                // Kata penghubung/keterangan umum
+                "seperti", "masih", "hanya", "juga", "agar", "supaya",
+                "namun", "tetapi", "karena", "sehingga", "meskipun", "walaupun",
+                "bahkan", "justru", "malah", "sangat", "cukup", "kurang",
+                "tinggi", "rendah", "besar", "kecil", "banyak", "sedikit",
+                "sebab", "mampu", "secara", "efektif", "efisien", "optimal",
+                "utama", "khusus", "umum", "langsung", "tepat", "benar",
+                // Kata kerja umum yang sering salah di-stem
+                "memahami", "pengalaman", "meningkat", "meningkatkan", "peningkatan",
+                "memiliki", "menggunakan", "menunjukkan", "memberikan", "mendapatkan",
+                // Kata dengan circumfix ke-...-an (sering salah di-stem)
+                "kerusakan", "keamanan", "kebutuhan", "kemampuan", "kecepatan",
+                "ketepatan", "keakuratan", "kelebihan", "kekurangan", "kesalahan",
+                "keberhasilan", "kegagalan", "kepuasan", "ketersediaan", "kemudahan"
+            ]);
+
+            // ===========================================
+            // FITUR STEMMING (Indonesian + English) - Conservative
+            // ===========================================
+            
+            // Protected words - jangan di-stem karena sering salah
+            const protectedWords = new Set([
+                'analisis', 'sentimen', 'klasifikasi', 'prediksi', 'deteksi',
+                'machine', 'learning', 'deep', 'neural', 'network', 'class',
+                'support', 'vector', 'decision', 'tree', 'random', 'forest',
+                'naive', 'bayes', 'regression', 'clustering', 'processing',
+                'recognition', 'detection', 'classification', 'prediction',
+                'image', 'text', 'speech', 'natural', 'language', 'computer',
+                'vision', 'artificial', 'intelligence', 'convolutional',
+                'recurrent', 'transformer', 'attention', 'embedding'
+            ]);
+            
+            // Blocklist - hasil stem yang invalid/tidak masuk akal
+            const invalidStems = new Set([
+                'enai', 'ntimen', 'analisi', 'clas', 'lass', 'upport',
+                'ector', 'achine', 'earning', 'etwork', 'eural',
+                'ahami', 'alaman', 'ingkat', 'apat', 'unya', 'adian',
+                'roses', 'asil', 'alam', 'ilai', 'ukup', 'asar',
+                'kerusa', 'rusak', 'rusa', 'efekt', 'aktif'
+            ]);
+            
+            // Validasi hasil stem
+            function isValidStem(word) {
+                if (word.length < 3) return false;
+                if (invalidStems.has(word)) return false;
+                const invalidStart = /^[^aiueoabcdefghijklmnopqrstuvwxyz]/i;
+                if (invalidStart.test(word)) return false;
+                return true;
+            }
+            
+            function stemIndonesian(word) {
+                if (word.length < 5) return word;
+                if (protectedWords.has(word)) return word;
+                
+                let stem = word;
+                
+                // Remove suffixes (hanya yang jelas)
+                const suffixes = ['kan', 'nya'];
+                for (const suffix of suffixes) {
+                    if (stem.endsWith(suffix) && stem.length > suffix.length + 3) {
+                        stem = stem.slice(0, -suffix.length);
+                        break;
+                    }
+                }
+                
+                // Remove prefixes (hanya yang jelas)
+                const prefixPatterns = [
+                    { prefix: 'meng', replace: '' },
+                    { prefix: 'meny', replace: 's' },
+                    { prefix: 'men', replace: '' },
+                    { prefix: 'mem', replace: '' },
+                    { prefix: 'peng', replace: '' },
+                    { prefix: 'peny', replace: 's' },
+                    { prefix: 'pen', replace: '' },
+                    { prefix: 'pem', replace: '' },
+                    { prefix: 'ber', replace: '' },
+                    { prefix: 'ter', replace: '' }
+                ];
+                
+                for (const { prefix, replace } of prefixPatterns) {
+                    if (stem.startsWith(prefix) && stem.length > prefix.length + 3) {
+                        const newStem = replace + stem.slice(prefix.length);
+                        if (newStem.length >= 4) {
+                            stem = newStem;
+                            break;
+                        }
+                    }
+                }
+                
+                return stem.length >= 4 ? stem : word;
+            }
+            
+            function stemEnglish(word) {
+                if (word.length < 5) return word;
+                if (protectedWords.has(word)) return word;
+                
+                let stem = word;
+                
+                const suffixes = [
+                    { suffix: 'ization', replace: 'ize' },
+                    { suffix: 'ational', replace: 'ate' },
+                    { suffix: 'iveness', replace: 'ive' },
+                    { suffix: 'fulness', replace: 'ful' },
+                    { suffix: 'ousness', replace: 'ous' },
+                    { suffix: 'ation', replace: 'ate' },
+                    { suffix: 'ness', replace: '' },
+                    { suffix: 'ment', replace: '' },
+                    { suffix: 'able', replace: '' },
+                    { suffix: 'ible', replace: '' },
+                    { suffix: 'ing', replace: '' },
+                    { suffix: 'ies', replace: 'y' }
+                ];
+                
+                for (const { suffix, replace } of suffixes) {
+                    if (stem.endsWith(suffix) && stem.length > suffix.length + 3) {
+                        const newStem = stem.slice(0, -suffix.length) + replace;
+                        if (newStem.length >= 4) {
+                            stem = newStem;
+                            break;
+                        }
+                    }
+                }
+                
+                return stem.length >= 4 ? stem : word;
+            }
+            
+            function stem(word) {
+                if (protectedWords.has(word)) return word;
+                if (word.length < 5) return word;
+                
+                const clearIndonesianPrefix = /^(meng|meny|mem|peng|peny|pem|ber|ter)/;
+                const clearIndonesianSuffix = /(kan|nya)$/;
+                
+                let result = word;
+                
+                if (clearIndonesianPrefix.test(word) || clearIndonesianSuffix.test(word)) {
+                    result = stemIndonesian(word);
+                } else {
+                    const clearEnglishSuffix = /(ation|ization|iveness|fulness|ousness|ment|ness|able|ible)$/;
+                    if (clearEnglishSuffix.test(word)) {
+                        result = stemEnglish(word);
+                    }
+                }
+                
+                // Validasi hasil - jika invalid, kembalikan kata asli
+                if (!isValidStem(result)) {
+                    return word;
+                }
+                
+                return result;
+            }
+
+            async function loadStopWords() {
+                const ID_URL = "https://cdn.jsdelivr.net/npm/stopwords-iso@1.1.0/stopwords-id.json";
+                const EN_URL = "https://cdn.jsdelivr.net/npm/stopwords-iso@1.1.0/stopwords-en.json";
+                
+                try {
+                    const [idResponse, enResponse] = await Promise.all([
+                        fetch(ID_URL),
+                        fetch(EN_URL)
+                    ]);
+                    
+                    if (!idResponse.ok || !enResponse.ok) {
+                        throw new Error("Failed to fetch stop words");
+                    }
+                    
+                    const [idWords, enWords] = await Promise.all([
+                        idResponse.json(),
+                        enResponse.json()
+                    ]);
+                    
+                    // Gabungkan semua stop words
+                    stopWords = new Set([
+                        ...idWords,
+                        ...enWords,
+                        ...domainStopWords
+                    ]);
+                    
+                    console.log(`✓ Loaded ${stopWords.size} stop words (ID: ${idWords.length}, EN: ${enWords.length}, Domain: ${domainStopWords.size})`);
+                    return true;
+                } catch (error) {
+                    console.warn("Failed to load stop words from CDN, using fallback:", error);
+                    stopWords = new Set([...fallbackStopWords, ...domainStopWords]);
+                    return false;
+                }
+            }
+
+            // ===========================================
+            // FITUR #2: Bigram Extraction (dengan STEMMING)
+            // Menghitung JUMLAH JUDUL yang mengandung kata, bukan total kemunculan
+            // ===========================================
+            function extractKeywords(titles) {
+                const unigramCounts = {};
+                const bigramCounts = {};
+                
+                // Mapping dari stemmed word ke kata asli yang paling sering muncul
+                const stemToOriginal = {};
+                const stemBigramToOriginal = {};
+                
+                titles.forEach(title => {
+                    if (!title) return;
+                    
+                    // Normalize: lowercase, hapus tanda baca, split
+                    const allWords = title
+                        .toLowerCase()
+                        .replace(/[^\w\s]/gi, ' ')
+                        .split(/\s+/)
+                        .filter(w => w.length > 2);
+                    
+                    // Gunakan Set untuk mencatat kata/bigram UNIK per judul (berdasarkan STEM)
+                    const seenUnigrams = new Set();
+                    const seenBigrams = new Set();
+                    
+                    // Count Unigrams dengan STEMMING
+                    allWords.forEach(word => {
+                        if (stopWords.has(word)) return;
+                        
+                        const stemmed = stem(word);
+                        if (stopWords.has(stemmed)) return;
+                        
+                        if (!seenUnigrams.has(stemmed)) {
+                            seenUnigrams.add(stemmed);
+                            unigramCounts[stemmed] = (unigramCounts[stemmed] || 0) + 1;
+                            
+                            // Track kata asli yang paling sering untuk display
+                            if (!stemToOriginal[stemmed]) {
+                                stemToOriginal[stemmed] = {};
+                            }
+                            stemToOriginal[stemmed][word] = (stemToOriginal[stemmed][word] || 0) + 1;
+                        }
+                    });
+                    
+                    // Count Bigrams dengan STEMMING
+                    for (let i = 0; i < allWords.length - 1; i++) {
+                        const word1 = allWords[i];
+                        const word2 = allWords[i + 1];
+                        
+                        if (stopWords.has(word1) || stopWords.has(word2)) continue;
+                        
+                        const stem1 = stem(word1);
+                        const stem2 = stem(word2);
+                        
+                        if (stopWords.has(stem1) || stopWords.has(stem2)) continue;
+                        
+                        const stemmedBigram = stem1 + " " + stem2;
+                        const originalBigram = word1 + " " + word2;
+                        
+                        if (!seenBigrams.has(stemmedBigram)) {
+                            seenBigrams.add(stemmedBigram);
+                            bigramCounts[stemmedBigram] = (bigramCounts[stemmedBigram] || 0) + 1;
+                            
+                            // Track bigram asli yang paling sering
+                            if (!stemBigramToOriginal[stemmedBigram]) {
+                                stemBigramToOriginal[stemmedBigram] = {};
+                            }
+                            stemBigramToOriginal[stemmedBigram][originalBigram] = 
+                                (stemBigramToOriginal[stemmedBigram][originalBigram] || 0) + 1;
+                        }
+                    }
+                });
+                
+                // Helper: get most common original word for a stem
+                const getMostCommonOriginal = (mapping, stemmed) => {
+                    if (!mapping[stemmed]) return stemmed;
+                    const originals = Object.entries(mapping[stemmed]);
+                    originals.sort((a, b) => b[1] - a[1]);
+                    return originals[0][0];
+                };
+                
+                // Sort dan ambil top items, convert ke kata asli untuk display
+                const topUnigrams = Object.entries(unigramCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 12)
+                    .map(([stemmed, count]) => [getMostCommonOriginal(stemToOriginal, stemmed), count]);
+                    
+                const topBigrams = Object.entries(bigramCounts)
+                    .filter(([_, count]) => count >= 2)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 12)
+                    .map(([stemmed, count]) => [getMostCommonOriginal(stemBigramToOriginal, stemmed), count]);
+                
+                return { topUnigrams, topBigrams };
+            }
+
+            // ===========================================
+            // FITUR #3 & #4: Dual Chart + Click-to-Search
+            // ===========================================
+            function renderKeywordCharts(data) {
+                // Ekstrak dari Judul + Metode untuk keyword trending
+                const textsForKeywords = data.map(row => {
+                    const judul = row[3] || "";
+                    const metode = row[7] || "";
+                    return judul + " " + metode;
+                });
+                const { topUnigrams, topBigrams } = extractKeywords(textsForKeywords);
+                
+                // Destroy existing charts
+                if (unigramChartInstance) {
+                    unigramChartInstance.destroy();
+                }
+                if (bigramChartInstance) {
+                    bigramChartInstance.destroy();
+                }
+                
+                // Common click handler
+                const handleChartClick = (event, elements, chart, labels) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const keyword = labels[index];
+                        
+                        // Set search input and trigger filter with stem-aware search
+                        const searchInput = document.getElementById('search-input');
+                        searchInput.value = keyword;
+                        searchInput.focus();
+                        
+                        // Aktifkan stem search untuk klik dari chart
+                        useStemSearch = true;
+                        applyFilters();
+                        
+                        // Scroll to search area
+                        document.querySelector('.search-wrapper').scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    }
+                };
+                
+                // Render Unigram Chart
+                const ctxUnigram = document.getElementById("chartKeywordUnigram").getContext("2d");
+                const unigramLabels = topUnigrams.map(item => item[0]);
+                
+                unigramChartInstance = new Chart(ctxUnigram, {
+                    type: "bar",
+                    data: {
+                        labels: unigramLabels,
+                        datasets: [{
+                            label: "Frekuensi",
+                            data: topUnigrams.map(item => item[1]),
+                            backgroundColor: "#27ae60",
+                            borderRadius: 4,
+                            hoverBackgroundColor: "#1e8449"
+                        }]
+                    },
+                    options: {
+                        indexAxis: "y",
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        onClick: (event, elements) => {
+                            handleChartClick(event, elements, unigramChartInstance, unigramLabels);
+                        },
+                        scales: {
+                            x: { beginAtZero: true, grid: { display: false } },
+                            y: { grid: { display: false } }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: (ctx) => "Kata: " + ctx[0].label,
+                                    label: (ctx) => ctx.parsed.x + " proposal",
+                                    afterBody: () => "Klik untuk filter"
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Render Bigram Chart
+                const ctxBigram = document.getElementById("chartKeywordBigram").getContext("2d");
+                const bigramLabels = topBigrams.map(item => item[0]);
+                
+                if (topBigrams.length === 0) {
+                    // Show empty state if no bigrams found
+                    ctxBigram.font = "14px Arial";
+                    ctxBigram.fillStyle = "#999";
+                    ctxBigram.textAlign = "center";
+                    ctxBigram.fillText("Tidak cukup data untuk bigram", ctxBigram.canvas.width / 2, 100);
+                    return;
+                }
+                
+                bigramChartInstance = new Chart(ctxBigram, {
+                    type: "bar",
+                    data: {
+                        labels: bigramLabels,
+                        datasets: [{
+                            label: "Frekuensi",
+                            data: topBigrams.map(item => item[1]),
+                            backgroundColor: "#9b59b6",
+                            borderRadius: 4,
+                            hoverBackgroundColor: "#7d3c98"
+                        }]
+                    },
+                    options: {
+                        indexAxis: "y",
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        onClick: (event, elements) => {
+                            handleChartClick(event, elements, bigramChartInstance, bigramLabels);
+                        },
+                        scales: {
+                            x: { beginAtZero: true, grid: { display: false } },
+                            y: { grid: { display: false } }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: (ctx) => "Frasa: " + ctx[0].label,
+                                    label: (ctx) => ctx.parsed.x + " proposal",
+                                    afterBody: () => "Klik untuk filter"
+                                }
+                            }
+                        }
+                    }
+                });
+            }
 
             async function loadData() {
                 const loadingDiv = document.getElementById("loading");
@@ -932,6 +1371,11 @@
                 errorDiv.style.display = "none";
 
                 try {
+                    // Load stop words first
+                    loadingDiv.textContent = "Memuat kamus stop words...";
+                    await loadStopWords();
+                    
+                    loadingDiv.textContent = "Memuat data proposal...";
                     const [submissionRows, masterList] = await Promise.all([
                         fetchSubmissionData(),
                         fetchMasterStudents(),
@@ -943,6 +1387,7 @@
 
                     populateDropdown(allData);
                     renderCharts(allData);
+                    renderKeywordCharts(allData); // Render dual keyword charts
                     applyFilters();
 
                     pendingStudents = computePendingStudents(
@@ -964,37 +1409,20 @@
             }
 
             function renderCharts(data) {
-                // 1. Distribusi Bidang & Dosen
                 const bidangCounts = {};
                 const dosenCounts = {};
-                const wordCounts = {};
 
                 data.forEach((row) => {
-                    // Bidang
                     let bidang = row[4];
                     if (!bidang || bidang.trim() === "") bidang = "Lainnya";
                     bidang = bidang.trim();
                     bidangCounts[bidang] = (bidangCounts[bidang] || 0) + 1;
 
-                    // Dosen
                     let dosen = row[13];
                     if (!dosen || dosen.trim() === "")
                         dosen = "Belum Ada Pembimbing";
                     dosen = dosen.trim();
                     dosenCounts[dosen] = (dosenCounts[dosen] || 0) + 1;
-
-                    // Keywords (Judul ada di index 3)
-                    const judul = row[3] || "";
-                    const words = judul
-                        .toLowerCase()
-                        .replace(/[^\w\s]/gi, "") // Hapus tanda baca
-                        .split(/\s+/);
-
-                    words.forEach((w) => {
-                        if (w.length > 2 && !stopWords.has(w)) {
-                            wordCounts[w] = (wordCounts[w] || 0) + 1;
-                        }
-                    });
                 });
 
                 // Render Chart Bidang
@@ -1063,46 +1491,6 @@
                             y: { grid: { display: false } },
                         },
                         plugins: { legend: { display: false } },
-                    },
-                });
-
-                // Render Chart Keywords (Top 15)
-                const sortedWords = Object.entries(wordCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 15);
-
-                const ctxKey = document
-                    .getElementById("chartKeyword")
-                    .getContext("2d");
-                new Chart(ctxKey, {
-                    type: "bar",
-                    data: {
-                        labels: sortedWords.map((item) => item[0]),
-                        datasets: [
-                            {
-                                label: "Frekuensi",
-                                data: sortedWords.map((item) => item[1]),
-                                backgroundColor: "#27ae60",
-                                borderRadius: 4,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: { beginAtZero: true },
-                            x: { grid: { display: false } },
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    title: (ctx) =>
-                                        "Kata Kunci: " + ctx[0].label,
-                                },
-                            },
-                        },
                     },
                 });
             }
@@ -1503,30 +1891,88 @@
                 });
             }
 
+            // Flag untuk stem-aware search (diaktifkan saat klik chart)
+            let useStemSearch = false;
+            
             function applyFilters() {
-                const keyword = document
+                const rawKeyword = document
                     .getElementById("search-input")
-                    .value.toLowerCase();
+                    .value.toLowerCase()
+                    .replace(/[^\w\s]/gi, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
                 const selectedDosen =
                     document.getElementById("filter-dosen").value;
 
                 filteredData = allData.filter((row) => {
-                    const textToCheck = (
-                        (row[1] || "") +
-                        " " + // NIM
-                        (row[2] || "") +
-                        " " + // Nama
-                        (row[3] || "") +
-                        " " + // Judul
-                        (row[4] || "")
-                    ).toLowerCase();
-                    const matchesKeyword = textToCheck.includes(keyword);
+                    // Tentukan sumber teks berdasarkan mode search
+                    let textToCheck;
+                    
+                    if (useStemSearch) {
+                        // Klik dari chart: cari di Judul + Metode (sama dengan sumber chart)
+                        textToCheck = (
+                            (row[3] || "") + " " +
+                            (row[7] || "")
+                        ).toLowerCase()
+                         .replace(/[^\w\s]/gi, ' ')
+                         .replace(/\s+/g, ' ');
+                    } else {
+                        // Search manual: cari di NIM + Nama + Judul + Bidang
+                        textToCheck = (
+                            (row[1] || "") + " " +
+                            (row[2] || "") + " " +
+                            (row[3] || "") + " " +
+                            (row[4] || "")
+                        ).toLowerCase()
+                         .replace(/[^\w\s]/gi, ' ')
+                         .replace(/\s+/g, ' ');
+                    }
+                    
+                    let matchesKeyword = false;
+                    
+                    if (rawKeyword === "") {
+                        matchesKeyword = true;
+                    } else if (useStemSearch) {
+                        // Stem-aware search: cari kata yang stem-nya sama
+                        const searchTerms = rawKeyword.split(' ').filter(t => t.length > 0);
+                        const searchStems = searchTerms.map(t => stem(t));
+                        
+                        const textWords = textToCheck.split(' ').filter(w => w.length > 2);
+                        const textStems = textWords.map(w => stem(w));
+                        
+                        // Untuk bigram, cek apakah semua search stems ada berurutan di text stems
+                        if (searchStems.length > 1) {
+                            // Bigram search
+                            for (let i = 0; i <= textStems.length - searchStems.length; i++) {
+                                let allMatch = true;
+                                for (let j = 0; j < searchStems.length; j++) {
+                                    if (textStems[i + j] !== searchStems[j]) {
+                                        allMatch = false;
+                                        break;
+                                    }
+                                }
+                                if (allMatch) {
+                                    matchesKeyword = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            // Unigram search
+                            matchesKeyword = textStems.includes(searchStems[0]);
+                        }
+                    } else {
+                        // Normal substring search
+                        matchesKeyword = textToCheck.includes(rawKeyword);
+                    }
+                    
                     const dosen = row[13] || "";
-                    const matchesDosen =
-                        selectedDosen === "" || dosen === selectedDosen;
+                    const matchesDosen = selectedDosen === "" || dosen === selectedDosen;
 
                     return matchesKeyword && matchesDosen;
                 });
+                
+                // Reset flag setelah search
+                useStemSearch = false;
 
                 updateResultCount();
                 renderPage(1);
@@ -1558,7 +2004,6 @@
                 });
 
                 if (window.scrollY > 400) {
-                    // Scroll back to search bar if user was deep down
                     document
                         .querySelector(".search-wrapper")
                         .scrollIntoView({ behavior: "smooth" });
@@ -1568,7 +2013,6 @@
             }
 
             function createCardElement(row) {
-                // Mapping
                 const nim = row[1] || "-";
                 const nama = row[2] || "Tanpa Nama";
                 const judul = row[3] || "Belum ada judul";
@@ -1712,7 +2156,6 @@
                 errDiv.style.display = "block";
             }
 
-            // --- Fitur Baru: Export Excel (.xlsx) ---
             async function exportToExcel() {
                 if (!filteredData || filteredData.length === 0) {
                     alert("Tidak ada data untuk diunduh");
@@ -1722,7 +2165,6 @@
                 const workbook = new ExcelJS.Workbook();
                 const worksheet = workbook.addWorksheet("Data Proposal");
 
-                // 1. Judul Laporan di Baris Atas
                 worksheet.mergeCells("A1:N1");
                 const titleCell = worksheet.getCell("A1");
                 titleCell.value =
@@ -1735,14 +2177,13 @@
                 titleCell.fill = {
                     type: "pattern",
                     pattern: "solid",
-                    fgColor: { argb: "FF2C3E50" }, // Primary Color
+                    fgColor: { argb: "FF2C3E50" },
                 };
                 titleCell.alignment = {
                     vertical: "middle",
                     horizontal: "center",
                 };
 
-                // 2. Info Tanggal
                 worksheet.mergeCells("A2:N2");
                 const dateCell = worksheet.getCell("A2");
                 dateCell.value =
@@ -1753,7 +2194,6 @@
                     horizontal: "center",
                 };
 
-                // 3. Definisi Header Kolom & Lebar
                 worksheet.getRow(4).values = [
                     "Timestamp",
                     "NIM",
@@ -1771,67 +2211,61 @@
                     "Pembimbing",
                 ];
 
-                // Atur Lebar Kolom (Width)
                 worksheet.columns = [
-                    { key: "ts", width: 15 }, // Timestamp
-                    { key: "nim", width: 12 }, // NIM
-                    { key: "nama", width: 25 }, // Nama
-                    { key: "judul", width: 40 }, // Judul
-                    { key: "bidang", width: 15 }, // Bidang
-                    { key: "desk", width: 35 }, // Deskripsi
-                    { key: "masalah", width: 35 }, // Masalah
-                    { key: "metode", width: 25 }, // Metode
-                    { key: "dataset", width: 20 }, // Dataset
-                    { key: "sumber", width: 20 }, // Sumber
-                    { key: "tools", width: 15 }, // Tools
-                    { key: "output", width: 20 }, // Output
-                    { key: "ref", width: 30 }, // Referensi
-                    { key: "dosen", width: 20 }, // Pembimbing
+                    { key: "ts", width: 15 },
+                    { key: "nim", width: 12 },
+                    { key: "nama", width: 25 },
+                    { key: "judul", width: 40 },
+                    { key: "bidang", width: 15 },
+                    { key: "desk", width: 35 },
+                    { key: "masalah", width: 35 },
+                    { key: "metode", width: 25 },
+                    { key: "dataset", width: 20 },
+                    { key: "sumber", width: 20 },
+                    { key: "tools", width: 15 },
+                    { key: "output", width: 20 },
+                    { key: "ref", width: 30 },
+                    { key: "dosen", width: 20 },
                 ];
 
-                // Styling Header (Baris 4)
                 const headerRow = worksheet.getRow(4);
                 headerRow.font = { bold: true, color: { argb: "FFFFFFFF" } };
                 headerRow.fill = {
                     type: "pattern",
                     pattern: "solid",
-                    fgColor: { argb: "FF3498DB" }, // Secondary Color
+                    fgColor: { argb: "FF3498DB" },
                 };
                 headerRow.alignment = {
                     vertical: "middle",
                     horizontal: "center",
                 };
 
-                // 4. Masukkan Data
                 filteredData.forEach((row) => {
                     worksheet.addRow([
-                        row[0], // Timestamp
-                        row[1], // NIM
-                        row[2], // Nama
-                        row[3], // Judul
-                        row[4], // Bidang
-                        row[5], // Deskripsi
-                        row[6], // Masalah
-                        row[7], // Metode
-                        row[8], // Dataset
-                        row[9], // Sumber
-                        row[10], // Tools
-                        row[11], // Output
-                        row[12], // Referensi
-                        row[13], // Dosen
+                        row[0],
+                        row[1],
+                        row[2],
+                        row[3],
+                        row[4],
+                        row[5],
+                        row[6],
+                        row[7],
+                        row[8],
+                        row[9],
+                        row[10],
+                        row[11],
+                        row[12],
+                        row[13],
                     ]);
                 });
 
-                // 5. Styling Data Rows (Alignment & Wrap Text)
                 worksheet.eachRow((row, rowNumber) => {
                     if (rowNumber > 4) {
-                        // Mulai dari baris data
                         row.alignment = {
                             vertical: "top",
                             horizontal: "left",
-                            wrapText: true, // Penting agar teks panjang turun ke bawah
+                            wrapText: true,
                         };
-                        // Selang-seling warna (Zebra Striping)
                         if (rowNumber % 2 === 0) {
                             row.fill = {
                                 type: "pattern",
@@ -1839,7 +2273,6 @@
                                 fgColor: { argb: "FFF7F9F9" },
                             };
                         }
-                        // Border tipis untuk semua sel
                         row.eachCell((cell) => {
                             cell.border = {
                                 top: {
@@ -1863,7 +2296,6 @@
                     }
                 });
 
-                // 6. Generate & Save File
                 const buffer = await workbook.xlsx.writeBuffer();
                 const blob = new Blob([buffer], {
                     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -1876,7 +2308,6 @@
                 );
             }
 
-            // --- Fitur Baru: Back to Top ---
             window.onscroll = function () {
                 const btn = document.getElementById("back-to-top");
                 if (
@@ -1893,7 +2324,6 @@
                 window.scrollTo({ top: 0, behavior: "smooth" });
             };
 
-            // --- Fitur Baru: Export PDF ---
             function exportToPDF() {
                 if (!filteredData || filteredData.length === 0) {
                     alert("Tidak ada data untuk diunduh");
@@ -1901,9 +2331,8 @@
                 }
 
                 const { jsPDF } = window.jspdf;
-                const doc = new jsPDF("landscape"); // Landscape agar muat banyak kolom
+                const doc = new jsPDF("landscape");
 
-                // Judul
                 doc.setFontSize(16);
                 doc.text(
                     "Rekap Proposal Skripsi - KK E (Ilmu Komputer)",
@@ -1918,7 +2347,6 @@
                     22,
                 );
 
-                // Siapkan Data Table
                 const tableColumn = [
                     "No",
                     "NIM",
@@ -1932,11 +2360,11 @@
                 filteredData.forEach((row, index) => {
                     const rowData = [
                         index + 1,
-                        row[1], // NIM
-                        row[2], // Nama
-                        row[3], // Judul
-                        row[4], // Bidang
-                        row[13], // Pembimbing
+                        row[1],
+                        row[2],
+                        row[3],
+                        row[4],
+                        row[13],
                     ];
                     tableRows.push(rowData);
                 });
@@ -1947,14 +2375,14 @@
                     startY: 30,
                     theme: "grid",
                     styles: { fontSize: 9, cellPadding: 3 },
-                    headStyles: { fillColor: [44, 62, 80] }, // Primary Color
+                    headStyles: { fillColor: [44, 62, 80] },
                     columnStyles: {
-                        0: { cellWidth: 10 }, // No
-                        1: { cellWidth: 25 }, // NIM
-                        2: { cellWidth: 45 }, // Nama
-                        3: { cellWidth: "auto" }, // Judul (sisa ruang)
-                        4: { cellWidth: 30 }, // Bidang
-                        5: { cellWidth: 40 }, // Pembimbing
+                        0: { cellWidth: 10 },
+                        1: { cellWidth: 25 },
+                        2: { cellWidth: 45 },
+                        3: { cellWidth: "auto" },
+                        4: { cellWidth: 30 },
+                        5: { cellWidth: 40 },
                     },
                 });
 

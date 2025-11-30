@@ -57,10 +57,18 @@ Analisis kemiripan berbasis **frekuensi kata** menggunakan metode TF-IDF (Term F
 | Problem Statement | 25% |
 | Metode/Pendekatan | 15% |
 
-**Kelebihan:**
+**Text Preprocessing:**
+- 📚 **Stopwords dari CDN** - ~1400 kata (Indonesian + English) dari [stopwords-iso](https://github.com/stopwords-iso)
+- 🔤 **Domain Stopwords** - Kata umum skripsi (sistem, aplikasi, metode, dll)
+- ✂️ **Conservative Stemming** - Indonesian (prefix/suffix) + English dengan protected words
+- 🛡️ **Invalid Stems Blocklist** - Mencegah hasil stem yang salah
+
+**Fitur:**
 - ⚡ Sangat cepat (instan)
-- 🌐 Tidak butuh koneksi API
+- 🌐 Tidak butuh koneksi API eksternal
 - 💻 Sepenuhnya berjalan di browser
+- 🔍 Pencarian berdasarkan NIM/Nama
+- 🏷️ Kata kunci yang sama (dari judul)
 
 **Akses:** [similarity.html](https://galih-hermawan-unikom.github.io/monitoring-proksi/similarity.html)
 
@@ -116,11 +124,12 @@ Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
 
 | Aspek | TF-IDF | Semantic (AI) |
 |-------|--------|---------------|
-| **Akurasi** | ⭐⭐ Berbasis kata | ⭐⭐⭐⭐ Berbasis makna |
+| **Akurasi** | ⭐⭐⭐ Berbasis kata + stemming | ⭐⭐⭐⭐ Berbasis makna |
 | **Kecepatan** | ⚡ Instan | 🕐 10-30 detik |
-| **Koneksi Internet** | Tidak perlu | Diperlukan |
-| **Sinonim** | ❌ Tidak terdeteksi | ✅ Terdeteksi |
+| **Koneksi Internet** | Hanya untuk stopwords CDN | Diperlukan |
+| **Sinonim** | ⚠️ Terbatas (via stemming) | ✅ Terdeteksi |
 | **Konteks** | ❌ Tidak dipahami | ✅ Dipahami |
+| **Pencarian** | ✅ NIM/Nama | ✅ NIM/Nama |
 
 **Rekomendasi:**
 - Gunakan **TF-IDF** untuk pengecekan cepat

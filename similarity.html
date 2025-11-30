@@ -111,9 +111,16 @@
             flex-wrap: wrap;
         }
 
-        .threshold-control label {
+        .threshold-control label,
+        .search-control label {
             font-weight: 500;
             color: var(--text-secondary);
+        }
+
+        .search-control input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
         }
 
         .threshold-slider {
@@ -162,15 +169,15 @@
         }
 
         .summary-card.high {
-            border-left: 4px solid var(--warning-color);
+            border-left: 4px solid #b91c1c;
         }
 
         .summary-card.medium {
-            border-left: 4px solid var(--orange-color);
+            border-left: 4px solid #b45309;
         }
 
         .summary-card.low {
-            border-left: 4px solid var(--yellow-color);
+            border-left: 4px solid #047857;
         }
 
         .summary-card.total {
@@ -183,9 +190,9 @@
             margin-bottom: 0.25rem;
         }
 
-        .summary-card.high .number { color: var(--warning-color); }
-        .summary-card.medium .number { color: var(--orange-color); }
-        .summary-card.low .number { color: var(--yellow-color); }
+        .summary-card.high .number { color: #b91c1c; }
+        .summary-card.medium .number { color: #b45309; }
+        .summary-card.low .number { color: #047857; }
         .summary-card.total .number { color: var(--primary-color); }
 
         .summary-card .label {
@@ -262,18 +269,18 @@
         }
 
         .similarity-badge.high {
-            background: var(--warning-light);
-            color: var(--warning-color);
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
         .similarity-badge.medium {
-            background: var(--orange-light);
-            color: var(--orange-color);
+            background: #fef3c7;
+            color: #b45309;
         }
 
         .similarity-badge.low {
-            background: var(--yellow-light);
-            color: var(--yellow-color);
+            background: #d1fae5;
+            color: #047857;
         }
 
         .student-info {
@@ -557,7 +564,10 @@
     <header>
         <div class="header-content">
             <h1><i class="fas fa-search-plus"></i> Deteksi Kemiripan Tema (TF-IDF)</h1>
-            <p>Monitoring Proposal Skripsi - KK Ilmu Komputer UNIKOM</p>
+            <div style="margin: 10px 0;">
+                <span style="background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 15px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.3);">KK E (Ilmu Komputer). Prodi Teknik Informatika. UNIKOM</span>
+            </div>
+            <p>Monitoring Proposal Skripsi - Semester Ganjil TA 2025-2026</p>
             <div class="nav-links">
                 <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
                 <a href="semantic_similarity.html"><i class="fas fa-brain"></i> Semantic Similarity</a>
@@ -568,11 +578,18 @@
     <div class="container">
         <!-- Control Panel -->
         <div class="control-panel">
-            <h2><i class="fas fa-sliders-h"></i> Pengaturan Threshold Kemiripan</h2>
-            <div class="threshold-control">
-                <label for="threshold-slider">Tampilkan kemiripan di atas:</label>
-                <input type="range" id="threshold-slider" class="threshold-slider" min="20" max="80" value="40" />
-                <span id="threshold-value" class="threshold-value">40%</span>
+            <h2><i class="fas fa-sliders-h"></i> Pengaturan & Pencarian</h2>
+            <div class="control-row" style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-end;">
+                <div class="threshold-control">
+                    <label for="threshold-slider">Tampilkan kemiripan di atas:</label>
+                    <input type="range" id="threshold-slider" class="threshold-slider" min="20" max="80" value="40" />
+                    <span id="threshold-value" class="threshold-value">40%</span>
+                </div>
+                <div class="search-control" style="flex: 1; min-width: 250px;">
+                    <label for="search-input"><i class="fas fa-search"></i> Cari NIM / Nama:</label>
+                    <input type="text" id="search-input" placeholder="Ketik NIM atau nama..." 
+                           style="width: 100%; padding: 0.5rem 1rem; border: 2px solid var(--border-color); border-radius: 0.5rem; font-size: 1rem; margin-top: 0.25rem;" />
+                </div>
             </div>
         </div>
 
@@ -645,14 +662,19 @@
     <footer>
         <div class="footer-content">
             <div>
-                <strong>Monitoring Proposal Skripsi</strong> - KK E Ilmu Komputer
+                Dikembangkan oleh <a href="https://galih.eu" target="_blank">Galih Hermawan</a>
+                (<a href="https://github.com/galihboy" target="_blank"><i class="fab fa-github"></i> galihboy</a>)
             </div>
-            <div></div>
-                <a href="https://galih.eu" target="_blank">Galih Hermawan</a> |
-                Teknik Informatika UNIKOM
+            <div>
+                Program Studi Teknik Informatika. Universitas Komputer Indonesia.
+            </div>
+            <div style="margin-top: 10px;">
+                <a href="https://github.com/Galih-Hermawan-Unikom/monitoring-proksi" target="_blank">
+                    <i class="fab fa-github"></i> Source Code Repository
+                </a>
             </div>
             <div class="footer-meta">
-                Fitur Deteksi Kemiripan Tema v1.0 | Terakhir diperbarui: 29 November 2025
+                Terakhir diperbarui: 30 November 2025
             </div>
         </div>
     </footer>
@@ -677,19 +699,226 @@
             metode: 0.15
         };
 
-        // Indonesian stopwords
-        const STOPWORDS = new Set([
+        // ==================== STOPWORDS (CDN + Domain) ====================
+        let stopWords = new Set();
+        
+        // Fallback stopwords jika CDN gagal
+        const fallbackStopWords = new Set([
             'dan', 'yang', 'di', 'pada', 'untuk', 'dengan', 'ini', 'itu', 'dari', 'ke',
             'dalam', 'atau', 'juga', 'sebagai', 'oleh', 'adalah', 'karena', 'bagi',
             'tentang', 'serta', 'terhadap', 'melalui', 'akan', 'dapat', 'telah', 'sudah',
             'belum', 'tidak', 'ada', 'lebih', 'sangat', 'hanya', 'saat', 'ketika', 'jika',
-            'agar', 'supaya', 'bahwa', 'seperti', 'antara', 'sebuah', 'suatu', 'tersebut',
-            'yaitu', 'yakni', 'sehingga', 'namun', 'tetapi', 'maka', 'secara', 'maupun',
-            'baik', 'tanpa', 'masih', 'perlu', 'harus', 'bisa', 'mampu', 'merupakan',
-            'menggunakan', 'digunakan', 'dilakukan', 'melakukan', 'memiliki', 'dimiliki',
-            'penelitian', 'bertujuan', 'tujuan', 'metode', 'hasil', 'data', 'sistem',
-            'berbasis', 'berdasarkan', 'terhadap', 'model', 'algoritma', 'aplikasi'
+            'the', 'and', 'of', 'for', 'in', 'on', 'with', 'using', 'based', 'a', 'an', 'to'
         ]);
+
+        // Domain-specific stopwords
+        const domainStopWords = new Set([
+            'sistem', 'aplikasi', 'informasi', 'metode', 'algoritma', 'web', 'website',
+            'mobile', 'data', 'proses', 'hasil', 'dapat', 'akan', 'bisa', 'harus',
+            'telah', 'sudah', 'belum', 'tidak', 'ada', 'sangat', 'lebih', 'kurang',
+            'berdasarkan', 'terhadap', 'antara', 'menjadi', 'melalui', 'sampai',
+            'sebuah', 'suatu', 'tersebut', 'yaitu', 'bahwa', 'agar', 'sehingga',
+            'menggunakan', 'digunakan', 'dilakukan', 'melakukan', 'memiliki', 'dimiliki',
+            'penelitian', 'bertujuan', 'tujuan', 'model', 'berbasis',
+            // Tambahan: kata umum hasil stem yang tidak bermakna
+            'guna', 'gunakan', 'berguna', 'pengguna', 'penggunaan',
+            'buat', 'pembuat', 'pembuatan', 'dibuat', 'membuat',
+            'pakai', 'pemakai', 'pemakaian', 'dipakai', 'memakai',
+            'laku', 'pelaku', 'berlaku', 'melakukan', 'dilakukan',
+            'kerja', 'pekerja', 'bekerja', 'mengerjakan', 'dikerjakan',
+            'bantu', 'pembantu', 'membantu', 'dibantu', 'bantuan',
+            'kembang', 'pengembang', 'pengembangan', 'dikembangkan', 'mengembangkan',
+            'dukung', 'pendukung', 'dukungan', 'mendukung', 'didukung',
+            // Kata penghubung yang sering salah di-stem
+            'mengenai', 'terhadap', 'sebagai', 'merupakan', 'menunjukkan',
+            'memberikan', 'menyatakan', 'menjelaskan', 'menghasilkan',
+            // Kata keterangan waktu/umum
+            'sebelum', 'sesudah', 'setelah', 'selama', 'kemudian',
+            'pertama', 'kedua', 'ketiga', 'terakhir', 'selanjutnya',
+            // Kata penghubung/keterangan umum
+            'seperti', 'masih', 'hanya', 'juga', 'agar', 'supaya',
+            'namun', 'tetapi', 'karena', 'sehingga', 'meskipun', 'walaupun',
+            'bahkan', 'justru', 'malah', 'sangat', 'cukup', 'kurang',
+            'tinggi', 'rendah', 'besar', 'kecil', 'banyak', 'sedikit',
+            'sebab', 'mampu', 'secara', 'efektif', 'efisien', 'optimal',
+            'utama', 'khusus', 'umum', 'langsung', 'tepat', 'benar',
+            // Kata kerja umum yang sering salah di-stem
+            'memahami', 'pengalaman', 'meningkat', 'meningkatkan', 'peningkatan',
+            'memiliki', 'menggunakan', 'menunjukkan', 'memberikan', 'mendapatkan',
+            // Kata dengan circumfix ke-...-an (sering salah di-stem)
+            'kerusakan', 'keamanan', 'kebutuhan', 'kemampuan', 'kecepatan',
+            'ketepatan', 'keakuratan', 'kelebihan', 'kekurangan', 'kesalahan',
+            'keberhasilan', 'kegagalan', 'kepuasan', 'ketersediaan', 'kemudahan'
+        ]);
+
+        async function loadStopWords() {
+            const ID_URL = "https://cdn.jsdelivr.net/npm/stopwords-iso@1.1.0/stopwords-id.json";
+            const EN_URL = "https://cdn.jsdelivr.net/npm/stopwords-iso@1.1.0/stopwords-en.json";
+            
+            try {
+                const [idResponse, enResponse] = await Promise.all([
+                    fetch(ID_URL),
+                    fetch(EN_URL)
+                ]);
+                
+                if (!idResponse.ok || !enResponse.ok) {
+                    throw new Error("Failed to fetch stop words");
+                }
+                
+                const [idWords, enWords] = await Promise.all([
+                    idResponse.json(),
+                    enResponse.json()
+                ]);
+                
+                stopWords = new Set([...idWords, ...enWords, ...domainStopWords]);
+                console.log(`✓ Loaded ${stopWords.size} stop words`);
+                return true;
+            } catch (error) {
+                console.warn("Failed to load stop words from CDN, using fallback:", error);
+                stopWords = new Set([...fallbackStopWords, ...domainStopWords]);
+                return false;
+            }
+        }
+
+        // ==================== STEMMING (Indonesian + English) ====================
+        
+        // Protected words - jangan di-stem karena sering salah
+        const protectedWords = new Set([
+            'analisis', 'sentimen', 'klasifikasi', 'prediksi', 'deteksi',
+            'machine', 'learning', 'deep', 'neural', 'network', 'class',
+            'support', 'vector', 'decision', 'tree', 'random', 'forest',
+            'naive', 'bayes', 'regression', 'clustering', 'processing',
+            'recognition', 'detection', 'classification', 'prediction',
+            'image', 'text', 'speech', 'natural', 'language', 'computer',
+            'vision', 'artificial', 'intelligence', 'convolutional',
+            'recurrent', 'transformer', 'attention', 'embedding'
+        ]);
+        
+        // Blocklist - hasil stem yang invalid/tidak masuk akal
+        const invalidStems = new Set([
+            'enai', 'ntimen', 'analisi', 'clas', 'lass', 'upport',
+            'ector', 'achine', 'earning', 'etwork', 'eural',
+            'ahami', 'alaman', 'ingkat', 'apat', 'unya', 'adian',
+            'roses', 'asil', 'alam', 'ilai', 'ukup', 'asar',
+            'kerusa', 'rusak', 'rusa', 'efekt', 'aktif'
+        ]);
+        
+        // Validasi hasil stem - harus diawali konsonan atau vokal yang valid
+        function isValidStem(word) {
+            if (word.length < 3) return false;
+            if (invalidStems.has(word)) return false;
+            // Kata valid biasanya tidak diawali dengan kombinasi huruf aneh
+            const invalidStart = /^[^aiueoabcdefghijklmnopqrstuvwxyz]/i;
+            if (invalidStart.test(word)) return false;
+            return true;
+        }
+        
+        function stemIndonesian(word) {
+            if (word.length < 5) return word;  // Minimum 5 karakter untuk stem
+            if (protectedWords.has(word)) return word;
+            
+            let stem = word;
+            
+            // Remove suffixes first (hanya suffix yang jelas)
+            const suffixes = ['kan', 'nya'];  // Hapus 'an' dan 'i' karena terlalu agresif
+            for (const suffix of suffixes) {
+                if (stem.endsWith(suffix) && stem.length > suffix.length + 3) {
+                    stem = stem.slice(0, -suffix.length);
+                    break;
+                }
+            }
+            
+            // Remove prefixes (hanya prefix yang jelas, hapus 'se', 'ke', 'di' karena ambigu)
+            const prefixPatterns = [
+                { prefix: 'meng', replace: '' },
+                { prefix: 'meny', replace: 's' },
+                { prefix: 'men', replace: '' },
+                { prefix: 'mem', replace: '' },
+                { prefix: 'peng', replace: '' },
+                { prefix: 'peny', replace: 's' },
+                { prefix: 'pen', replace: '' },
+                { prefix: 'pem', replace: '' },
+                { prefix: 'ber', replace: '' },
+                { prefix: 'ter', replace: '' }
+            ];
+            
+            for (const { prefix, replace } of prefixPatterns) {
+                if (stem.startsWith(prefix) && stem.length > prefix.length + 3) {
+                    const newStem = replace + stem.slice(prefix.length);
+                    if (newStem.length >= 4) {
+                        stem = newStem;
+                        break;
+                    }
+                }
+            }
+            
+            return stem.length >= 4 ? stem : word;
+        }
+        
+        function stemEnglish(word) {
+            if (word.length < 5) return word;
+            if (protectedWords.has(word)) return word;
+            
+            let stem = word;
+            
+            // Hanya suffix yang aman
+            const suffixes = [
+                { suffix: 'ization', replace: 'ize' },
+                { suffix: 'ational', replace: 'ate' },
+                { suffix: 'iveness', replace: 'ive' },
+                { suffix: 'fulness', replace: 'ful' },
+                { suffix: 'ousness', replace: 'ous' },
+                { suffix: 'ation', replace: 'ate' },
+                { suffix: 'ness', replace: '' },
+                { suffix: 'ment', replace: '' },
+                { suffix: 'able', replace: '' },
+                { suffix: 'ible', replace: '' },
+                { suffix: 'ing', replace: '' },
+                { suffix: 'ies', replace: 'y' }
+            ];
+            
+            for (const { suffix, replace } of suffixes) {
+                if (stem.endsWith(suffix) && stem.length > suffix.length + 3) {
+                    const newStem = stem.slice(0, -suffix.length) + replace;
+                    if (newStem.length >= 4) {
+                        stem = newStem;
+                        break;
+                    }
+                }
+            }
+            
+            return stem.length >= 4 ? stem : word;
+        }
+        
+        function stem(word) {
+            // Jangan stem kata yang dilindungi
+            if (protectedWords.has(word)) return word;
+            
+            // Jangan stem kata pendek
+            if (word.length < 5) return word;
+            
+            // Deteksi bahasa berdasarkan pola yang JELAS
+            const clearIndonesianPrefix = /^(meng|meny|mem|peng|peny|pem|ber|ter)/;
+            const clearIndonesianSuffix = /(kan|nya)$/;
+            
+            let result = word;
+            
+            if (clearIndonesianPrefix.test(word) || clearIndonesianSuffix.test(word)) {
+                result = stemIndonesian(word);
+            } else {
+                const clearEnglishSuffix = /(ation|ization|iveness|fulness|ousness|ment|ness|able|ible)$/;
+                if (clearEnglishSuffix.test(word)) {
+                    result = stemEnglish(word);
+                }
+            }
+            
+            // Validasi hasil - jika invalid, kembalikan kata asli
+            if (!isValidStem(result)) {
+                return word;
+            }
+            
+            return result;
+        }
 
         // State
         let allProposals = [];
@@ -709,9 +938,15 @@
                 .replace(/\s+/g, ' ')
                 .trim();
 
-            // Tokenize and remove stopwords
+            // Tokenize, remove stopwords, and apply stemming
             let tokens = cleaned.split(' ')
-                .filter(word => word.length > 2 && !STOPWORDS.has(word));
+                .filter(word => word.length > 2 && !stopWords.has(word))
+                .map(word => {
+                    const stemmed = stem(word);
+                    // Check if stemmed word is also not a stopword
+                    return stopWords.has(stemmed) ? null : stemmed;
+                })
+                .filter(word => word !== null && word.length > 2);
 
             return tokens;
         }
@@ -925,7 +1160,26 @@
         }
 
         function filterAndDisplay() {
-            filteredPairs = similarityPairs.filter(p => p.similarity >= threshold);
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            
+            filteredPairs = similarityPairs.filter(p => {
+                // Filter by threshold
+                if (p.similarity < threshold) return false;
+                
+                // Filter by search term (NIM atau Nama)
+                if (searchTerm) {
+                    const matchProposal1 = 
+                        p.proposal1.nim.toLowerCase().includes(searchTerm) ||
+                        p.proposal1.nama.toLowerCase().includes(searchTerm);
+                    const matchProposal2 = 
+                        p.proposal2.nim.toLowerCase().includes(searchTerm) ||
+                        p.proposal2.nama.toLowerCase().includes(searchTerm);
+                    if (!matchProposal1 && !matchProposal2) return false;
+                }
+                
+                return true;
+            });
+            
             currentPage = 1;
 
             updateSummary();
@@ -938,13 +1192,16 @@
                 document.getElementById('empty-state').style.display = 'block';
                 document.getElementById('results-table').style.display = 'none';
                 document.getElementById('pagination').style.display = 'none';
-                document.getElementById('results-info').textContent = 'Tidak ada hasil';
+                document.getElementById('results-info').textContent = searchTerm 
+                    ? `Tidak ditemukan hasil untuk "${searchTerm}"` 
+                    : 'Tidak ada hasil';
             } else {
                 document.getElementById('empty-state').style.display = 'none';
                 document.getElementById('results-table').style.display = 'table';
                 document.getElementById('pagination').style.display = 'flex';
-                document.getElementById('results-info').textContent =
-                    `Ditemukan ${filteredPairs.length} pasang proposal mirip`;
+                document.getElementById('results-info').textContent = searchTerm
+                    ? `Ditemukan ${filteredPairs.length} pasang proposal untuk "${searchTerm}"`
+                    : `Ditemukan ${filteredPairs.length} pasang proposal mirip`;
             }
         }
 
@@ -1068,12 +1325,13 @@
             if (!pair) return;
 
             const commonKeywords = findCommonKeywords(
-                pair.proposal1.allTokens,
-                pair.proposal2.allTokens
+                pair.proposal1.judulTokens,
+                pair.proposal2.judulTokens
             );
 
             const simClass = pair.similarity >= 70 ? 'high' :
                              pair.similarity >= 50 ? 'medium' : 'low';
+            const getSimClass = (val) => val >= 70 ? 'high' : val >= 50 ? 'medium' : 'low';
 
             const modalBody = document.getElementById('modal-body');
             modalBody.innerHTML = `
@@ -1082,11 +1340,11 @@
                         <i class="fas fa-percentage"></i>
                         Kemiripan: ${pair.similarity}%
                     </span>
-                    <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
-                        Judul: ${pair.details.judul}% |
-                        Deskripsi: ${pair.details.deskripsi}% |
-                        Problem: ${pair.details.problem}% |
-                        Metode: ${pair.details.metode}%
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 0.75rem;">
+                        <span class="similarity-badge ${getSimClass(pair.details.judul)}" style="font-size: 0.85rem;">Judul: ${pair.details.judul}%</span>
+                        <span class="similarity-badge ${getSimClass(pair.details.deskripsi)}" style="font-size: 0.85rem;">Deskripsi: ${pair.details.deskripsi}%</span>
+                        <span class="similarity-badge ${getSimClass(pair.details.problem)}" style="font-size: 0.85rem;">Problem: ${pair.details.problem}%</span>
+                        <span class="similarity-badge ${getSimClass(pair.details.metode)}" style="font-size: 0.85rem;">Metode: ${pair.details.metode}%</span>
                     </div>
                 </div>
 
@@ -1199,6 +1457,11 @@
             filterAndDisplay();
         });
 
+        // Search input
+        document.getElementById('search-input').addEventListener('input', function() {
+            filterAndDisplay();
+        });
+
         // Close modal on overlay click
         document.getElementById('modal-overlay').addEventListener('click', function(e) {
             if (e.target === this) {
@@ -1214,7 +1477,14 @@
         });
 
         // ==================== INITIALIZE ====================
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load stopwords first, then load data
+            document.getElementById('loading-state').innerHTML = 
+                '<i class="fas fa-spinner fa-spin"></i> Memuat kamus stopwords...';
+            await loadStopWords();
+            
+            document.getElementById('loading-state').innerHTML = 
+                '<i class="fas fa-spinner fa-spin"></i> Menghitung kemiripan dengan stemming...';
             loadData();
         });
     </script>
