@@ -1118,8 +1118,8 @@
             }
 
             async function loadStopWords() {
-                const ID_URL = "https://cdn.jsdelivr.net/npm/stopwords-iso@1.1.0/stopwords-id.json";
-                const EN_URL = "https://cdn.jsdelivr.net/npm/stopwords-iso@1.1.0/stopwords-en.json";
+                const ID_URL = "https://cdn.jsdelivr.net/gh/stopwords-iso/stopwords-id/stopwords-id.json";
+                const EN_URL = "https://cdn.jsdelivr.net/gh/stopwords-iso/stopwords-en/stopwords-en.json";
                 
                 try {
                     const [idResponse, enResponse] = await Promise.all([

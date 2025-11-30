@@ -281,7 +281,7 @@ Aplikasi ini dibangun menggunakan teknologi web standar tanpa backend (Serverles
     *   [Chart.js](https://www.chartjs.org/) (Data Visualization)
     *   [ExcelJS](https://github.com/exceljs/exceljs) (Excel Export)
     *   [jsPDF & AutoTable](https://github.com/parallax/jsPDF) (PDF Export)
-    *   [stopwords-iso](https://github.com/stopwords-iso) (Stopwords ID+EN via CDN)
+    *   [stopwords-iso](https://github.com/stopwords-iso) (Stopwords ID+EN via jsDelivr GitHub CDN)
 *   **API & Services:**
     *   [Hugging Face Space](https://huggingface.co/spaces/galihboy/semantic-embedding-api) (AI Embedding + LLM Proxy)
     *   [Supabase](https://supabase.com/) (PostgreSQL Cache Database)
