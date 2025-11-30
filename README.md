@@ -290,6 +290,63 @@ Aplikasi ini dibangun menggunakan teknologi web standar tanpa backend (Serverles
 
 ---
 
+## 📡 Gradio API Reference
+
+### Format Endpoint (Gradio 4.x+)
+
+Aplikasi menggunakan Gradio sebagai API backend di HF Space. Penting untuk menggunakan format endpoint yang benar:
+
+| Gradio Version | Format Lama ❌ | Format Baru ✅ |
+|----------------|----------------|----------------|
+| < 4.0 | `/gradio_api/call/{name}` | - |
+| ≥ 4.0 | - | `/call/{name}` |
+| Info endpoint | `/gradio_api/info` | `/info` |
+
+### Daftar API Endpoints
+
+| Endpoint | Fungsi | Input |
+|----------|--------|-------|
+| `/call/get_embedding` | Generate embedding single text | `text` |
+| `/call/get_embeddings_batch` | Generate embeddings batch | `texts_json` |
+| `/call/calculate_similarity` | Hitung cosine similarity | `text1`, `text2` |
+| `/call/db_check_connection` | Cek koneksi Supabase | - |
+| `/call/db_get_all_embeddings` | Ambil semua cache | - |
+| `/call/db_get_embedding` | Ambil embedding by NIM | `nim`, `content_hash` |
+| `/call/db_save_embedding` | Simpan embedding (API only) | `data_json` |
+| `/call/llm_check_status` | Cek status Gemini | - |
+| `/call/llm_analyze_simple` | Analisis quick (judul+metode) | `judul1`, `judul2`, `metode1`, `metode2` |
+| `/call/llm_analyze_pair` | Analisis full proposal | `proposal1_json`, `proposal2_json`, `use_cache` |
+
+### Cara Memanggil API (JavaScript)
+
+```javascript
+// 1. POST untuk memulai request
+const response = await fetch(`${GRADIO_URL}/call/get_embedding`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data: ["teks yang ingin di-embed"] })
+});
+const { event_id } = await response.json();
+
+// 2. GET untuk mengambil hasil
+const resultResponse = await fetch(`${GRADIO_URL}/call/get_embedding/${event_id}`);
+const resultText = await resultResponse.text();
+
+// 3. Parse hasil (format: "data: [...]")
+const lines = resultText.trim().split('\n');
+const dataLine = lines.find(l => l.startsWith('data:'));
+const result = JSON.parse(dataLine.substring(5));
+```
+
+### Catatan Penting
+
+1. **Gunakan `api_name` di Gradio** - Setiap `.click()` di `app.py` harus punya `api_name` eksplisit
+2. **Two-step request** - POST untuk mulai, GET untuk ambil hasil (async pattern)
+3. **Event ID** - Response POST berisi `event_id` yang digunakan untuk GET
+4. **Data format** - Response GET dalam format Server-Sent Events (`data: ...`)
+
+---
+
 ## 👨‍💻 Pengembang
 
 **Galih Hermawan**

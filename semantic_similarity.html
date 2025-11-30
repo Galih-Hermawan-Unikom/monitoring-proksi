@@ -827,7 +827,7 @@
         async function checkConnections() {
             // Check HF Space API
             try {
-                const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/info`);
+                const response = await fetch(`${CONFIG.GRADIO_API_URL}/info`);
                 const apiOk = response.ok;
                 updateStatus('status-api', apiOk,
                     apiOk ? 'HF Space API: Ready' : 'HF Space API: Error');

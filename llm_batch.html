@@ -684,7 +684,7 @@
         // ==================== CONNECTION CHECK ====================
         async function checkConnections() {
             try {
-                const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/info`);
+                const response = await fetch(`${CONFIG.GRADIO_API_URL}/info`);
                 updateStatus('status-api', response.ok, response.ok ? 'Ready' : 'Error');
             } catch (e) {
                 updateStatus('status-api', false, 'Offline');
@@ -860,7 +860,7 @@
         }
 
         async function callLLMAnalysis(proposal1, proposal2) {
-            const response = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/call/llm_analyze_pair`, {
+            const response = await fetch(`${CONFIG.GRADIO_API_URL}/call/llm_analyze_pair`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -873,7 +873,7 @@
             const result = await response.json();
             const eventId = result.event_id;
 
-            const resultResponse = await fetch(`${CONFIG.GRADIO_API_URL}/gradio_api/call/llm_analyze_pair/${eventId}`);
+            const resultResponse = await fetch(`${CONFIG.GRADIO_API_URL}/call/llm_analyze_pair/${eventId}`);
             const resultText = await resultResponse.text();
             
             const lines = resultText.trim().split('\n');

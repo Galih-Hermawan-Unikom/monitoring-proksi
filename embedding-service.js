@@ -45,7 +45,7 @@ class EmbeddingService {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 detik timeout
 
-                const response = await fetch(`${this.gradioApiUrl}/gradio_api/call/get_embedding`, {
+                const response = await fetch(`${this.gradioApiUrl}/call/get_embedding`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ data: ["test"] }),
@@ -58,7 +58,7 @@ class EmbeddingService {
                     const result = await response.json();
                     // Consume the result to complete the request
                     if (result.event_id) {
-                        await fetch(`${this.gradioApiUrl}/gradio_api/call/get_embedding/${result.event_id}`);
+                        await fetch(`${this.gradioApiUrl}/call/get_embedding/${result.event_id}`);
                     }
                     
                     if (onStatusChange) {
@@ -115,7 +115,7 @@ class EmbeddingService {
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
         try {
-            const response = await fetch(`${this.gradioApiUrl}/gradio_api/call/${functionName}`, {
+            const response = await fetch(`${this.gradioApiUrl}/call/${functionName}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ data: data }),
@@ -136,7 +136,7 @@ class EmbeddingService {
             const resultTimeoutId = setTimeout(() => resultController.abort(), timeoutMs);
 
             const resultResponse = await fetch(
-                `${this.gradioApiUrl}/gradio_api/call/${functionName}/${eventId}`,
+                `${this.gradioApiUrl}/call/${functionName}/${eventId}`,
                 { signal: resultController.signal }
             );
 
