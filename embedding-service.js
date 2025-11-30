@@ -10,8 +10,87 @@ class EmbeddingService {
         this.stats = {
             fromCache: 0,
             fromApi: 0,
+            fromLocal: 0,  // NEW: dari browser localStorage
             errors: 0
         };
+        
+        // LocalStorage cache settings
+        this.LOCAL_CACHE_KEY = 'proksi_embeddings_cache';
+        this.LOCAL_CACHE_TIMESTAMP_KEY = 'proksi_embeddings_timestamp';
+        this.LOCAL_CACHE_MAX_AGE_MS = 30 * 60 * 1000; // 30 menit
+    }
+    
+    // ==================== LOCAL STORAGE CACHE ====================
+    
+    /**
+     * Check if local cache is valid (exists and not expired)
+     */
+    isLocalCacheValid() {
+        try {
+            const timestamp = localStorage.getItem(this.LOCAL_CACHE_TIMESTAMP_KEY);
+            if (!timestamp) return false;
+            
+            const age = Date.now() - parseInt(timestamp);
+            return age < this.LOCAL_CACHE_MAX_AGE_MS;
+        } catch (e) {
+            console.warn('localStorage not available:', e);
+            return false;
+        }
+    }
+    
+    /**
+     * Get embeddings from local cache
+     */
+    getLocalCache() {
+        try {
+            const data = localStorage.getItem(this.LOCAL_CACHE_KEY);
+            if (!data) return null;
+            return JSON.parse(data);
+        } catch (e) {
+            console.warn('Failed to read local cache:', e);
+            return null;
+        }
+    }
+    
+    /**
+     * Save embeddings to local cache
+     */
+    saveLocalCache(embeddings) {
+        try {
+            localStorage.setItem(this.LOCAL_CACHE_KEY, JSON.stringify(embeddings));
+            localStorage.setItem(this.LOCAL_CACHE_TIMESTAMP_KEY, Date.now().toString());
+            console.log(`✅ Saved ${Object.keys(embeddings).length} embeddings to local cache`);
+        } catch (e) {
+            console.warn('Failed to save local cache (might be full):', e);
+        }
+    }
+    
+    /**
+     * Clear local cache (for force refresh)
+     */
+    clearLocalCache() {
+        try {
+            localStorage.removeItem(this.LOCAL_CACHE_KEY);
+            localStorage.removeItem(this.LOCAL_CACHE_TIMESTAMP_KEY);
+            console.log('🗑️ Local cache cleared');
+        } catch (e) {
+            console.warn('Failed to clear local cache:', e);
+        }
+    }
+    
+    /**
+     * Get cache age in minutes (for display)
+     */
+    getLocalCacheAge() {
+        try {
+            const timestamp = localStorage.getItem(this.LOCAL_CACHE_TIMESTAMP_KEY);
+            if (!timestamp) return null;
+            
+            const ageMs = Date.now() - parseInt(timestamp);
+            return Math.round(ageMs / 60000); // in minutes
+        } catch (e) {
+            return null;
+        }
     }
 
     // ==================== HASH FUNCTION ====================
@@ -110,11 +189,14 @@ class EmbeddingService {
      * Dengan timeout yang lebih panjang untuk handle cold start
      */
     async callGradioApi(functionName, data = [], timeoutMs = 30000) {
+        console.log(`🔄 Calling API: ${functionName}...`);
+        
         // Step 1: POST to initiate call
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
         try {
+            console.log(`  → POST to /call/${functionName}`);
             const response = await fetch(`${this.gradioApiUrl}/call/${functionName}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -123,6 +205,7 @@ class EmbeddingService {
             });
 
             clearTimeout(timeoutId);
+            console.log(`  → POST response: ${response.status}`);
 
             if (!response.ok) {
                 throw new Error(`API Error ${response.status}`);
@@ -130,32 +213,58 @@ class EmbeddingService {
 
             const result = await response.json();
             const eventId = result.event_id;
+            console.log(`  → Got event_id: ${eventId}`);
 
             // Step 2: GET result using event_id (SSE stream) - timeout lebih panjang
             const resultController = new AbortController();
             const resultTimeoutId = setTimeout(() => resultController.abort(), timeoutMs);
 
+            console.log(`  → GET result for ${eventId}...`);
             const resultResponse = await fetch(
                 `${this.gradioApiUrl}/call/${functionName}/${eventId}`,
                 { signal: resultController.signal }
             );
 
+            console.log(`  → GET response: ${resultResponse.status}`);
+
+            // Read entire SSE stream (safer for large responses like embeddings)
+            const reader = resultResponse.body.getReader();
+            const decoder = new TextDecoder();
+            let chunks = [];
+            
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+            }
+            
             clearTimeout(resultTimeoutId);
-
-            const resultText = await resultResponse.text();
-
+            
+            // Combine all chunks and decode at once
+            const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
+            const combined = new Uint8Array(totalLength);
+            let offset = 0;
+            for (const chunk of chunks) {
+                combined.set(chunk, offset);
+                offset += chunk.length;
+            }
+            const buffer = decoder.decode(combined);
+            
+            console.log(`  → Stream complete (${buffer.length} chars)`);
+            
             // Parse SSE response - find line starting with "data:"
-            const lines = resultText.split('\n');
+            const lines = buffer.split('\n');
             for (const line of lines) {
                 if (line.startsWith('data:')) {
                     const jsonStr = line.substring(5).trim();
+                    console.log(`  → Parsing data line (${jsonStr.length} chars)...`);
                     const parsedData = JSON.parse(jsonStr);
-                    // Gradio returns array, first element is our result
+                    console.log(`  → Parsed successfully`);
                     return parsedData[0];
                 }
             }
-
-            throw new Error("Invalid response format from Gradio API");
+            
+            throw new Error("Invalid response format from Gradio API - no data line found");
         } catch (error) {
             clearTimeout(timeoutId);
             if (error.name === 'AbortError') {
@@ -222,16 +331,25 @@ class EmbeddingService {
      */
     async getAllCachedEmbeddings() {
         try {
-            const result = await this.callGradioApi('db_get_all_embeddings', []);
+            console.log('📥 Fetching all embeddings from server...');
+            const startTime = Date.now();
+            
+            // Longer timeout for potentially large data
+            const result = await this.callGradioApi('db_get_all_embeddings', [], 60000);
+            
+            const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+            console.log(`✅ Fetched embeddings in ${elapsed}s:`, result);
             
             if (result.error) {
                 console.error('DB Error:', result.error);
                 return [];
             }
             
-            return result.data || [];
+            const data = result.data || [];
+            console.log(`📊 Got ${data.length} embeddings from server`);
+            return data;
         } catch (error) {
-            console.error('getAllCachedEmbeddings error:', error);
+            console.error('❌ getAllCachedEmbeddings error:', error);
             return [];
         }
     }
@@ -349,10 +467,12 @@ class EmbeddingService {
 
     /**
      * Get embeddings untuk semua proposals (batch)
-     * Optimized: Load all from cache first, then only API call for missing
+     * Optimized: Check local cache → Supabase cache → API
+     * @param {boolean} forceRefresh - Skip local cache and fetch from server
      */
-    async getEmbeddingsForAllProposals(proposals, onProgress = null) {
+    async getEmbeddingsForAllProposals(proposals, onProgress = null, forceRefresh = false) {
         const results = {};
+        const totalProposals = proposals.length; // Save original count
         
         // 1. Build map of content hashes
         const hashMap = {};
@@ -360,8 +480,43 @@ class EmbeddingService {
             hashMap[p.nim] = this.generateContentHash(p);
         });
 
-        // 2. Load all existing embeddings from Supabase via HF Space
-        if (onProgress) onProgress(0, 'Mengambil data dari cache server...', '');
+        // 2. Check LOCAL cache first (instant!)
+        if (!forceRefresh && this.isLocalCacheValid()) {
+            const localCache = this.getLocalCache();
+            if (localCache) {
+                const cacheAge = this.getLocalCacheAge();
+                if (onProgress) onProgress(5, `Menggunakan cache lokal (${cacheAge} menit lalu)...`, 'Memeriksa data baru');
+                
+                // Check if all proposals are in local cache with correct hash
+                let allFound = true;
+                const missingProposals = [];
+                
+                for (const proposal of proposals) {
+                    const cached = localCache[proposal.nim];
+                    if (cached && cached.hash === hashMap[proposal.nim]) {
+                        results[proposal.nim] = cached.embeddings;
+                        this.stats.fromLocal++;
+                    } else {
+                        allFound = false;
+                        missingProposals.push(proposal);
+                    }
+                }
+                
+                // If all found in local cache, we're done!
+                if (allFound) {
+                    if (onProgress) onProgress(100, `${totalProposals} dari cache lokal`, 'Instant load! ⚡');
+                    console.log(`⚡ All ${totalProposals} embeddings loaded from local cache`);
+                    return results;
+                }
+                
+                // Some missing - need to fetch from server
+                if (onProgress) onProgress(10, `${Object.keys(results).length} dari lokal, ${missingProposals.length} perlu sync...`, '');
+                proposals = missingProposals; // Only fetch missing ones
+            }
+        }
+
+        // 3. Load from Supabase via HF Space
+        if (onProgress) onProgress(15, 'Mengambil data dari server...', 'Menghubungi Supabase');
         
         const existingEmbeddings = await this.getAllCachedEmbeddings();
         
@@ -378,14 +533,14 @@ class EmbeddingService {
             };
         });
 
-        // 3. Process each proposal
+        // 4. Process each proposal
         const toFetch = [];
         
         for (const proposal of proposals) {
             const key = `${proposal.nim}|${hashMap[proposal.nim]}`;
             
             if (cacheMap[key]) {
-                // Found in cache
+                // Found in Supabase cache
                 results[proposal.nim] = cacheMap[key];
                 this.stats.fromCache++;
             } else {
@@ -395,22 +550,22 @@ class EmbeddingService {
         }
 
         if (onProgress) {
-            const cachedPercent = Math.round((proposals.length - toFetch.length) / proposals.length * 100);
-            onProgress(cachedPercent, `${proposals.length - toFetch.length} dari cache, ${toFetch.length} perlu diproses`, '');
+            const processed = Object.keys(results).length;
+            const cachedPercent = Math.round(processed / totalProposals * 100);
+            onProgress(cachedPercent, `${processed} dari cache, ${toFetch.length} perlu diproses`, '');
         }
 
-        // 4. Fetch missing embeddings from API
+        // 5. Fetch missing embeddings from API
         if (toFetch.length > 0) {
             for (let i = 0; i < toFetch.length; i++) {
                 const proposal = toFetch[i];
+                const processed = Object.keys(results).length + i + 1;
                 
                 if (onProgress) {
-                    const overallProgress = Math.round(
-                        ((proposals.length - toFetch.length + i + 1) / proposals.length) * 100
-                    );
+                    const overallProgress = Math.round(processed / totalProposals * 100);
                     onProgress(
                         overallProgress,
-                        `Menganalisis proposal... (${proposals.length - toFetch.length + i + 1}/${proposals.length})`,
+                        `Menganalisis proposal... (${processed}/${totalProposals})`,
                         proposal.nama
                     );
                 }
@@ -424,7 +579,24 @@ class EmbeddingService {
             }
         }
 
+        // 5. Save ALL results to local cache for next time
+        this.saveResultsToLocalCache(results, hashMap);
+
         return results;
+    }
+    
+    /**
+     * Save results to local cache with hashes for validation
+     */
+    saveResultsToLocalCache(results, hashMap) {
+        const localCache = {};
+        for (const nim in results) {
+            localCache[nim] = {
+                hash: hashMap[nim],
+                embeddings: results[nim]
+            };
+        }
+        this.saveLocalCache(localCache);
     }
 
     // ==================== UTILITY ====================
@@ -437,6 +609,7 @@ class EmbeddingService {
         this.stats = {
             fromCache: 0,
             fromApi: 0,
+            fromLocal: 0,
             errors: 0
         };
     }

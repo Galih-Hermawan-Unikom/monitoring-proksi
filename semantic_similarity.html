@@ -146,6 +146,38 @@
         .status-error { color: var(--danger-color); }
         .status-loading { color: var(--secondary-color); }
 
+        .refresh-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+        
+        .refresh-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .refresh-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+        
+        .refresh-btn.spinning i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         /* Progress Section */
         .progress-section {
             background: var(--bg-secondary);
@@ -660,6 +692,9 @@
                 <i class="fas fa-database"></i>
                 <span>Cache: -</span>
             </div>
+            <button class="refresh-btn" id="refresh-btn" onclick="forceRefresh()" title="Paksa ambil data baru dari server">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
         </div>
 
         <!-- Progress Section -->
@@ -672,8 +707,9 @@
             </div>
             <div class="progress-text" id="progress-text">0%</div>
             <div class="progress-stats">
-                <span id="stats-supabase"><i class="fas fa-cloud"></i> From Cache: 0</span>
-                <span id="stats-api"><i class="fas fa-microchip"></i> From API: 0</span>
+                <span id="stats-local"><i class="fas fa-laptop"></i> Lokal: 0</span>
+                <span id="stats-supabase"><i class="fas fa-cloud"></i> Server: 0</span>
+                <span id="stats-api"><i class="fas fa-microchip"></i> API: 0</span>
             </div>
         </div>
 
@@ -830,21 +866,14 @@
         async function checkConnections() {
             updateProgress(0, 'Memeriksa koneksi...', 'Menghubungi server');
             
-            // Check HF Space API
-            try {
-                const response = await fetch(`${CONFIG.GRADIO_API_URL}/info`, { 
-                    signal: AbortSignal.timeout(10000) // 10 second timeout
-                });
-                const apiOk = response.ok;
-                updateStatus('status-api', apiOk,
-                    apiOk ? 'HF Space API: Ready' : 'HF Space API: Error');
-            } catch (e) {
-                updateStatus('status-api', false, 'HF Space API: Offline');
-            }
-
-            // Check Supabase via HF Space proxy (skip getAllCachedEmbeddings here - will be called in startAnalysis)
-            updateProgress(0, 'Memeriksa koneksi...', 'Mengecek database');
+            // Check both HF Space API and Supabase via embeddingService (single call)
             const dbStatus = await embeddingService.checkDbConnection();
+            
+            // If Supabase connected, HF Space API must be working too
+            const apiOk = dbStatus.connected || !dbStatus.error?.includes('fetch');
+            updateStatus('status-api', dbStatus.connected,
+                dbStatus.connected ? 'HF Space API: Ready' : 'HF Space API: Offline');
+            
             updateStatus('status-supabase', dbStatus.connected, 
                 dbStatus.connected ? 'Supabase: Connected' : 'Supabase: ' + (dbStatus.error || 'Error'));
             
@@ -894,13 +923,16 @@
                     (progress, title, subtitle) => {
                         updateProgress(15 + (progress * 0.75), title, subtitle);
                         const stats = embeddingService.getStats();
-                        updateStats(stats.fromCache, stats.fromApi);
+                        updateStats(stats.fromLocal, stats.fromCache, stats.fromApi);
                     }
                 );
                 
                 // Update cache status with final count
                 const finalStats = embeddingService.getStats();
-                updateStatus('status-cache', true, `Cache: ${finalStats.fromCache} embeddings`);
+                const totalCached = finalStats.fromLocal + finalStats.fromCache;
+                const cacheAge = embeddingService.getLocalCacheAge();
+                const cacheLabel = cacheAge !== null ? `Cache: ${totalCached} (lokal ${cacheAge}m)` : `Cache: ${totalCached}`;
+                updateStatus('status-cache', true, cacheLabel);
 
                 // 3. Calculate similarities
                 updateProgress(95, 'Menghitung kemiripan...', 'Membandingkan semua pasangan');
@@ -1062,11 +1094,33 @@
             if (subtitle !== undefined) document.getElementById('progress-subtitle').textContent = subtitle;
         }
 
-        function updateStats(fromSupabase, fromApi) {
+        function updateStats(fromLocal, fromSupabase, fromApi) {
+            document.getElementById('stats-local').innerHTML = 
+                `<i class="fas fa-laptop"></i> Lokal: ${fromLocal}`;
             document.getElementById('stats-supabase').innerHTML = 
-                `<i class="fas fa-cloud"></i> From Cache: ${fromSupabase}`;
+                `<i class="fas fa-cloud"></i> Server: ${fromSupabase}`;
             document.getElementById('stats-api').innerHTML = 
-                `<i class="fas fa-microchip"></i> From API: ${fromApi}`;
+                `<i class="fas fa-microchip"></i> API: ${fromApi}`;
+        }
+        
+        async function forceRefresh() {
+            const btn = document.getElementById('refresh-btn');
+            btn.classList.add('spinning');
+            btn.disabled = true;
+            
+            // Clear local cache
+            embeddingService.clearLocalCache();
+            
+            // Reset UI
+            document.getElementById('progress-section').classList.remove('hidden');
+            document.getElementById('control-panel').classList.add('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            
+            // Re-run analysis
+            await startAnalysis();
+            
+            btn.classList.remove('spinning');
+            btn.disabled = false;
         }
 
         function showError(message) {

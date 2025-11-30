@@ -792,15 +792,7 @@
 
         // ==================== CONNECTION CHECK ====================
         async function checkConnections() {
-            // Check HF Space API
-            try {
-                const response = await fetch(`${CONFIG.GRADIO_API_URL}/info`);
-                updateStatus('status-api', response.ok, response.ok ? 'API: Ready' : 'API: Error');
-            } catch (e) {
-                updateStatus('status-api', false, 'API: Offline');
-            }
-
-            // Check Gemini via HF Space
+            // Check Gemini via HF Space (this also verifies API is working)
             try {
                 const response = await fetch(`${CONFIG.GRADIO_API_URL}/call/llm_check_status`, {
                     method: 'POST',
@@ -809,6 +801,7 @@
                 });
                 
                 if (response.ok) {
+                    updateStatus('status-api', true, 'API: Ready');
                     const result = await response.json();
                     const eventId = result.event_id;
                     
@@ -828,10 +821,12 @@
                         }
                     }
                 } else {
+                    updateStatus('status-api', false, 'API: Error');
                     updateStatus('status-gemini', false, 'Gemini: Error');
                 }
             } catch (e) {
-                updateStatus('status-gemini', false, 'Gemini: Error');
+                updateStatus('status-api', false, 'API: Offline');
+                updateStatus('status-gemini', false, 'Gemini: Offline');
             }
         }
 

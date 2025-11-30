@@ -683,11 +683,12 @@
 
         // ==================== CONNECTION CHECK ====================
         async function checkConnections() {
-            try {
-                const response = await fetch(`${CONFIG.GRADIO_API_URL}/info`);
-                updateStatus('status-api', response.ok, response.ok ? 'Ready' : 'Error');
-            } catch (e) {
-                updateStatus('status-api', false, 'Offline');
+            // Check HF Space API via embeddingService
+            const dbStatus = await embeddingService.checkDbConnection();
+            updateStatus('status-api', dbStatus.connected, 
+                dbStatus.connected ? 'Ready' : 'Offline');
+            
+            if (!dbStatus.connected) {
                 throw new Error('API tidak tersedia');
             }
         }
