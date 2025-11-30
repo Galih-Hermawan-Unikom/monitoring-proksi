@@ -24,6 +24,8 @@ Akses website monitoring secara online melalui tautan berikut:
 ![Semantic Similarity](Monitoring%20Proksi%20-%20Semantic%20Similarity.png)
 
 ### LLM Analysis (Gemini)
+![Analisis LLM](Monitoring%20Proksi%20-%20Analisis%20LLM.png)
+
 > Halaman baru untuk analisis dengan Google Gemini:
 > - `llm_similarity.html` - Analisis manual (pilih 2 proposal)
 > - `llm_batch.html` - Analisis batch otomatis (semua pairs ≥ threshold)
