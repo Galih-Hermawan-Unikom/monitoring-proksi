@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Semantic Similarity Analysis - KK E UNIKOM</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -825,9 +828,13 @@
 
         // ==================== CONNECTION CHECK ====================
         async function checkConnections() {
+            updateProgress(0, 'Memeriksa koneksi...', 'Menghubungi server');
+            
             // Check HF Space API
             try {
-                const response = await fetch(`${CONFIG.GRADIO_API_URL}/info`);
+                const response = await fetch(`${CONFIG.GRADIO_API_URL}/info`, { 
+                    signal: AbortSignal.timeout(10000) // 10 second timeout
+                });
                 const apiOk = response.ok;
                 updateStatus('status-api', apiOk,
                     apiOk ? 'HF Space API: Ready' : 'HF Space API: Error');
@@ -835,15 +842,14 @@
                 updateStatus('status-api', false, 'HF Space API: Offline');
             }
 
-            // Check Supabase via HF Space proxy
+            // Check Supabase via HF Space proxy (skip getAllCachedEmbeddings here - will be called in startAnalysis)
+            updateProgress(0, 'Memeriksa koneksi...', 'Mengecek database');
             const dbStatus = await embeddingService.checkDbConnection();
             updateStatus('status-supabase', dbStatus.connected, 
                 dbStatus.connected ? 'Supabase: Connected' : 'Supabase: ' + (dbStatus.error || 'Error'));
-
-            if (dbStatus.connected) {
-                const cached = await embeddingService.getAllCachedEmbeddings();
-                updateStatus('status-cache', true, `Cache: ${cached.length} embeddings`);
-            }
+            
+            // Don't fetch all embeddings here - it will be done in startAnalysis anyway
+            updateStatus('status-cache', dbStatus.connected, 'Cache: akan dimuat');
         }
 
         function updateStatus(elementId, isOk, text) {
@@ -891,6 +897,10 @@
                         updateStats(stats.fromCache, stats.fromApi);
                     }
                 );
+                
+                // Update cache status with final count
+                const finalStats = embeddingService.getStats();
+                updateStatus('status-cache', true, `Cache: ${finalStats.fromCache} embeddings`);
 
                 // 3. Calculate similarities
                 updateProgress(95, 'Menghitung kemiripan...', 'Membandingkan semua pasangan');
