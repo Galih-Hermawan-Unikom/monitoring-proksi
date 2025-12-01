@@ -8,7 +8,7 @@ Website ini mengambil data secara **real-time** dari Google Spreadsheet hasil in
 
 ## 🖥️ Arsitektur Sistem
 
-![Pipeline Utama](Monitoring Proksi - Arsitektur Sistem v2.png)
+![Arsitektur Sistem](Monitoring%20Proksi%20-%20Arsitektur%20Sistem%20v2.png)
 
 ---
 
