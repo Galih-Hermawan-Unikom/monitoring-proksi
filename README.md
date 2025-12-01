@@ -28,7 +28,7 @@ Website ini mengambil data secara **real-time** dari Google Spreadsheet hasil in
 
 ### LLM Analysis (Gemini)
 
-![Analisis LLM](Monitoring Proksi - LLM Batch.png)
+![Analisis LLM](Monitoring%20Proksi%20-%20LLM%20Batch.png)
 
 > Halaman baru untuk analisis dengan Google Gemini:
 >
