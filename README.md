@@ -4,29 +4,34 @@ Dashboard web sederhana untuk memantau pengajuan topik dan judul proposal skrips
 
 Website ini mengambil data secara **real-time** dari Google Spreadsheet hasil input Google Form mahasiswa.
 
-## 🌐 Demo Aplikasi
+---
 
-Akses website monitoring secara online melalui tautan berikut:
+## 🖥️ Arsitektur Sistem
 
-### [👉 Buka Website Monitoring](https://galih-hermawan-unikom.github.io/monitoring-proksi/)
+![Pipeline Utama](Monitoring Proksi - Arsitektur Sistem v2.png)
 
 ---
 
-## 📊 Infografis Sistem
+## 🌐 Demo Aplikasi
 
-### Dashboard
+### Dashboard Utama
+
 ![Dashboard](Monitoring%20Proksi%20-%20Dashboard.png)
 
-### Deteksi Kemiripan TF-IDF
+### TF-IDF Similarity
+
 ![TF-IDF Similarity](Monitoring%20Proksi%20-%20TF%20IDF%20Similarity.png)
 
 ### Semantic Similarity (AI)
+
 ![Semantic Similarity](Monitoring%20Proksi%20-%20Semantic%20Similarity.png)
 
 ### LLM Analysis (Gemini)
-![Analisis LLM](Monitoring%20Proksi%20-%20Analisis%20LLM.png)
+
+![Analisis LLM](Monitoring Proksi - LLM Batch.png)
 
 > Halaman baru untuk analisis dengan Google Gemini:
+>
 > - `llm_similarity.html` - Analisis manual (pilih 2 proposal)
 > - `llm_batch.html` - Analisis batch otomatis (semua pairs ≥ threshold)
 
@@ -34,18 +39,18 @@ Akses website monitoring secara online melalui tautan berikut:
 
 ## ✨ Fitur Utama
 
-*   **Real-time Data:** Terhubung langsung dengan Google Sheets; data otomatis terupdate setiap kali halaman dimuat.
-*   **Pencarian Cepat:** Filter data berdasarkan Nama, NIM, atau Kata Kunci Judul.
-*   **Filter Pembimbing:** Menyaring daftar proposal berdasarkan Dosen Pembimbing tertentu.
-*   **Visualisasi Data:**
-    *   Grafik Donat: Distribusi bidang peminatan.
-    *   Grafik Batang: Beban bimbingan per dosen.
-    *   Grafik Tren Kata Kunci: Analisis topik yang sedang populer.
-*   **Monitoring Keterisian:** Menggabungkan data Google Sheets (yang sudah submit) dengan file CSV lokal master mahasiswa untuk menampilkan daftar siapa saja yang belum submit, lengkap dengan pencarian, pagination, dan grafik distribusi per pembimbing.
-*   **Export Laporan:**
-    *   📄 **PDF:** Laporan ringkas daftar absensi/monitoring (Landscape).
-    *   📊 **Excel (.xlsx):** Laporan detail lengkap dengan format rapi.
-*   **Responsive Design:** Tampilan nyaman diakses baik melalui Laptop maupun Smartphone.
+- **Real-time Data:** Terhubung langsung dengan Google Sheets; data otomatis terupdate setiap kali halaman dimuat.
+- **Pencarian Cepat:** Filter data berdasarkan Nama, NIM, atau Kata Kunci Judul.
+- **Filter Pembimbing:** Menyaring daftar proposal berdasarkan Dosen Pembimbing tertentu.
+- **Visualisasi Data:**
+  - Grafik Donat: Distribusi bidang peminatan.
+  - Grafik Batang: Beban bimbingan per dosen.
+  - Grafik Tren Kata Kunci: Analisis topik yang sedang populer.
+- **Monitoring Keterisian:** Menggabungkan data Google Sheets (yang sudah submit) dengan file CSV lokal master mahasiswa untuk menampilkan daftar siapa saja yang belum submit, lengkap dengan pencarian, pagination, dan grafik distribusi per pembimbing.
+- **Export Laporan:**
+  - 📄 **PDF:** Laporan ringkas daftar absensi/monitoring (Landscape).
+  - 📊 **Excel (.xlsx):** Laporan detail lengkap dengan format rapi.
+- **Responsive Design:** Tampilan nyaman diakses baik melalui Laptop maupun Smartphone.
 
 ---
 
@@ -65,12 +70,14 @@ Analisis kemiripan berbasis **frekuensi kata** menggunakan metode TF-IDF (Term F
 | Metode/Pendekatan | 15% |
 
 **Text Preprocessing:**
+
 - 📚 **Stopwords dari CDN** - ~1400 kata (Indonesian + English) dari [stopwords-iso](https://github.com/stopwords-iso)
 - 🔤 **Domain Stopwords** - Kata umum skripsi (sistem, aplikasi, metode, dll)
 - ✂️ **Conservative Stemming** - Indonesian (prefix/suffix) + English dengan protected words
 - 🛡️ **Invalid Stems Blocklist** - Mencegah hasil stem yang salah
 
 **Fitur:**
+
 - ⚡ Sangat cepat (instan)
 - 🌐 Tidak butuh koneksi API eksternal
 - 💻 Sepenuhnya berjalan di browser
@@ -86,6 +93,7 @@ Analisis kemiripan berbasis **frekuensi kata** menggunakan metode TF-IDF (Term F
 Analisis kemiripan berbasis **makna dan konteks** menggunakan model AI Sentence Transformers.
 
 **Arsitektur:**
+
 ```
 Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
 ```
@@ -93,6 +101,7 @@ Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
 **Model:** `paraphrase-multilingual-MiniLM-L12-v2` (384 dimensi, multilingual)
 
 **Komponen:**
+
 | Komponen | Fungsi |
 |----------|--------|
 | GitHub Pages | Hosting website |
@@ -102,6 +111,7 @@ Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
 | GitHub Actions | Keep-alive ping (14 menit) |
 
 **Kelebihan:**
+
 - 🧠 Memahami makna, bukan hanya kata
 - 🌍 Mendukung Bahasa Indonesia
 - 💾 Shared cache (Supabase) - user berikutnya lebih cepat
@@ -110,6 +120,7 @@ Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
 - 💰 100% Gratis (semua layanan free tier)
 
 **Cara Kerja:**
+
 1. Data proposal diambil dari Google Sheets
 2. Cek cache di Supabase (via HF Space proxy)
 3. Jika tidak ada, generate embedding via AI model
@@ -118,6 +129,7 @@ Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
 6. Tampilkan hasil dengan detail per komponen
 
 **Waktu Proses:**
+
 | Skenario | Waktu |
 |----------|-------|
 | User pertama (cold start) | ~2-3 menit |
@@ -132,6 +144,7 @@ Browser → HF Space (AI + Proxy) → Supabase (Cache Database)
 Analisis kemiripan berbasis **reasoning AI** menggunakan Google Gemini untuk memberikan penjelasan seperti penilai manusia.
 
 **Fitur:**
+
 - 🤖 Analisis mendalam dengan penjelasan reasoning
 - 📊 Skor kemiripan 0-100 dari perspektif akademik
 - 🏷️ Verdict (Keputusan): AMAN, PERLU REVIEW, BERMASALAH
@@ -140,6 +153,7 @@ Analisis kemiripan berbasis **reasoning AI** menggunakan Google Gemini untuk mem
 - 📱 Mobile responsive dengan slot-based selection
 
 **Kriteria Akademik:**
+
 - BERMASALAH: Topik + Dataset + Metode **semua sama**
 - AMAN: Salah satu berbeda (replikasi dengan variasi = boleh)
 
@@ -152,6 +166,7 @@ Analisis kemiripan berbasis **reasoning AI** menggunakan Google Gemini untuk mem
 Analisis otomatis untuk **semua pasangan** dengan kemiripan embedding di atas threshold.
 
 **Fitur:**
+
 - ⚙️ Threshold konfigurasi (default 60%)
 - 📦 Cache-first approach (cek Supabase dulu)
 - 🔄 Progressive rendering (hasil muncul bertahap)
@@ -160,7 +175,6 @@ Analisis otomatis untuk **semua pasangan** dengan kemiripan embedding di atas th
 - 📊 Summary cards (AMAN/REVIEW/BERMASALAH)
 - 📖 Collapsible cards (auto-expand untuk non-AMAN)
 - 📋 Legend/keterangan informatif
-
 
 **Akses:** [llm_batch.html](https://galih-hermawan-unikom.github.io/monitoring-proksi/llm_batch.html)
 
@@ -178,6 +192,7 @@ Analisis otomatis untuk **semua pasangan** dengan kemiripan embedding di atas th
 | **Pencarian** | ✅ NIM/Nama | ✅ NIM/Nama | ✅ NIM/Nama |
 
 **Rekomendasi:**
+
 - Gunakan **TF-IDF** untuk pengecekan cepat
 - Gunakan **Semantic** untuk screening awal
 - Gunakan **LLM** untuk analisis mendalam yang butuh penjelasan
@@ -238,6 +253,7 @@ data-proksi/
 Aplikasi menggunakan 2 tabel di Supabase untuk caching:
 
 ### Tabel: `proposal_embeddings`
+
 Menyimpan embedding vektor untuk setiap proposal.
 
 | Kolom | Tipe | Deskripsi |
@@ -253,6 +269,7 @@ Menyimpan embedding vektor untuk setiap proposal.
 | judul | TEXT | Judul proposal |
 
 ### Tabel: `llm_analysis`
+
 Menyimpan hasil analisis LLM untuk pasangan proposal.
 
 | Kolom | Tipe | Deskripsi |
@@ -276,19 +293,19 @@ Menyimpan hasil analisis LLM untuk pasangan proposal.
 
 Aplikasi ini dibangun menggunakan teknologi web standar tanpa backend (Serverless/Static Site), sehingga sangat ringan dan cepat.
 
-*   **HTML5 & CSS3**
-*   **JavaScript (Vanilla)**
-*   **Libraries:**
-    *   [PapaParse](https://www.papaparse.com/) (CSV Parsing)
-    *   [Chart.js](https://www.chartjs.org/) (Data Visualization)
-    *   [ExcelJS](https://github.com/exceljs/exceljs) (Excel Export)
-    *   [jsPDF & AutoTable](https://github.com/parallax/jsPDF) (PDF Export)
-    *   [stopwords-iso](https://github.com/stopwords-iso) (Stopwords ID+EN via jsDelivr GitHub CDN)
-*   **API & Services:**
-    *   [Hugging Face Space](https://huggingface.co/spaces/galihboy/semantic-embedding-api) (AI Embedding + LLM Proxy)
-    *   [Supabase](https://supabase.com/) (PostgreSQL Cache Database)
-    *   [Google Gemini API](https://ai.google.dev/) (LLM Analysis)
-    *   [GitHub Actions](https://github.com/features/actions) (Keep-alive Scheduler)
+- **HTML5 & CSS3**
+- **JavaScript (Vanilla)**
+- **Libraries:**
+  - [PapaParse](https://www.papaparse.com/) (CSV Parsing)
+  - [Chart.js](https://www.chartjs.org/) (Data Visualization)
+  - [ExcelJS](https://github.com/exceljs/exceljs) (Excel Export)
+  - [jsPDF & AutoTable](https://github.com/parallax/jsPDF) (PDF Export)
+  - [stopwords-iso](https://github.com/stopwords-iso) (Stopwords ID+EN via jsDelivr GitHub CDN)
+- **API & Services:**
+  - [Hugging Face Space](https://huggingface.co/spaces/galihboy/semantic-embedding-api) (AI Embedding + LLM Proxy)
+  - [Supabase](https://supabase.com/) (PostgreSQL Cache Database)
+  - [Google Gemini API](https://ai.google.dev/) (LLM Analysis)
+  - [GitHub Actions](https://github.com/features/actions) (Keep-alive Scheduler)
 
 ---
 
@@ -352,10 +369,11 @@ const result = JSON.parse(dataLine.substring(5));
 ## 👨‍💻 Pengembang
 
 **Galih Hermawan**
-*   🌐 Website: [galih.eu](https://galih.eu)
-*   🏫 Program Studi Teknik Informatika
-*   🎓 Universitas Komputer Indonesia (UNIKOM)
-*   📅 Terakhir Diperbarui: 30 November 2025
+
+- 🌐 Website: [galih.eu](https://galih.eu)
+- 🏫 Program Studi Teknik Informatika
+- 🎓 Universitas Komputer Indonesia (UNIKOM)
+- 📅 Terakhir Diperbarui: 30 November 2025
 
 ---
 *Dibuat untuk memudahkan pengelolaan dan transparansi data proposal skripsi semester Ganjil TA 2025-2026.*
