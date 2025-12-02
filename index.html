@@ -1,1501 +1,1852 @@
 <!doctype html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Daftar Proposal Skripsi</title>
-        <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="apple-touch-icon.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="favicon-32x32.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="favicon-16x16.png"
-        />
-        <link rel="manifest" href="site.webmanifest" />
-        <link rel="shortcut icon" href="favicon.ico" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />
-        <style>
-            :root {
-                --primary-color: #2c3e50;
-                --secondary-color: #3498db;
-                --accent-color: #e74c3c;
-                --success-color: #27ae60;
-                --bg-color: #f0f2f5;
-                --card-bg: #ffffff;
-                --text-color: #333;
-                --text-light: #666;
-                --border-color: #e1e4e8;
-            }
 
-            body {
-                font-family:
-                    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: var(--bg-color);
-                color: var(--text-color);
-                line-height: 1.6;
-            }
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daftar Proposal Skripsi</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --text-light: #666;
+            --border-color: #e1e4e8;
+        }
 
-            header {
-                background: linear-gradient(
-                    135deg,
+        body {
+            font-family:
+                "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg,
                     var(--primary-color),
-                    #34495e
-                );
-                color: white;
-                padding: 25px 0;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                position: relative;
+                    #34495e);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .nav-links {
+            margin-top: 1rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 0.3rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            transition: background 0.3s;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 40px 0;
+            margin-top: 60px;
+            font-size: 0.95rem;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .footer-content a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .footer-content a:hover {
+            color: #5dade2;
+            text-decoration: underline;
+        }
+
+        .footer-meta {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #bdc3c7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px 60px 15px;
+        }
+
+        .charts-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1rem;
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 10px;
+        }
+
+        .chart-subtitle {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        .search-wrapper {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        #search-input,
+        #filter-dosen {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #search-input {
+            flex: 2;
+        }
+
+        #filter-dosen {
+            flex: 1;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        #search-input:focus,
+        #filter-dosen:focus {
+            border-color: var(--secondary-color);
+        }
+
+        .search-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #result-count {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-export {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-export:hover {
+            background-color: #219150;
+        }
+
+        .btn-pdf {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-pdf:hover {
+            background-color: #c0392b;
+        }
+
+        #loading,
+        #error {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        #error {
+            color: var(--accent-color);
+            display: none;
+        }
+
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background-color: #fff;
+            transition: background-color 0.2s;
+        }
+
+        .card-header:hover {
+            background-color: #f8f9fa;
+        }
+
+        .card-summary {
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .student-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            align-items: center;
+        }
+
+        .student-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .student-meta i {
+            font-style: normal;
+            font-weight: bold;
+        }
+
+        .badge {
+            background-color: #eef2f7;
+            color: var(--secondary-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid #dbe4ef;
+        }
+
+        .toggle-icon {
+            margin-left: 15px;
+            color: #bbb;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .card.expanded .toggle-icon {
+            transform: rotate(180deg);
+            color: var(--secondary-color);
+        }
+
+        .card-details {
+            display: none;
+            padding: 0 20px 20px 20px;
+            border-top: 1px solid var(--border-color);
+            background-color: #fafbfc;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .card.expanded .card-details {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
             }
 
-            .header-content {
-                max-width: 1000px;
-                margin: 0 auto;
-                padding: 0 15px;
-                text-align: center;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
 
-            header h1 {
-                margin: 0;
-                font-size: 1.8rem;
-                font-weight: 800;
-                letter-spacing: -0.5px;
-            }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
 
-            header p {
-                margin: 8px 0 0;
-                opacity: 0.9;
-                font-size: 1rem;
-                font-weight: 300;
-            }
+        .detail-group {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
 
-            .nav-links {
-                margin-top: 1rem;
-            }
+        .detail-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
 
-            .nav-links a {
-                color: white;
-                text-decoration: none;
-                margin: 0 0.3rem;
-                padding: 0.5rem 1rem;
-                border-radius: 0.5rem;
-                background: rgba(255,255,255,0.15);
-                transition: background 0.3s;
-                display: inline-block;
-                font-size: 0.9rem;
-            }
+        .detail-content {
+            font-size: 0.95rem;
+            color: #444;
+            white-space: pre-wrap;
+        }
 
-            .nav-links a:hover {
-                background: rgba(255,255,255,0.25);
-            }
+        .full-width {
+            grid-column: 1 / -1;
+        }
 
-            footer {
-                background-color: #2c3e50;
-                color: #ecf0f1;
-                padding: 40px 0;
-                margin-top: 60px;
-                font-size: 0.95rem;
-            }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 30px;
+        }
 
-            .footer-content {
-                max-width: 1000px;
-                margin: 0 auto;
-                padding: 0 15px;
-                text-align: center;
-                line-height: 1.8;
-            }
+        .page-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
 
-            .footer-content a {
-                color: var(--secondary-color);
-                text-decoration: none;
-                font-weight: 600;
-                transition: color 0.2s;
-            }
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
 
-            .footer-content a:hover {
-                color: #5dade2;
-                text-decoration: underline;
-            }
+        .page-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
 
-            .footer-meta {
-                margin-top: 15px;
-                font-size: 0.85rem;
-                color: #bdc3c7;
-            }
+        .page-btn:disabled {
+            background-color: #f5f5f5;
+            color: #ccc;
+            cursor: not-allowed;
+        }
 
-            .container {
-                max-width: 1000px;
-                margin: 20px auto;
-                padding: 0 15px 60px 15px;
-            }
+        .pending-section {
+            margin-top: 40px;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
 
-            .charts-section {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-                margin-bottom: 30px;
-            }
+        .pending-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-            .charts-row {
-                display: grid;
+        .pending-header h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+        }
+
+        .pending-header p {
+            margin: 5px 0 0 0;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .pending-badge {
+            background: #f5f7fb;
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .pending-toolbar {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .pending-search-input {
+            flex: 1;
+            min-width: 220px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .pending-search-input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        .pending-result {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .pending-table-wrapper {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .pending-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        .pending-table th,
+        .pending-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f2f5;
+            text-align: left;
+        }
+
+        .pending-table th {
+            background-color: #f8f9fb;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .pending-table tbody tr:hover {
+            background-color: #fdfefe;
+        }
+
+        .pending-table tbody tr:nth-child(even) {
+            background-color: #fcfcfe;
+        }
+
+        .pending-table tbody tr:nth-child(even):hover {
+            background-color: #f8fbff;
+        }
+
+        .pending-pagination {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .pending-page-btn {
+            padding: 6px 12px;
+            border: 1px solid #dcdfe6;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        .pending-page-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .pending-page-btn:disabled {
+            background-color: #f4f6fb;
+            color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            height: 100%;
+            text-align: center;
+        }
+
+        #pending-chart-empty {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .pending-chart-card {
+            margin-top: 10px;
+        }
+
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--secondary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition:
+                transform 0.2s,
+                background-color 0.2s;
+            z-index: 999;
+        }
+
+        #back-to-top:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        /* Clickable chart bars */
+        .clickable-chart {
+            cursor: pointer;
+        }
+
+        .click-hint {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        @media (min-width: 768px) {
+            .details-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 20px;
-            }
-
-            .chart-card {
-                background: white;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-                border: 1px solid var(--border-color);
-            }
-
-            .chart-wrapper {
-                position: relative;
-                height: 300px;
-                width: 100%;
-            }
-
-            .chart-title {
-                text-align: center;
-                margin-bottom: 15px;
-                font-weight: 700;
-                color: var(--primary-color);
-                font-size: 1rem;
-                border-bottom: 2px solid #f0f2f5;
-                padding-bottom: 10px;
-            }
-
-            .chart-subtitle {
-                text-align: center;
-                font-size: 0.8rem;
-                color: var(--text-light);
-                margin-top: -10px;
-                margin-bottom: 10px;
-            }
-
-            .search-wrapper {
-                margin-bottom: 20px;
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-                background: white;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             }
 
             .input-group {
-                display: flex;
-                gap: 10px;
-                flex-direction: column;
+                flex-direction: row;
             }
+        }
 
-            #search-input,
-            #filter-dosen {
-                padding: 10px 15px;
-                border: 1px solid var(--border-color);
-                border-radius: 6px;
-                font-size: 16px;
-                outline: none;
-                transition: border-color 0.2s;
-            }
-
-            #search-input {
-                flex: 2;
-            }
-
-            #filter-dosen {
-                flex: 1;
-                background-color: white;
-                cursor: pointer;
-            }
-
-            #search-input:focus,
-            #filter-dosen:focus {
-                border-color: var(--secondary-color);
-            }
-
-            .search-actions {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-
-            #result-count {
-                font-size: 0.9rem;
-                color: var(--text-light);
-            }
-
-            .button-group {
-                display: flex;
-                gap: 10px;
-            }
-
-            .btn-export {
-                background-color: var(--success-color);
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 0.9rem;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                transition: background-color 0.2s;
-            }
-
-            .btn-export:hover {
-                background-color: #219150;
-            }
-
-            .btn-pdf {
-                background-color: var(--accent-color);
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 0.9rem;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                transition: background-color 0.2s;
-            }
-
-            .btn-pdf:hover {
-                background-color: #c0392b;
-            }
-
-            #loading,
-            #error {
-                text-align: center;
-                padding: 40px;
-                font-size: 1.1rem;
-                color: var(--text-light);
-            }
-            #error {
-                color: var(--accent-color);
-                display: none;
-            }
-
-            .card-list {
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .card {
-                background: var(--card-bg);
-                border-radius: 8px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                overflow: hidden;
-                transition: box-shadow 0.2s;
-                border: 1px solid var(--border-color);
-            }
-
-            .card:hover {
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-
-            .card-header {
-                padding: 15px 20px;
-                cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                background-color: #fff;
-                transition: background-color 0.2s;
-            }
-
-            .card-header:hover {
-                background-color: #f8f9fa;
-            }
-
-            .card-summary {
-                flex: 1;
-            }
-
-            .card-title {
-                font-size: 1.1rem;
-                font-weight: 700;
-                color: var(--primary-color);
-                margin-bottom: 8px;
-                line-height: 1.4;
-            }
-
-            .student-meta {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-                font-size: 0.9rem;
-                color: var(--text-light);
-                align-items: center;
-            }
-
-            .student-meta span {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-
-            .student-meta i {
-                font-style: normal;
-                font-weight: bold;
-            }
-
-            .badge {
-                background-color: #eef2f7;
-                color: var(--secondary-color);
-                padding: 2px 8px;
-                border-radius: 4px;
-                font-size: 0.75rem;
-                font-weight: 600;
-                border: 1px solid #dbe4ef;
-            }
-
-            .toggle-icon {
-                margin-left: 15px;
-                color: #bbb;
-                font-size: 1.2rem;
-                transition: transform 0.3s ease;
-                min-width: 20px;
-                text-align: center;
-            }
-
-            .card.expanded .toggle-icon {
-                transform: rotate(180deg);
-                color: var(--secondary-color);
-            }
-
-            .card-details {
-                display: none;
-                padding: 0 20px 20px 20px;
-                border-top: 1px solid var(--border-color);
-                background-color: #fafbfc;
-                animation: slideDown 0.3s ease-out;
-            }
-
-            .card.expanded .card-details {
-                display: block;
-            }
-
-            @keyframes slideDown {
-                from {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .details-grid {
-                display: grid;
+        @media (max-width: 768px) {
+            .charts-row {
                 grid-template-columns: 1fr;
-                gap: 15px;
-                margin-top: 20px;
-            }
-
-            .detail-group {
-                background: white;
-                padding: 15px;
-                border-radius: 6px;
-                border: 1px solid #eee;
-            }
-
-            .detail-label {
-                font-size: 0.8rem;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                color: #888;
-                font-weight: 700;
-                margin-bottom: 8px;
-                display: block;
-            }
-
-            .detail-content {
-                font-size: 0.95rem;
-                color: #444;
-                white-space: pre-wrap;
-            }
-
-            .full-width {
-                grid-column: 1 / -1;
-            }
-
-            .pagination {
-                display: flex;
-                justify-content: center;
-                gap: 5px;
-                margin-top: 30px;
-            }
-            .page-btn {
-                padding: 6px 12px;
-                background: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-                color: var(--primary-color);
-                font-size: 0.9rem;
-            }
-            .page-btn:hover:not(:disabled) {
-                background-color: var(--secondary-color);
-                color: white;
-                border-color: var(--secondary-color);
-            }
-            .page-btn.active {
-                background-color: var(--primary-color);
-                color: white;
-                border-color: var(--primary-color);
-            }
-            .page-btn:disabled {
-                background-color: #f5f5f5;
-                color: #ccc;
-                cursor: not-allowed;
-            }
-
-            .pending-section {
-                margin-top: 40px;
-                background: white;
-                border-radius: 12px;
-                padding: 25px;
-                border: 1px solid var(--border-color);
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             }
 
             .pending-header {
-                display: flex;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 15px;
-                align-items: center;
-                margin-bottom: 20px;
-            }
-
-            .pending-header h2 {
-                margin: 0;
-                font-size: 1.4rem;
-                color: var(--primary-color);
-            }
-
-            .pending-header p {
-                margin: 5px 0 0 0;
-                color: var(--text-light);
-                font-size: 0.95rem;
-            }
-
-            .pending-badge {
-                background: #f5f7fb;
-                border: 1px solid var(--border-color);
-                padding: 10px 18px;
-                border-radius: 30px;
-                font-weight: 600;
-                color: var(--secondary-color);
+                flex-direction: column;
+                align-items: flex-start;
             }
 
             .pending-toolbar {
-                margin-top: 20px;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 15px;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .pending-search-input {
-                flex: 1;
-                min-width: 220px;
-                padding: 10px 14px;
-                border: 1px solid var(--border-color);
-                border-radius: 6px;
-                font-size: 0.95rem;
-                outline: none;
-            }
-
-            .pending-search-input:focus {
-                border-color: var(--secondary-color);
-            }
-
-            .pending-result {
-                color: var(--text-light);
-                font-size: 0.9rem;
-            }
-
-            .pending-table-wrapper {
-                margin-top: 20px;
-                overflow-x: auto;
-            }
-
-            .pending-table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 0.95rem;
-            }
-
-            .pending-table th,
-            .pending-table td {
-                padding: 10px 12px;
-                border-bottom: 1px solid #f0f2f5;
-                text-align: left;
-            }
-
-            .pending-table th {
-                background-color: #f8f9fb;
-                font-weight: 700;
-                color: var(--primary-color);
-                text-transform: uppercase;
-                font-size: 0.8rem;
-                letter-spacing: 0.5px;
-            }
-
-            .pending-table tbody tr:hover {
-                background-color: #fdfefe;
-            }
-
-            .pending-table tbody tr:nth-child(even) {
-                background-color: #fcfcfe;
-            }
-
-            .pending-table tbody tr:nth-child(even):hover {
-                background-color: #f8fbff;
+                flex-direction: column;
+                align-items: stretch;
             }
 
             .pending-pagination {
-                margin-top: 15px;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-                justify-content: flex-end;
-            }
-
-            .pending-page-btn {
-                padding: 6px 12px;
-                border: 1px solid #dcdfe6;
-                background: white;
-                border-radius: 4px;
-                font-size: 0.85rem;
-                cursor: pointer;
-                color: var(--primary-color);
-            }
-
-            .pending-page-btn.active {
-                background-color: var(--secondary-color);
-                color: white;
-                border-color: var(--secondary-color);
-            }
-
-            .pending-page-btn:disabled {
-                background-color: #f4f6fb;
-                color: #bdc3c7;
-                cursor: not-allowed;
-            }
-
-            .empty-state {
-                display: flex;
-                align-items: center;
                 justify-content: center;
-                color: var(--text-light);
-                font-size: 0.9rem;
-                height: 100%;
-                text-align: center;
             }
+        }
+    </style>
+</head>
 
-            #pending-chart-empty {
-                position: absolute;
-                inset: 0;
-                background: rgba(255, 255, 255, 0.9);
-            }
-
-            .pending-chart-card {
-                margin-top: 10px;
-            }
-
-            #back-to-top {
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                background-color: var(--secondary-color);
-                color: white;
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                border: none;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-                cursor: pointer;
-                display: none;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.2rem;
-                transition:
-                    transform 0.2s,
-                    background-color 0.2s;
-                z-index: 999;
-            }
-
-            #back-to-top:hover {
-                background-color: #2980b9;
-                transform: translateY(-3px);
-            }
-
-            /* Clickable chart bars */
-            .clickable-chart {
-                cursor: pointer;
-            }
-
-            .click-hint {
-                text-align: center;
-                font-size: 0.75rem;
-                color: #999;
-                margin-top: 5px;
-                font-style: italic;
-            }
-
-            @media (min-width: 768px) {
-                .details-grid {
-                    grid-template-columns: 1fr 1fr;
-                }
-                .input-group {
-                    flex-direction: row;
-                }
-            }
-            @media (max-width: 768px) {
-                .charts-row {
-                    grid-template-columns: 1fr;
-                }
-                .pending-header {
-                    flex-direction: column;
-                    align-items: flex-start;
-                }
-                .pending-toolbar {
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-                .pending-pagination {
-                    justify-content: center;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <div class="header-content">
-                <h1>Monitoring Proposal Skripsi</h1>
-                <div style="margin: 10px 0 5px 0">
-                    <span
-                        style="
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Monitoring Proposal Skripsi</h1>
+            <div style="margin: 10px 0 5px 0">
+                <span style="
                             background: rgba(255, 255, 255, 0.15);
                             padding: 4px 12px;
                             border-radius: 15px;
                             font-size: 0.85rem;
                             border: 1px solid rgba(255, 255, 255, 0.3);
-                        "
-                    >
-                        KK E (Ilmu Komputer). Prodi Teknik Informatika. UNIKOM
-                    </span>
-                </div>
-                <p>
-                    Daftar Topik Proposal Skripsi<br />
-                    <strong>Semester Ganjil Tahun Akademik 2025-2026</strong>
-                </p>
-                <div class="nav-links">
-                    <a href="similarity.html"><i class="fas fa-search"></i> TF-IDF</a>
-                    <a href="semantic_similarity.html"><i class="fas fa-brain"></i> Semantic</a>
-                    <a href="llm_similarity.html"><i class="fas fa-robot"></i> LLM</a>
-                    <a href="llm_batch.html"><i class="fas fa-layer-group"></i> LLM Batch</a>
-                </div>
+                        ">
+                    KK E (Ilmu Komputer). Prodi Teknik Informatika. UNIKOM
+                </span>
             </div>
-        </header>
-
-        <div class="container">
-            <!-- Dashboard Visualisasi -->
-            <div class="charts-section">
-                <div class="charts-row">
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            Distribusi Bidang Peminatan
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="chartBidang"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            Distribusi Mahasiswa per Pembimbing
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="chartDosen"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <!-- Chart Row 2: Keywords - DUAL CHART -->
-                <div class="charts-row">
-                    <div class="chart-card">
-                        <div class="chart-title">Top Kata Kunci (Unigram)</div>
-                        <div class="chart-subtitle">Dari Judul + Metode (dengan stemming)</div>
-                        <div class="chart-wrapper" style="height: 280px">
-                            <canvas id="chartKeywordUnigram" class="clickable-chart"></canvas>
-                        </div>
-                        <div class="click-hint">
-                            <i class="fas fa-mouse-pointer"></i> Klik bar untuk filter proposal
-                        </div>
-                    </div>
-                    <div class="chart-card">
-                        <div class="chart-title">Top Frasa (Bigram)</div>
-                        <div class="chart-subtitle">Dari Judul + Metode (dengan stemming)</div>
-                        <div class="chart-wrapper" style="height: 280px">
-                            <canvas id="chartKeywordBigram" class="clickable-chart"></canvas>
-                        </div>
-                        <div class="click-hint">
-                            <i class="fas fa-mouse-pointer"></i> Klik bar untuk filter proposal
-                        </div>
-                    </div>
-                </div>
+            <p>
+                Daftar Topik Proposal Skripsi<br />
+                <strong>Semester Ganjil Tahun Akademik 2025-2026</strong>
+            </p>
+            <div class="nav-links">
+                <a href="similarity.html"><i class="fas fa-search"></i> TF-IDF</a>
+                <a href="semantic_similarity.html"><i class="fas fa-brain"></i> Semantic</a>
+                <a href="llm_similarity.html"><i class="fas fa-robot"></i> LLM</a>
+                <a href="llm_batch.html"><i class="fas fa-layer-group"></i> LLM Batch</a>
             </div>
+        </div>
+    </header>
 
-            <!-- Kontrol Pencarian -->
-            <div class="search-wrapper">
-                <div class="input-group">
-                    <input
-                        type="text"
-                        id="search-input"
-                        placeholder="Cari Nama, NIM, atau Kata Kunci Judul..."
-                    />
-                    <select id="filter-dosen">
-                        <option value="">Semua Pembimbing</option>
-                    </select>
-                </div>
-                <div class="search-actions">
-                    <div id="result-count">Menyiapkan data...</div>
-                    <div class="button-group">
-                        <button class="btn-export" onclick="exportToExcel()">
-                            <i class="fas fa-file-excel"></i> Download Excel
-                            (.xlsx)
-                        </button>
-                        <button class="btn-pdf" onclick="exportToPDF()">
-                            <i class="fas fa-file-pdf"></i> Download PDF
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="loading">Memuat data & stop words...</div>
-            <div id="error"></div>
-
-            <div id="card-container" class="card-list"></div>
-            <div id="pagination" class="pagination"></div>
-
-            <section class="pending-section" id="pending-section">
-                <div class="pending-header">
-                    <div>
-                        <h2>Mahasiswa Belum Submit Tema</h2>
-                        <p id="pending-description">
-                            Menunggu hasil perbandingan data...
-                        </p>
-                    </div>
-                    <div class="pending-badge">
-                        <span id="pending-total">0</span>
-                        /
-                        <span id="pending-total-master">0</span>
-                    </div>
-                </div>
-
-                <div class="chart-card pending-chart-card">
+    <div class="container">
+        <!-- Dashboard Visualisasi -->
+        <div class="charts-section">
+            <div class="charts-row">
+                <div class="chart-card">
                     <div class="chart-title">
-                        Distribusi Belum Submit per Pembimbing
+                        Distribusi Bidang Peminatan
                     </div>
-                    <div class="chart-wrapper" style="height: 320px">
-                        <div
-                            id="pending-chart-empty"
-                            class="empty-state"
-                        >
-                            Menunggu data...
-                        </div>
-                        <canvas id="pendingChart"></canvas>
+                    <div class="chart-wrapper">
+                        <canvas id="chartBidang"></canvas>
                     </div>
                 </div>
-
-                <div class="pending-toolbar">
-                    <input
-                        type="text"
-                        id="pending-search"
-                        class="pending-search-input"
-                        placeholder="Cari NIM, Nama, atau Dosen..."
-                    />
-                    <div id="pending-result-count" class="pending-result">
-                        Menampilkan 0 mahasiswa
+                <div class="chart-card">
+                    <div class="chart-title">
+                        Distribusi Mahasiswa per Pembimbing
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="chartDosen"></canvas>
                     </div>
                 </div>
-
-                <div class="pending-table-wrapper">
-                    <table class="pending-table" id="pending-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 60px">No</th>
-                                <th style="width: 140px">NIM</th>
-                                <th>Nama</th>
-                                <th style="width: 220px">Dosen Pembimbing</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pending-table-body">
-                            <tr>
-                                <td colspan="4" style="text-align: center">
-                                    Menunggu data...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            </div>
+            <!-- Chart Row 2: Keywords - DUAL CHART -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div class="chart-title">Top Kata Kunci (Unigram)</div>
+                    <div class="chart-subtitle">Dari Judul + Metode (dengan stemming)</div>
+                    <div class="chart-wrapper" style="height: 280px">
+                        <canvas id="chartKeywordUnigram" class="clickable-chart"></canvas>
+                    </div>
+                    <div class="click-hint">
+                        <i class="fas fa-mouse-pointer"></i> Klik bar untuk filter proposal
+                    </div>
                 </div>
-
-                <div id="pending-pagination" class="pending-pagination"></div>
-            </section>
+                <div class="chart-card">
+                    <div class="chart-title">Top Frasa (Bigram)</div>
+                    <div class="chart-subtitle">Dari Judul + Metode (dengan stemming)</div>
+                    <div class="chart-wrapper" style="height: 280px">
+                        <canvas id="chartKeywordBigram" class="clickable-chart"></canvas>
+                    </div>
+                    <div class="click-hint">
+                        <i class="fas fa-mouse-pointer"></i> Klik bar untuk filter proposal
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <button id="back-to-top" onclick="scrollToTop()">
-            <i class="fas fa-arrow-up"></i>
-        </button>
-
-        <footer>
-            <div class="footer-content">
-                <div>
-                    Dikembangkan oleh
-                    <a href="https://galih.eu" target="_blank">Galih Hermawan</a>
-                    (<a href="https://github.com/galihboy" target="_blank"><i class="fab fa-github"></i> galihboy</a>)
-                </div>
-                <div>
-                    Program Studi Teknik Informatika. Universitas Komputer Indonesia.
-                </div>
-                <div style="margin-top: 10px;">
-                    <a href="https://github.com/Galih-Hermawan-Unikom/monitoring-proksi" target="_blank" style="color: #bdc3c7;">
-                        <i class="fab fa-github"></i> Source Code Repository
-                    </a>
-                </div>
-                <div class="footer-meta">
-                    Terakhir diperbarui: 30 November 2025
+        <!-- Kontrol Pencarian -->
+        <div class="search-wrapper">
+            <div class="input-group">
+                <input type="text" id="search-input" placeholder="Cari Nama, NIM, atau Kata Kunci Judul..." />
+                <select id="filter-dosen">
+                    <option value="">Semua Pembimbing</option>
+                </select>
+            </div>
+            <div class="search-actions">
+                <div id="result-count">Menyiapkan data...</div>
+                <div class="button-group">
+                    <button class="btn-export" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Download Excel
+                        (.xlsx)
+                    </button>
+                    <button class="btn-pdf" onclick="exportToPDF()">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </button>
                 </div>
             </div>
-        </footer>
+        </div>
 
-        <script>
-            const csvUrl =
-                "https://docs.google.com/spreadsheets/d/e/2PACX-1vTByDo6WQAT0rQMEVcL24WyJdm4gMKm4Zfjm6RYQ-prEaLvEcruqmRXKKNWXesxReA-nPqyhmH_BMAg/pub?gid=14519582&single=true&output=csv";
-            const masterCsvPath =
-                "KK E.xlsx - Mahasiswa Skripsi -TGL-02-10-20.csv";
+        <div id="loading">Memuat data & stop words...</div>
+        <div id="error"></div>
 
-            // State Management
-            let allData = [];
-            let filteredData = [];
-            let currentPage = 1;
-            const itemsPerPage = 10;
-            let masterStudents = [];
-            let pendingStudents = [];
-            let pendingFilteredStudents = [];
-            let pendingCurrentPage = 1;
-            const pendingItemsPerPage = 10;
-            let pendingChartInstance = null;
+        <div id="card-container" class="card-list"></div>
+        <div id="pagination" class="pagination"></div>
 
-            // Chart instances for cleanup
-            let unigramChartInstance = null;
-            let bigramChartInstance = null;
+        <section class="pending-section" id="pending-section">
+            <div class="pending-header">
+                <div>
+                    <h2>Mahasiswa Belum Submit Tema</h2>
+                    <p id="pending-description">
+                        Menunggu hasil perbandingan data...
+                    </p>
+                </div>
+                <div class="pending-badge">
+                    <span id="pending-total">0</span>
+                    /
+                    <span id="pending-total-master">0</span>
+                </div>
+            </div>
 
-            // ===========================================
-            // FITUR #1: Stop Words dari CDN (ID + EN)
-            // ===========================================
-            let stopWords = new Set();
-            
-            // Fallback stop words jika CDN gagal
-            const fallbackStopWords = new Set([
-                "dan", "yang", "di", "pada", "untuk", "dengan", "ini", "itu", "dari", "ke",
-                "dalam", "atau", "juga", "sebagai", "oleh", "adalah", "karena", "bagi",
-                "tentang", "serta", "terhadap", "melalui", "berbasis", "menggunakan",
-                "penerapan", "implementasi", "rancang", "bangun", "perancangan", "pembuatan",
-                "pengembangan", "analisis", "studi", "kasus", "pt", "cv", "kota", "kabupaten",
-                "the", "and", "of", "for", "in", "on", "with", "using", "based", "a", "an", "to"
-            ]);
+            <div class="chart-card pending-chart-card">
+                <div class="chart-title">
+                    Distribusi Belum Submit per Pembimbing
+                </div>
+                <div class="chart-wrapper" style="height: 320px">
+                    <div id="pending-chart-empty" class="empty-state">
+                        Menunggu data...
+                    </div>
+                    <canvas id="pendingChart"></canvas>
+                </div>
+            </div>
 
-            // Custom domain stop words (kata yang terlalu umum di konteks skripsi)
-            const domainStopWords = new Set([
-                // Kata umum skripsi
-                "sistem", "aplikasi", "informasi", "metode", "algoritma", "web", "website", 
-                "mobile", "data", "proses", "hasil", "dapat", "akan", "bisa", "harus",
-                "telah", "sudah", "belum", "tidak", "ada", "sangat", "lebih", "kurang",
-                // Kata hubung/preposisi yang mungkin lolos dari stopwords-iso
-                "berdasarkan", "terhadap", "antara", "menjadi", "melalui", "sampai",
-                "sebuah", "suatu", "tersebut", "yaitu", "bahwa", "agar", "sehingga",
-                "menggunakan", "digunakan", "dilakukan", "melakukan", "memiliki", "dimiliki",
-                "penelitian", "bertujuan", "tujuan", "model", "berbasis",
-                // Kata umum hasil stem yang tidak bermakna
-                "guna", "gunakan", "berguna", "pengguna", "penggunaan",
-                "buat", "pembuat", "pembuatan", "dibuat", "membuat",
-                "pakai", "pemakai", "pemakaian", "dipakai", "memakai",
-                "laku", "pelaku", "berlaku",
-                "kerja", "pekerja", "bekerja", "mengerjakan", "dikerjakan",
-                "bantu", "pembantu", "membantu", "dibantu", "bantuan",
-                "kembang", "pengembang", "pengembangan", "dikembangkan", "mengembangkan",
-                "dukung", "pendukung", "dukungan", "mendukung", "didukung",
-                // Kata penghubung yang sering salah di-stem
-                "mengenai", "terhadap", "sebagai", "merupakan", "menunjukkan",
-                "memberikan", "menyatakan", "menjelaskan", "menghasilkan",
-                // Kata keterangan waktu/umum
-                "sebelum", "sesudah", "setelah", "selama", "kemudian",
-                "pertama", "kedua", "ketiga", "terakhir", "selanjutnya",
-                // Kata penghubung/keterangan umum
-                "seperti", "masih", "hanya", "juga", "agar", "supaya",
-                "namun", "tetapi", "karena", "sehingga", "meskipun", "walaupun",
-                "bahkan", "justru", "malah", "sangat", "cukup", "kurang",
-                "tinggi", "rendah", "besar", "kecil", "banyak", "sedikit",
-                "sebab", "mampu", "secara", "efektif", "efisien", "optimal",
-                "utama", "khusus", "umum", "langsung", "tepat", "benar",
-                // Kata kerja umum yang sering salah di-stem
-                "memahami", "pengalaman", "meningkat", "meningkatkan", "peningkatan",
-                "memiliki", "menggunakan", "menunjukkan", "memberikan", "mendapatkan",
-                // Kata dengan circumfix ke-...-an (sering salah di-stem)
-                "kerusakan", "keamanan", "kebutuhan", "kemampuan", "kecepatan",
-                "ketepatan", "keakuratan", "kelebihan", "kekurangan", "kesalahan",
-                "keberhasilan", "kegagalan", "kepuasan", "ketersediaan", "kemudahan"
-            ]);
+            <div class="pending-toolbar">
+                <input type="text" id="pending-search" class="pending-search-input"
+                    placeholder="Cari NIM, Nama, atau Dosen..." />
+                <div id="pending-result-count" class="pending-result">
+                    Menampilkan 0 mahasiswa
+                </div>
+            </div>
 
-            // ===========================================
-            // FITUR STEMMING (Indonesian + English) - Conservative
-            // ===========================================
-            
-            // Protected words - jangan di-stem karena sering salah
-            const protectedWords = new Set([
-                'analisis', 'sentimen', 'klasifikasi', 'prediksi', 'deteksi',
-                'machine', 'learning', 'deep', 'neural', 'network', 'class',
-                'support', 'vector', 'decision', 'tree', 'random', 'forest',
-                'naive', 'bayes', 'regression', 'clustering', 'processing',
-                'recognition', 'detection', 'classification', 'prediction',
-                'image', 'text', 'speech', 'natural', 'language', 'computer',
-                'vision', 'artificial', 'intelligence', 'convolutional',
-                'recurrent', 'transformer', 'attention', 'embedding'
-            ]);
-            
-            // Blocklist - hasil stem yang invalid/tidak masuk akal
-            const invalidStems = new Set([
-                'enai', 'ntimen', 'analisi', 'clas', 'lass', 'upport',
-                'ector', 'achine', 'earning', 'etwork', 'eural',
-                'ahami', 'alaman', 'ingkat', 'apat', 'unya', 'adian',
-                'roses', 'asil', 'alam', 'ilai', 'ukup', 'asar',
-                'kerusa', 'rusak', 'rusa', 'efekt', 'aktif'
-            ]);
-            
-            // Validasi hasil stem
-            function isValidStem(word) {
-                if (word.length < 3) return false;
-                if (invalidStems.has(word)) return false;
-                const invalidStart = /^[^aiueoabcdefghijklmnopqrstuvwxyz]/i;
-                if (invalidStart.test(word)) return false;
-                return true;
+            <div class="pending-table-wrapper">
+                <table class="pending-table" id="pending-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px">No</th>
+                            <th style="width: 140px">NIM</th>
+                            <th>Nama</th>
+                            <th style="width: 220px">Dosen Pembimbing</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-table-body">
+                        <tr>
+                            <td colspan="4" style="text-align: center">
+                                Menunggu data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="pending-pagination" class="pending-pagination"></div>
+        </section>
+    </div>
+
+    <button id="back-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                Dikembangkan oleh
+                <a href="https://galih.eu" target="_blank">Galih Hermawan</a>
+                (<a href="https://github.com/galihboy" target="_blank"><i class="fab fa-github"></i> galihboy</a>)
+            </div>
+            <div>
+                Program Studi Teknik Informatika. Universitas Komputer Indonesia.
+            </div>
+            <div style="margin-top: 10px;">
+                <a href="https://github.com/Galih-Hermawan-Unikom/monitoring-proksi" target="_blank"
+                    style="color: #bdc3c7;">
+                    <i class="fab fa-github"></i> Source Code Repository
+                </a>
+            </div>
+            <div class="footer-meta">
+                Terakhir diperbarui: 30 November 2025
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const csvUrl =
+            "https://docs.google.com/spreadsheets/d/e/2PACX-1vTByDo6WQAT0rQMEVcL24WyJdm4gMKm4Zfjm6RYQ-prEaLvEcruqmRXKKNWXesxReA-nPqyhmH_BMAg/pub?gid=14519582&single=true&output=csv";
+        const masterCsvPath =
+            "KK E.xlsx - Mahasiswa Skripsi -TGL-02-10-20.csv";
+
+        // State Management
+        let allData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let masterStudents = [];
+        let pendingStudents = [];
+        let pendingFilteredStudents = [];
+        let pendingCurrentPage = 1;
+        const pendingItemsPerPage = 10;
+        let pendingChartInstance = null;
+
+        // Chart instances for cleanup
+        let unigramChartInstance = null;
+        let bigramChartInstance = null;
+
+        // ===========================================
+        // FITUR #1: Stop Words dari CDN (ID + EN)
+        // ===========================================
+        let stopWords = new Set();
+
+        // Fallback stop words jika CDN gagal
+        const fallbackStopWords = new Set([
+            "dan", "yang", "di", "pada", "untuk", "dengan", "ini", "itu", "dari", "ke",
+            "dalam", "atau", "juga", "sebagai", "oleh", "adalah", "karena", "bagi",
+            "tentang", "serta", "terhadap", "melalui", "berbasis", "menggunakan",
+            "penerapan", "implementasi", "rancang", "bangun", "perancangan", "pembuatan",
+            "pengembangan", "analisis", "studi", "kasus", "pt", "cv", "kota", "kabupaten",
+            "the", "and", "of", "for", "in", "on", "with", "using", "based", "a", "an", "to"
+        ]);
+
+        // Custom domain stop words (kata yang terlalu umum di konteks skripsi)
+        const domainStopWords = new Set([
+            // Kata umum skripsi
+            "sistem", "aplikasi", "informasi", "metode", "algoritma", "web", "website",
+            "mobile", "data", "proses", "hasil", "dapat", "akan", "bisa", "harus",
+            "telah", "sudah", "belum", "tidak", "ada", "sangat", "lebih", "kurang",
+            // Kata hubung/preposisi yang mungkin lolos dari stopwords-iso
+            "berdasarkan", "terhadap", "antara", "menjadi", "melalui", "sampai",
+            "sebuah", "suatu", "tersebut", "yaitu", "bahwa", "agar", "sehingga",
+            "menggunakan", "digunakan", "dilakukan", "melakukan", "memiliki", "dimiliki",
+            "penelitian", "bertujuan", "tujuan", "model", "berbasis",
+            // Kata umum hasil stem yang tidak bermakna
+            "guna", "gunakan", "berguna", "pengguna", "penggunaan",
+            "buat", "pembuat", "pembuatan", "dibuat", "membuat",
+            "pakai", "pemakai", "pemakaian", "dipakai", "memakai",
+            "laku", "pelaku", "berlaku",
+            "kerja", "pekerja", "bekerja", "mengerjakan", "dikerjakan",
+            "bantu", "pembantu", "membantu", "dibantu", "bantuan",
+            "kembang", "pengembang", "pengembangan", "dikembangkan", "mengembangkan",
+            "dukung", "pendukung", "dukungan", "mendukung", "didukung",
+            // Kata penghubung yang sering salah di-stem
+            "mengenai", "terhadap", "sebagai", "merupakan", "menunjukkan",
+            "memberikan", "menyatakan", "menjelaskan", "menghasilkan",
+            // Kata keterangan waktu/umum
+            "sebelum", "sesudah", "setelah", "selama", "kemudian",
+            "pertama", "kedua", "ketiga", "terakhir", "selanjutnya",
+            // Kata penghubung/keterangan umum
+            "seperti", "masih", "hanya", "juga", "agar", "supaya",
+            "namun", "tetapi", "karena", "sehingga", "meskipun", "walaupun",
+            "bahkan", "justru", "malah", "sangat", "cukup", "kurang",
+            "tinggi", "rendah", "besar", "kecil", "banyak", "sedikit",
+            "sebab", "mampu", "secara", "efektif", "efisien", "optimal",
+            "utama", "khusus", "umum", "langsung", "tepat", "benar",
+            // Kata kerja umum yang sering salah di-stem
+            "memahami", "pengalaman", "meningkat", "meningkatkan", "peningkatan",
+            "memiliki", "menggunakan", "menunjukkan", "memberikan", "mendapatkan",
+            // Kata dengan circumfix ke-...-an (sering salah di-stem)
+            "kerusakan", "keamanan", "kebutuhan", "kemampuan", "kecepatan",
+            "ketepatan", "keakuratan", "kelebihan", "kekurangan", "kesalahan",
+            "keberhasilan", "kegagalan", "kepuasan", "ketersediaan", "kemudahan"
+        ]);
+
+        // ===========================================
+        // FITUR STEMMING (Indonesian + English) - Conservative
+        // ===========================================
+
+        // Protected words - jangan di-stem karena sering salah
+        const protectedWords = new Set([
+            'analisis', 'sentimen', 'klasifikasi', 'prediksi', 'deteksi',
+            'machine', 'learning', 'deep', 'neural', 'network', 'class',
+            'support', 'vector', 'decision', 'tree', 'random', 'forest',
+            'naive', 'bayes', 'regression', 'clustering', 'processing',
+            'recognition', 'detection', 'classification', 'prediction',
+            'image', 'text', 'speech', 'natural', 'language', 'computer',
+            'vision', 'artificial', 'intelligence', 'convolutional',
+            'recurrent', 'transformer', 'attention', 'embedding'
+        ]);
+
+        // Blocklist - hasil stem yang invalid/tidak masuk akal
+        const invalidStems = new Set([
+            'enai', 'ntimen', 'analisi', 'clas', 'lass', 'upport',
+            'ector', 'achine', 'earning', 'etwork', 'eural',
+            'ahami', 'alaman', 'ingkat', 'apat', 'unya', 'adian',
+            'roses', 'asil', 'alam', 'ilai', 'ukup', 'asar',
+            'kerusa', 'rusak', 'rusa', 'efekt', 'aktif'
+        ]);
+
+        // Validasi hasil stem
+        function isValidStem(word) {
+            if (word.length < 3) return false;
+            if (invalidStems.has(word)) return false;
+            const invalidStart = /^[^aiueoabcdefghijklmnopqrstuvwxyz]/i;
+            if (invalidStart.test(word)) return false;
+            return true;
+        }
+
+        function stemIndonesian(word) {
+            if (word.length < 5) return word;
+            if (protectedWords.has(word)) return word;
+
+            let stem = word;
+
+            // Remove suffixes (hanya yang jelas)
+            const suffixes = ['kan', 'nya'];
+            for (const suffix of suffixes) {
+                if (stem.endsWith(suffix) && stem.length > suffix.length + 3) {
+                    stem = stem.slice(0, -suffix.length);
+                    break;
+                }
             }
-            
-            function stemIndonesian(word) {
-                if (word.length < 5) return word;
-                if (protectedWords.has(word)) return word;
-                
-                let stem = word;
-                
-                // Remove suffixes (hanya yang jelas)
-                const suffixes = ['kan', 'nya'];
-                for (const suffix of suffixes) {
-                    if (stem.endsWith(suffix) && stem.length > suffix.length + 3) {
-                        stem = stem.slice(0, -suffix.length);
+
+            // Remove prefixes (hanya yang jelas)
+            const prefixPatterns = [
+                { prefix: 'meng', replace: '' },
+                { prefix: 'meny', replace: 's' },
+                { prefix: 'men', replace: '' },
+                { prefix: 'mem', replace: '' },
+                { prefix: 'peng', replace: '' },
+                { prefix: 'peny', replace: 's' },
+                { prefix: 'pen', replace: '' },
+                { prefix: 'pem', replace: '' },
+                { prefix: 'ber', replace: '' },
+                { prefix: 'ter', replace: '' }
+            ];
+
+            for (const { prefix, replace } of prefixPatterns) {
+                if (stem.startsWith(prefix) && stem.length > prefix.length + 3) {
+                    const newStem = replace + stem.slice(prefix.length);
+                    if (newStem.length >= 4) {
+                        stem = newStem;
                         break;
                     }
                 }
-                
-                // Remove prefixes (hanya yang jelas)
-                const prefixPatterns = [
-                    { prefix: 'meng', replace: '' },
-                    { prefix: 'meny', replace: 's' },
-                    { prefix: 'men', replace: '' },
-                    { prefix: 'mem', replace: '' },
-                    { prefix: 'peng', replace: '' },
-                    { prefix: 'peny', replace: 's' },
-                    { prefix: 'pen', replace: '' },
-                    { prefix: 'pem', replace: '' },
-                    { prefix: 'ber', replace: '' },
-                    { prefix: 'ter', replace: '' }
-                ];
-                
-                for (const { prefix, replace } of prefixPatterns) {
-                    if (stem.startsWith(prefix) && stem.length > prefix.length + 3) {
-                        const newStem = replace + stem.slice(prefix.length);
-                        if (newStem.length >= 4) {
-                            stem = newStem;
-                            break;
-                        }
-                    }
-                }
-                
-                return stem.length >= 4 ? stem : word;
-            }
-            
-            function stemEnglish(word) {
-                if (word.length < 5) return word;
-                if (protectedWords.has(word)) return word;
-                
-                let stem = word;
-                
-                const suffixes = [
-                    { suffix: 'ization', replace: 'ize' },
-                    { suffix: 'ational', replace: 'ate' },
-                    { suffix: 'iveness', replace: 'ive' },
-                    { suffix: 'fulness', replace: 'ful' },
-                    { suffix: 'ousness', replace: 'ous' },
-                    { suffix: 'ation', replace: 'ate' },
-                    { suffix: 'ness', replace: '' },
-                    { suffix: 'ment', replace: '' },
-                    { suffix: 'able', replace: '' },
-                    { suffix: 'ible', replace: '' },
-                    { suffix: 'ing', replace: '' },
-                    { suffix: 'ies', replace: 'y' }
-                ];
-                
-                for (const { suffix, replace } of suffixes) {
-                    if (stem.endsWith(suffix) && stem.length > suffix.length + 3) {
-                        const newStem = stem.slice(0, -suffix.length) + replace;
-                        if (newStem.length >= 4) {
-                            stem = newStem;
-                            break;
-                        }
-                    }
-                }
-                
-                return stem.length >= 4 ? stem : word;
-            }
-            
-            function stem(word) {
-                if (protectedWords.has(word)) return word;
-                if (word.length < 5) return word;
-                
-                const clearIndonesianPrefix = /^(meng|meny|mem|peng|peny|pem|ber|ter)/;
-                const clearIndonesianSuffix = /(kan|nya)$/;
-                
-                let result = word;
-                
-                if (clearIndonesianPrefix.test(word) || clearIndonesianSuffix.test(word)) {
-                    result = stemIndonesian(word);
-                } else {
-                    const clearEnglishSuffix = /(ation|ization|iveness|fulness|ousness|ment|ness|able|ible)$/;
-                    if (clearEnglishSuffix.test(word)) {
-                        result = stemEnglish(word);
-                    }
-                }
-                
-                // Validasi hasil - jika invalid, kembalikan kata asli
-                if (!isValidStem(result)) {
-                    return word;
-                }
-                
-                return result;
             }
 
-            async function loadStopWords() {
-                const ID_URL = "https://cdn.jsdelivr.net/gh/stopwords-iso/stopwords-id/stopwords-id.json";
-                const EN_URL = "https://cdn.jsdelivr.net/gh/stopwords-iso/stopwords-en/stopwords-en.json";
-                
-                try {
-                    const [idResponse, enResponse] = await Promise.all([
-                        fetch(ID_URL),
-                        fetch(EN_URL)
-                    ]);
-                    
-                    if (!idResponse.ok || !enResponse.ok) {
-                        throw new Error("Failed to fetch stop words");
+            return stem.length >= 4 ? stem : word;
+        }
+
+        function stemEnglish(word) {
+            if (word.length < 5) return word;
+            if (protectedWords.has(word)) return word;
+
+            let stem = word;
+
+            const suffixes = [
+                { suffix: 'ization', replace: 'ize' },
+                { suffix: 'ational', replace: 'ate' },
+                { suffix: 'iveness', replace: 'ive' },
+                { suffix: 'fulness', replace: 'ful' },
+                { suffix: 'ousness', replace: 'ous' },
+                { suffix: 'ation', replace: 'ate' },
+                { suffix: 'ness', replace: '' },
+                { suffix: 'ment', replace: '' },
+                { suffix: 'able', replace: '' },
+                { suffix: 'ible', replace: '' },
+                { suffix: 'ing', replace: '' },
+                { suffix: 'ies', replace: 'y' }
+            ];
+
+            for (const { suffix, replace } of suffixes) {
+                if (stem.endsWith(suffix) && stem.length > suffix.length + 3) {
+                    const newStem = stem.slice(0, -suffix.length) + replace;
+                    if (newStem.length >= 4) {
+                        stem = newStem;
+                        break;
                     }
-                    
-                    const [idWords, enWords] = await Promise.all([
-                        idResponse.json(),
-                        enResponse.json()
-                    ]);
-                    
-                    // Gabungkan semua stop words
-                    stopWords = new Set([
-                        ...idWords,
-                        ...enWords,
-                        ...domainStopWords
-                    ]);
-                    
-                    console.log(`✓ Loaded ${stopWords.size} stop words (ID: ${idWords.length}, EN: ${enWords.length}, Domain: ${domainStopWords.size})`);
-                    return true;
-                } catch (error) {
-                    console.warn("Failed to load stop words from CDN, using fallback:", error);
-                    stopWords = new Set([...fallbackStopWords, ...domainStopWords]);
-                    return false;
                 }
             }
 
-            // ===========================================
-            // FITUR #2: Bigram Extraction (dengan STEMMING)
-            // Menghitung JUMLAH JUDUL yang mengandung kata, bukan total kemunculan
-            // ===========================================
-            function extractKeywords(titles) {
-                const unigramCounts = {};
-                const bigramCounts = {};
-                
-                // Mapping dari stemmed word ke kata asli yang paling sering muncul
-                const stemToOriginal = {};
-                const stemBigramToOriginal = {};
-                
-                titles.forEach(title => {
-                    if (!title) return;
-                    
-                    // Normalize: lowercase, hapus tanda baca, split
-                    const allWords = title
-                        .toLowerCase()
-                        .replace(/[^\w\s]/gi, ' ')
-                        .split(/\s+/)
-                        .filter(w => w.length > 2);
-                    
-                    // Gunakan Set untuk mencatat kata/bigram UNIK per judul (berdasarkan STEM)
-                    const seenUnigrams = new Set();
-                    const seenBigrams = new Set();
-                    
-                    // Count Unigrams dengan STEMMING
-                    allWords.forEach(word => {
-                        if (stopWords.has(word)) return;
-                        
-                        const stemmed = stem(word);
-                        if (stopWords.has(stemmed)) return;
-                        
-                        if (!seenUnigrams.has(stemmed)) {
-                            seenUnigrams.add(stemmed);
-                            unigramCounts[stemmed] = (unigramCounts[stemmed] || 0) + 1;
-                            
-                            // Track kata asli yang paling sering untuk display
-                            if (!stemToOriginal[stemmed]) {
-                                stemToOriginal[stemmed] = {};
-                            }
-                            stemToOriginal[stemmed][word] = (stemToOriginal[stemmed][word] || 0) + 1;
+            return stem.length >= 4 ? stem : word;
+        }
+
+        function stem(word) {
+            if (protectedWords.has(word)) return word;
+            if (word.length < 5) return word;
+
+            const clearIndonesianPrefix = /^(meng|meny|mem|peng|peny|pem|ber|ter)/;
+            const clearIndonesianSuffix = /(kan|nya)$/;
+
+            let result = word;
+
+            if (clearIndonesianPrefix.test(word) || clearIndonesianSuffix.test(word)) {
+                result = stemIndonesian(word);
+            } else {
+                const clearEnglishSuffix = /(ation|ization|iveness|fulness|ousness|ment|ness|able|ible)$/;
+                if (clearEnglishSuffix.test(word)) {
+                    result = stemEnglish(word);
+                }
+            }
+
+            // Validasi hasil - jika invalid, kembalikan kata asli
+            if (!isValidStem(result)) {
+                return word;
+            }
+
+            return result;
+        }
+
+        async function loadStopWords() {
+            const ID_URL = "https://cdn.jsdelivr.net/gh/stopwords-iso/stopwords-id/stopwords-id.json";
+            const EN_URL = "https://cdn.jsdelivr.net/gh/stopwords-iso/stopwords-en/stopwords-en.json";
+
+            try {
+                const [idResponse, enResponse] = await Promise.all([
+                    fetch(ID_URL),
+                    fetch(EN_URL)
+                ]);
+
+                if (!idResponse.ok || !enResponse.ok) {
+                    throw new Error("Failed to fetch stop words");
+                }
+
+                const [idWords, enWords] = await Promise.all([
+                    idResponse.json(),
+                    enResponse.json()
+                ]);
+
+                // Gabungkan semua stop words
+                stopWords = new Set([
+                    ...idWords,
+                    ...enWords,
+                    ...domainStopWords
+                ]);
+
+                console.log(`✓ Loaded ${stopWords.size} stop words (ID: ${idWords.length}, EN: ${enWords.length}, Domain: ${domainStopWords.size})`);
+                return true;
+            } catch (error) {
+                console.warn("Failed to load stop words from CDN, using fallback:", error);
+                stopWords = new Set([...fallbackStopWords, ...domainStopWords]);
+                return false;
+            }
+        }
+
+        // ===========================================
+        // FITUR #2: Bigram Extraction (dengan STEMMING)
+        // Menghitung JUMLAH JUDUL yang mengandung kata, bukan total kemunculan
+        // ===========================================
+        function extractKeywords(titles) {
+            const unigramCounts = {};
+            const bigramCounts = {};
+
+            // Mapping dari stemmed word ke kata asli yang paling sering muncul
+            const stemToOriginal = {};
+            const stemBigramToOriginal = {};
+
+            titles.forEach(title => {
+                if (!title) return;
+
+                // Normalize: lowercase, hapus tanda baca, split
+                const allWords = title
+                    .toLowerCase()
+                    .replace(/[^\w\s]/gi, ' ')
+                    .split(/\s+/)
+                    .filter(w => w.length > 2);
+
+                // Gunakan Set untuk mencatat kata/bigram UNIK per judul (berdasarkan STEM)
+                const seenUnigrams = new Set();
+                const seenBigrams = new Set();
+
+                // Count Unigrams dengan STEMMING
+                allWords.forEach(word => {
+                    if (stopWords.has(word)) return;
+
+                    const stemmed = stem(word);
+                    if (stopWords.has(stemmed)) return;
+
+                    if (!seenUnigrams.has(stemmed)) {
+                        seenUnigrams.add(stemmed);
+                        unigramCounts[stemmed] = (unigramCounts[stemmed] || 0) + 1;
+
+                        // Track kata asli yang paling sering untuk display
+                        if (!stemToOriginal[stemmed]) {
+                            stemToOriginal[stemmed] = {};
                         }
-                    });
-                    
-                    // Count Bigrams dengan STEMMING
-                    for (let i = 0; i < allWords.length - 1; i++) {
-                        const word1 = allWords[i];
-                        const word2 = allWords[i + 1];
-                        
-                        if (stopWords.has(word1) || stopWords.has(word2)) continue;
-                        
-                        const stem1 = stem(word1);
-                        const stem2 = stem(word2);
-                        
-                        if (stopWords.has(stem1) || stopWords.has(stem2)) continue;
-                        
-                        const stemmedBigram = stem1 + " " + stem2;
-                        const originalBigram = word1 + " " + word2;
-                        
-                        if (!seenBigrams.has(stemmedBigram)) {
-                            seenBigrams.add(stemmedBigram);
-                            bigramCounts[stemmedBigram] = (bigramCounts[stemmedBigram] || 0) + 1;
-                            
-                            // Track bigram asli yang paling sering
-                            if (!stemBigramToOriginal[stemmedBigram]) {
-                                stemBigramToOriginal[stemmedBigram] = {};
-                            }
-                            stemBigramToOriginal[stemmedBigram][originalBigram] = 
-                                (stemBigramToOriginal[stemmedBigram][originalBigram] || 0) + 1;
-                        }
+                        stemToOriginal[stemmed][word] = (stemToOriginal[stemmed][word] || 0) + 1;
                     }
                 });
-                
-                // Helper: get most common original word for a stem
-                const getMostCommonOriginal = (mapping, stemmed) => {
-                    if (!mapping[stemmed]) return stemmed;
-                    const originals = Object.entries(mapping[stemmed]);
-                    originals.sort((a, b) => b[1] - a[1]);
-                    return originals[0][0];
-                };
-                
-                // Sort dan ambil top items, convert ke kata asli untuk display
-                const topUnigrams = Object.entries(unigramCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 12)
-                    .map(([stemmed, count]) => [getMostCommonOriginal(stemToOriginal, stemmed), count]);
-                    
-                const topBigrams = Object.entries(bigramCounts)
-                    .filter(([_, count]) => count >= 2)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 12)
-                    .map(([stemmed, count]) => [getMostCommonOriginal(stemBigramToOriginal, stemmed), count]);
-                
-                return { topUnigrams, topBigrams };
+
+                // Count Bigrams dengan STEMMING
+                for (let i = 0; i < allWords.length - 1; i++) {
+                    const word1 = allWords[i];
+                    const word2 = allWords[i + 1];
+
+                    if (stopWords.has(word1) || stopWords.has(word2)) continue;
+
+                    const stem1 = stem(word1);
+                    const stem2 = stem(word2);
+
+                    if (stopWords.has(stem1) || stopWords.has(stem2)) continue;
+
+                    const stemmedBigram = stem1 + " " + stem2;
+                    const originalBigram = word1 + " " + word2;
+
+                    if (!seenBigrams.has(stemmedBigram)) {
+                        seenBigrams.add(stemmedBigram);
+                        bigramCounts[stemmedBigram] = (bigramCounts[stemmedBigram] || 0) + 1;
+
+                        // Track bigram asli yang paling sering
+                        if (!stemBigramToOriginal[stemmedBigram]) {
+                            stemBigramToOriginal[stemmedBigram] = {};
+                        }
+                        stemBigramToOriginal[stemmedBigram][originalBigram] =
+                            (stemBigramToOriginal[stemmedBigram][originalBigram] || 0) + 1;
+                    }
+                }
+            });
+
+            // Helper: get most common original word for a stem
+            const getMostCommonOriginal = (mapping, stemmed) => {
+                if (!mapping[stemmed]) return stemmed;
+                const originals = Object.entries(mapping[stemmed]);
+                originals.sort((a, b) => b[1] - a[1]);
+                return originals[0][0];
+            };
+
+            // Sort dan ambil top items, convert ke kata asli untuk display
+            const topUnigrams = Object.entries(unigramCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 12)
+                .map(([stemmed, count]) => [getMostCommonOriginal(stemToOriginal, stemmed), count]);
+
+            const topBigrams = Object.entries(bigramCounts)
+                .filter(([_, count]) => count >= 2)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 12)
+                .map(([stemmed, count]) => [getMostCommonOriginal(stemBigramToOriginal, stemmed), count]);
+
+            return { topUnigrams, topBigrams };
+        }
+
+        // ===========================================
+        // FITUR #3 & #4: Dual Chart + Click-to-Search
+        // ===========================================
+        function renderKeywordCharts(data) {
+            // Ekstrak dari Judul + Metode untuk keyword trending
+            const textsForKeywords = data.map(row => {
+                const judul = row[3] || "";
+                const metode = row[7] || "";
+                return judul + " " + metode;
+            });
+            const { topUnigrams, topBigrams } = extractKeywords(textsForKeywords);
+
+            // Destroy existing charts
+            if (unigramChartInstance) {
+                unigramChartInstance.destroy();
+            }
+            if (bigramChartInstance) {
+                bigramChartInstance.destroy();
             }
 
-            // ===========================================
-            // FITUR #3 & #4: Dual Chart + Click-to-Search
-            // ===========================================
-            function renderKeywordCharts(data) {
-                // Ekstrak dari Judul + Metode untuk keyword trending
-                const textsForKeywords = data.map(row => {
-                    const judul = row[3] || "";
-                    const metode = row[7] || "";
-                    return judul + " " + metode;
-                });
-                const { topUnigrams, topBigrams } = extractKeywords(textsForKeywords);
-                
-                // Destroy existing charts
-                if (unigramChartInstance) {
-                    unigramChartInstance.destroy();
-                }
-                if (bigramChartInstance) {
-                    bigramChartInstance.destroy();
-                }
-                
-                // Common click handler
-                const handleChartClick = (event, elements, chart, labels) => {
-                    if (elements.length > 0) {
-                        const index = elements[0].index;
-                        const keyword = labels[index];
-                        
-                        // Set search input and trigger filter with stem-aware search
-                        const searchInput = document.getElementById('search-input');
-                        searchInput.value = keyword;
-                        searchInput.focus();
-                        
-                        // Aktifkan stem search untuk klik dari chart
-                        useStemSearch = true;
-                        applyFilters();
-                        
-                        // Scroll to search area
-                        document.querySelector('.search-wrapper').scrollIntoView({ 
-                            behavior: 'smooth',
-                            block: 'center'
-                        });
-                    }
-                };
-                
-                // Render Unigram Chart
-                const ctxUnigram = document.getElementById("chartKeywordUnigram").getContext("2d");
-                const unigramLabels = topUnigrams.map(item => item[0]);
-                
-                unigramChartInstance = new Chart(ctxUnigram, {
-                    type: "bar",
-                    data: {
-                        labels: unigramLabels,
-                        datasets: [{
-                            label: "Frekuensi",
-                            data: topUnigrams.map(item => item[1]),
-                            backgroundColor: "#27ae60",
-                            borderRadius: 4,
-                            hoverBackgroundColor: "#1e8449"
-                        }]
-                    },
-                    options: {
-                        indexAxis: "y",
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        onClick: (event, elements) => {
-                            handleChartClick(event, elements, unigramChartInstance, unigramLabels);
-                        },
-                        scales: {
-                            x: { beginAtZero: true, grid: { display: false } },
-                            y: { grid: { display: false } }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    title: (ctx) => "Kata: " + ctx[0].label,
-                                    label: (ctx) => ctx.parsed.x + " proposal",
-                                    afterBody: () => "Klik untuk filter"
-                                }
-                            }
-                        }
-                    }
-                });
-                
-                // Render Bigram Chart
-                const ctxBigram = document.getElementById("chartKeywordBigram").getContext("2d");
-                const bigramLabels = topBigrams.map(item => item[0]);
-                
-                if (topBigrams.length === 0) {
-                    // Show empty state if no bigrams found
-                    ctxBigram.font = "14px Arial";
-                    ctxBigram.fillStyle = "#999";
-                    ctxBigram.textAlign = "center";
-                    ctxBigram.fillText("Tidak cukup data untuk bigram", ctxBigram.canvas.width / 2, 100);
-                    return;
-                }
-                
-                bigramChartInstance = new Chart(ctxBigram, {
-                    type: "bar",
-                    data: {
-                        labels: bigramLabels,
-                        datasets: [{
-                            label: "Frekuensi",
-                            data: topBigrams.map(item => item[1]),
-                            backgroundColor: "#9b59b6",
-                            borderRadius: 4,
-                            hoverBackgroundColor: "#7d3c98"
-                        }]
-                    },
-                    options: {
-                        indexAxis: "y",
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        onClick: (event, elements) => {
-                            handleChartClick(event, elements, bigramChartInstance, bigramLabels);
-                        },
-                        scales: {
-                            x: { beginAtZero: true, grid: { display: false } },
-                            y: { grid: { display: false } }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    title: (ctx) => "Frasa: " + ctx[0].label,
-                                    label: (ctx) => ctx.parsed.x + " proposal",
-                                    afterBody: () => "Klik untuk filter"
-                                }
-                            }
-                        }
-                    }
-                });
-            }
+            // Common click handler
+            const handleChartClick = (event, elements, chart, labels) => {
+                if (elements.length > 0) {
+                    const index = elements[0].index;
+                    const keyword = labels[index];
 
-            async function loadData() {
-                const loadingDiv = document.getElementById("loading");
-                const errorDiv = document.getElementById("error");
-                loadingDiv.style.display = "block";
-                errorDiv.style.display = "none";
+                    // Set search input and trigger filter with stem-aware search
+                    const searchInput = document.getElementById('search-input');
+                    searchInput.value = keyword;
+                    searchInput.focus();
 
-                try {
-                    // Load stop words first
-                    loadingDiv.textContent = "Memuat kamus stop words...";
-                    await loadStopWords();
-                    
-                    loadingDiv.textContent = "Memuat data proposal...";
-                    const [submissionRows, masterList] = await Promise.all([
-                        fetchSubmissionData(),
-                        fetchMasterStudents(),
-                    ]);
-
-                    masterStudents = masterList;
-                    allData = submissionRows;
-                    filteredData = [...allData];
-
-                    populateDropdown(allData);
-                    renderCharts(allData);
-                    renderKeywordCharts(allData); // Render dual keyword charts
+                    // Aktifkan stem search untuk klik dari chart
+                    useStemSearch = true;
                     applyFilters();
 
-                    pendingStudents = computePendingStudents(
-                        masterStudents,
-                        allData,
-                    );
-                    renderPendingSection(
-                        pendingStudents,
-                        masterStudents.length,
-                    );
-                } catch (err) {
-                    console.error(err);
-                    showError(
-                        "Gagal memuat data. Pastikan menjalankan via server lokal dan file master CSV tersedia.",
-                    );
-                } finally {
-                    loadingDiv.style.display = "none";
+                    // Scroll to search area
+                    document.querySelector('.search-wrapper').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
                 }
+            };
+
+            // Render Unigram Chart
+            const ctxUnigram = document.getElementById("chartKeywordUnigram").getContext("2d");
+            const unigramLabels = topUnigrams.map(item => item[0]);
+
+            unigramChartInstance = new Chart(ctxUnigram, {
+                type: "bar",
+                data: {
+                    labels: unigramLabels,
+                    datasets: [{
+                        label: "Frekuensi",
+                        data: topUnigrams.map(item => item[1]),
+                        backgroundColor: "#27ae60",
+                        borderRadius: 4,
+                        hoverBackgroundColor: "#1e8449"
+                    }]
+                },
+                options: {
+                    indexAxis: "y",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: (event, elements) => {
+                        handleChartClick(event, elements, unigramChartInstance, unigramLabels);
+                    },
+                    scales: {
+                        x: { beginAtZero: true, grid: { display: false } },
+                        y: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: (ctx) => "Kata: " + ctx[0].label,
+                                label: (ctx) => ctx.parsed.x + " proposal",
+                                afterBody: () => "Klik untuk filter"
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Render Bigram Chart
+            const ctxBigram = document.getElementById("chartKeywordBigram").getContext("2d");
+            const bigramLabels = topBigrams.map(item => item[0]);
+
+            if (topBigrams.length === 0) {
+                // Show empty state if no bigrams found
+                ctxBigram.font = "14px Arial";
+                ctxBigram.fillStyle = "#999";
+                ctxBigram.textAlign = "center";
+                ctxBigram.fillText("Tidak cukup data untuk bigram", ctxBigram.canvas.width / 2, 100);
+                return;
             }
 
-            function renderCharts(data) {
-                const bidangCounts = {};
-                const dosenCounts = {};
-
-                data.forEach((row) => {
-                    let bidang = row[4];
-                    if (!bidang || bidang.trim() === "") bidang = "Lainnya";
-                    bidang = bidang.trim();
-                    bidangCounts[bidang] = (bidangCounts[bidang] || 0) + 1;
-
-                    let dosen = row[13];
-                    if (!dosen || dosen.trim() === "")
-                        dosen = "Belum Ada Pembimbing";
-                    dosen = dosen.trim();
-                    dosenCounts[dosen] = (dosenCounts[dosen] || 0) + 1;
-                });
-
-                // Render Chart Bidang
-                const ctxBidang = document
-                    .getElementById("chartBidang")
-                    .getContext("2d");
-                new Chart(ctxBidang, {
-                    type: "doughnut",
-                    data: {
-                        labels: Object.keys(bidangCounts),
-                        datasets: [
-                            {
-                                data: Object.values(bidangCounts),
-                                backgroundColor: [
-                                    "#3498db",
-                                    "#e74c3c",
-                                    "#f1c40f",
-                                    "#2ecc71",
-                                    "#9b59b6",
-                                    "#34495e",
-                                    "#16a085",
-                                    "#d35400",
-                                ],
-                                borderWidth: 1,
-                            },
-                        ],
+            bigramChartInstance = new Chart(ctxBigram, {
+                type: "bar",
+                data: {
+                    labels: bigramLabels,
+                    datasets: [{
+                        label: "Frekuensi",
+                        data: topBigrams.map(item => item[1]),
+                        backgroundColor: "#9b59b6",
+                        borderRadius: 4,
+                        hoverBackgroundColor: "#7d3c98"
+                    }]
+                },
+                options: {
+                    indexAxis: "y",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: (event, elements) => {
+                        handleChartClick(event, elements, bigramChartInstance, bigramLabels);
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom",
-                                labels: { boxWidth: 12, font: { size: 11 } },
-                            },
+                    scales: {
+                        x: { beginAtZero: true, grid: { display: false } },
+                        y: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: (ctx) => "Frasa: " + ctx[0].label,
+                                label: (ctx) => ctx.parsed.x + " proposal",
+                                afterBody: () => "Klik untuk filter"
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadData() {
+            const loadingDiv = document.getElementById("loading");
+            const errorDiv = document.getElementById("error");
+            loadingDiv.style.display = "block";
+            errorDiv.style.display = "none";
+
+            try {
+                // Load stop words first
+                loadingDiv.textContent = "Memuat kamus stop words...";
+                await loadStopWords();
+
+                loadingDiv.textContent = "Memuat data proposal...";
+                const [submissionRows, masterList] = await Promise.all([
+                    fetchSubmissionData(),
+                    fetchMasterStudents(),
+                ]);
+
+                masterStudents = masterList;
+                allData = submissionRows;
+                filteredData = [...allData];
+
+                populateDropdown(allData);
+                renderCharts(allData);
+                renderKeywordCharts(allData); // Render dual keyword charts
+                applyFilters();
+
+                pendingStudents = computePendingStudents(
+                    masterStudents,
+                    allData,
+                );
+                renderPendingSection(
+                    pendingStudents,
+                    masterStudents.length,
+                );
+            } catch (err) {
+                console.error(err);
+                showError(
+                    "Gagal memuat data. Pastikan menjalankan via server lokal dan file master CSV tersedia.",
+                );
+            } finally {
+                loadingDiv.style.display = "none";
+            }
+        }
+
+        function renderCharts(data) {
+            const bidangCounts = {};
+            const dosenCounts = {};
+
+            data.forEach((row) => {
+                let bidang = row[4];
+                if (!bidang || bidang.trim() === "") bidang = "Lainnya";
+                bidang = bidang.trim();
+                bidangCounts[bidang] = (bidangCounts[bidang] || 0) + 1;
+
+                let dosen = row[13];
+                if (!dosen || dosen.trim() === "")
+                    dosen = "Belum Ada Pembimbing";
+                dosen = dosen.trim();
+                dosenCounts[dosen] = (dosenCounts[dosen] || 0) + 1;
+            });
+
+            // Render Chart Bidang
+            const ctxBidang = document
+                .getElementById("chartBidang")
+                .getContext("2d");
+            new Chart(ctxBidang, {
+                type: "doughnut",
+                data: {
+                    labels: Object.keys(bidangCounts),
+                    datasets: [
+                        {
+                            data: Object.values(bidangCounts),
+                            backgroundColor: [
+                                "#3498db",
+                                "#e74c3c",
+                                "#f1c40f",
+                                "#2ecc71",
+                                "#9b59b6",
+                                "#34495e",
+                                "#16a085",
+                                "#d35400",
+                            ],
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: { boxWidth: 12, font: { size: 11 } },
                         },
                     },
-                });
+                },
+            });
 
-                // Render Chart Dosen
-                const sortedDosen = Object.entries(dosenCounts).sort(
-                    (a, b) => b[1] - a[1],
+            // Render Chart Dosen
+            const sortedDosen = Object.entries(dosenCounts).sort(
+                (a, b) => b[1] - a[1],
+            );
+            const ctxDosen = document
+                .getElementById("chartDosen")
+                .getContext("2d");
+            new Chart(ctxDosen, {
+                type: "bar",
+                data: {
+                    labels: sortedDosen.map((item) => item[0]),
+                    datasets: [
+                        {
+                            label: "Mahasiswa",
+                            data: sortedDosen.map((item) => item[1]),
+                            backgroundColor: "#3498db",
+                            borderRadius: 4,
+                        },
+                    ],
+                },
+                options: {
+                    indexAxis: "y",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { beginAtZero: true },
+                        y: { grid: { display: false } },
+                    },
+                    plugins: { legend: { display: false } },
+                },
+            });
+        }
+
+        function fetchSubmissionData() {
+            return new Promise((resolve, reject) => {
+                Papa.parse(csvUrl, {
+                    download: true,
+                    header: false,
+                    complete: function (results) {
+                        const rawData = results.data;
+                        if (!rawData || rawData.length === 0) {
+                            reject(new Error("Tidak ada data submit."));
+                            return;
+                        }
+                        const cleaned = rawData
+                            .slice(1)
+                            .filter(
+                                (row) =>
+                                    Array.isArray(row) &&
+                                    row.length > 1 &&
+                                    row[1] !== "",
+                            );
+                        resolve(cleaned);
+                    },
+                    error: reject,
+                });
+            });
+        }
+
+        async function fetchMasterStudents() {
+            const response = await fetch(masterCsvPath);
+            if (!response.ok) {
+                throw new Error(
+                    "File master mahasiswa belum tersedia di direktori yang sama.",
                 );
-                const ctxDosen = document
-                    .getElementById("chartDosen")
-                    .getContext("2d");
-                new Chart(ctxDosen, {
+            }
+            const text = await response.text();
+            const normalizedCsv = normalizeMasterCsv(text);
+            if (!normalizedCsv) {
+                return [];
+            }
+            const parsed = Papa.parse(normalizedCsv, {
+                header: true,
+                skipEmptyLines: true,
+            });
+            return parsed.data
+                .map((row) => {
+                    const nim = normalizeNim(row["NIM"]);
+                    return {
+                        nim,
+                        rawNim: row["NIM"] || "",
+                        nama: (row["NAMA"] || "").trim(),
+                        dosen:
+                            (row["Dosen Pembimbing"] || "").trim() ||
+                            "Belum Ditentukan",
+                        kk: (row["KK"] || "").trim(),
+                        tema: (row["Nama Tema"] || "").trim() || "-",
+                    };
+                })
+                .filter((student) => student.nim);
+        }
+
+        function normalizeMasterCsv(text) {
+            const lines = text
+                .split(/\r?\n/)
+                .filter((line) => line.trim().length > 0);
+            if (lines.length === 0) {
+                return "";
+            }
+            const [headerRaw, ...body] = lines;
+            const header = headerRaw.replace(/^[\uFEFF]+/, "");
+            const cleanedBody = body.map((line) => {
+                let trimmed = line.trim();
+                if (
+                    trimmed.startsWith('"') &&
+                    trimmed.endsWith('"') &&
+                    trimmed.length >= 2
+                ) {
+                    trimmed = trimmed.slice(1, -1);
+                }
+                return trimmed.replace(/""/g, '"');
+            });
+            return [header, ...cleanedBody].join("\n");
+        }
+
+        function normalizeNim(nimValue) {
+            if (!nimValue) return "";
+            return nimValue.toString().replace(/[^0-9]/g, "");
+        }
+
+        function computePendingStudents(masterList, submissions) {
+            const submissionSet = new Set(
+                submissions
+                    .map((row) => normalizeNim(row[1]))
+                    .filter((nim) => nim),
+            );
+            return masterList
+                .filter((student) => !submissionSet.has(student.nim))
+                .sort((a, b) => {
+                    if (a.dosen === b.dosen) {
+                        return a.nama.localeCompare(b.nama);
+                    }
+                    return a.dosen.localeCompare(b.dosen);
+                });
+        }
+
+        function renderPendingSection(list, totalMaster) {
+            pendingStudents = Array.isArray(list) ? list : [];
+            pendingFilteredStudents = [...pendingStudents];
+            pendingCurrentPage = 1;
+            updatePendingSummary(totalMaster);
+            updatePendingTableView();
+            renderPendingChart(pendingStudents);
+        }
+
+        function updatePendingSummary(totalMaster) {
+            const description = document.getElementById(
+                "pending-description",
+            );
+            const pendingTotal = document.getElementById("pending-total");
+            const pendingMaster = document.getElementById(
+                "pending-total-master",
+            );
+            if (!description || !pendingTotal || !pendingMaster) return;
+
+            const totalPending = pendingStudents.length;
+            pendingTotal.textContent = totalPending;
+            pendingMaster.textContent = totalMaster || 0;
+
+            if (!totalMaster) {
+                description.textContent =
+                    "Data mahasiswa belum tersedia.";
+            } else if (totalPending === 0) {
+                description.textContent =
+                    "Seluruh mahasiswa KK E telah melakukan submit tema proposal.";
+            } else {
+                let percentage = ((totalPending / totalMaster) * 100).toFixed(1);
+                if (percentage.endsWith(".0")) {
+                    percentage = percentage.slice(0, -2);
+                }
+                description.textContent = `${totalPending} mahasiswa belum submit (${percentage}%)`;
+            }
+        }
+
+        function updatePendingTableView() {
+            const totalItems = pendingFilteredStudents.length;
+            const totalPages = Math.max(
+                1,
+                Math.ceil(totalItems / pendingItemsPerPage) || 1,
+            );
+            if (pendingCurrentPage > totalPages) {
+                pendingCurrentPage = totalPages;
+            }
+            if (pendingCurrentPage < 1) {
+                pendingCurrentPage = 1;
+            }
+
+            const startIndex = (pendingCurrentPage - 1) * pendingItemsPerPage;
+            const pageData = pendingFilteredStudents.slice(
+                startIndex,
+                startIndex + pendingItemsPerPage,
+            );
+
+            renderPendingTableRows(pageData, startIndex);
+            renderPendingPagination(totalItems);
+            updatePendingResultCount(totalItems, startIndex, pageData.length);
+
+            const searchInput = document.getElementById("pending-search");
+            if (searchInput) {
+                if (pendingStudents.length === 0) {
+                    searchInput.value = "";
+                    searchInput.disabled = true;
+                    searchInput.placeholder = "Data mahasiswa belum tersedia";
+                } else {
+                    searchInput.disabled = false;
+                    searchInput.placeholder =
+                        "Cari NIM, Nama, atau Dosen...";
+                }
+            }
+        }
+
+        function updatePendingResultCount(totalItems, startIndex, count) {
+            const resultDiv = document.getElementById(
+                "pending-result-count",
+            );
+            if (!resultDiv) return;
+
+            if (totalItems === 0) {
+                resultDiv.textContent =
+                    pendingStudents.length === 0
+                        ? "Tidak ada data mahasiswa"
+                        : "Tidak ada data sesuai pencarian";
+                return;
+            }
+
+            const start = startIndex + 1;
+            const end = startIndex + count;
+            resultDiv.textContent = `Menampilkan ${start}-${end} dari ${totalItems} mahasiswa`;
+        }
+
+        function renderPendingTableRows(pageData, startIndex) {
+            const tbody = document.getElementById("pending-table-body");
+            if (!tbody) return;
+            tbody.innerHTML = "";
+
+            if (!pageData || pageData.length === 0) {
+                const row = document.createElement("tr");
+                const message =
+                    pendingStudents.length === 0
+                        ? "Tidak ada mahasiswa yang belum submit."
+                        : "Tidak ada data yang cocok dengan pencarian.";
+                row.innerHTML = `<td colspan="4" style="text-align:center; color:#888;">${message}</td>`;
+                tbody.appendChild(row);
+                return;
+            }
+
+            pageData.forEach((student, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                        <td>${startIndex + index + 1}</td>
+                        <td>${student.rawNim || student.nim}</td>
+                        <td>${student.nama || "-"}</td>
+                        <td>${student.dosen}</td>
+                    `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderPendingPagination(totalItems) {
+            const paginationEl = document.getElementById(
+                "pending-pagination",
+            );
+            if (!paginationEl) return;
+            paginationEl.innerHTML = "";
+
+            if (totalItems <= pendingItemsPerPage) {
+                return;
+            }
+
+            const totalPages = Math.ceil(totalItems / pendingItemsPerPage);
+
+            const createBtn = (label, page, disabled = false, active = false) => {
+                const btn = document.createElement("button");
+                btn.textContent = label;
+                btn.className = `pending-page-btn ${active ? "active" : ""}`;
+                btn.disabled = disabled;
+                if (!disabled && page) {
+                    btn.addEventListener("click", () => goToPendingPage(page));
+                }
+                return btn;
+            };
+
+            paginationEl.appendChild(
+                createBtn("«", pendingCurrentPage - 1, pendingCurrentPage === 1),
+            );
+
+            let startPage = Math.max(1, pendingCurrentPage - 2);
+            let endPage = Math.min(totalPages, pendingCurrentPage + 2);
+
+            if (startPage > 1) {
+                paginationEl.appendChild(createBtn("1", 1));
+            }
+            if (startPage > 2) {
+                const ellipsis = document.createElement("span");
+                ellipsis.textContent = "...";
+                ellipsis.style.color = "#95a5a6";
+                paginationEl.appendChild(ellipsis);
+            }
+
+            for (let page = startPage; page <= endPage; page++) {
+                paginationEl.appendChild(
+                    createBtn(page, page, false, page === pendingCurrentPage),
+                );
+            }
+
+            if (endPage < totalPages - 1) {
+                const ellipsis = document.createElement("span");
+                ellipsis.textContent = "...";
+                ellipsis.style.color = "#95a5a6";
+                paginationEl.appendChild(ellipsis);
+            }
+            if (endPage < totalPages) {
+                paginationEl.appendChild(createBtn(totalPages, totalPages));
+            }
+
+            paginationEl.appendChild(
+                createBtn(
+                    "»",
+                    pendingCurrentPage + 1,
+                    pendingCurrentPage === totalPages,
+                ),
+            );
+        }
+
+        function goToPendingPage(page) {
+            pendingCurrentPage = page;
+            updatePendingTableView();
+        }
+
+        function handlePendingSearch(event) {
+            const keyword = (event.target.value || "").toLowerCase().trim();
+            if (!keyword) {
+                pendingFilteredStudents = [...pendingStudents];
+            } else {
+                pendingFilteredStudents = pendingStudents.filter((student) => {
+                    const haystack = `${student.nim} ${student.nama} ${student.dosen}`
+                        .toLowerCase();
+                    return haystack.includes(keyword);
+                });
+            }
+            pendingCurrentPage = 1;
+            updatePendingTableView();
+        }
+
+        function renderPendingChart(list) {
+            const canvas = document.getElementById("pendingChart");
+            const emptyState = document.getElementById(
+                "pending-chart-empty",
+            );
+            if (!canvas || !emptyState) return;
+
+            if (pendingChartInstance) {
+                pendingChartInstance.destroy();
+                pendingChartInstance = null;
+            }
+
+            if (!list || list.length === 0) {
+                emptyState.style.display = "flex";
+                canvas.style.display = "none";
+                return;
+            }
+
+            emptyState.style.display = "none";
+            canvas.style.display = "block";
+
+            const counts = {};
+            list.forEach((student) => {
+                const key = student.dosen || "Belum Ditentukan";
+                counts[key] = (counts[key] || 0) + 1;
+            });
+            const sortedEntries = Object.entries(counts).sort(
+                (a, b) => b[1] - a[1],
+            );
+
+            pendingChartInstance = new Chart(
+                canvas.getContext("2d"),
+                {
                     type: "bar",
                     data: {
-                        labels: sortedDosen.map((item) => item[0]),
+                        labels: sortedEntries.map((item) => item[0]),
                         datasets: [
                             {
-                                label: "Mahasiswa",
-                                data: sortedDosen.map((item) => item[1]),
-                                backgroundColor: "#3498db",
+                                label: "Belum submit",
+                                data: sortedEntries.map((item) => item[1]),
+                                backgroundColor: "#e67e22",
                                 borderRadius: 4,
                             },
                         ],
@@ -1508,547 +1859,198 @@
                             x: { beginAtZero: true },
                             y: { grid: { display: false } },
                         },
-                        plugins: { legend: { display: false } },
-                    },
-                });
-            }
-
-            function fetchSubmissionData() {
-                return new Promise((resolve, reject) => {
-                    Papa.parse(csvUrl, {
-                        download: true,
-                        header: false,
-                        complete: function (results) {
-                            const rawData = results.data;
-                            if (!rawData || rawData.length === 0) {
-                                reject(new Error("Tidak ada data submit."));
-                                return;
-                            }
-                            const cleaned = rawData
-                                .slice(1)
-                                .filter(
-                                    (row) =>
-                                        Array.isArray(row) &&
-                                        row.length > 1 &&
-                                        row[1] !== "",
-                                );
-                            resolve(cleaned);
-                        },
-                        error: reject,
-                    });
-                });
-            }
-
-            async function fetchMasterStudents() {
-                const response = await fetch(masterCsvPath);
-                if (!response.ok) {
-                    throw new Error(
-                        "File master mahasiswa belum tersedia di direktori yang sama.",
-                    );
-                }
-                const text = await response.text();
-                const normalizedCsv = normalizeMasterCsv(text);
-                if (!normalizedCsv) {
-                    return [];
-                }
-                const parsed = Papa.parse(normalizedCsv, {
-                    header: true,
-                    skipEmptyLines: true,
-                });
-                return parsed.data
-                    .map((row) => {
-                        const nim = normalizeNim(row["NIM"]);
-                        return {
-                            nim,
-                            rawNim: row["NIM"] || "",
-                            nama: (row["NAMA"] || "").trim(),
-                            dosen:
-                                (row["Dosen Pembimbing"] || "").trim() ||
-                                "Belum Ditentukan",
-                            kk: (row["KK"] || "").trim(),
-                            tema: (row["Nama Tema"] || "").trim() || "-",
-                        };
-                    })
-                    .filter((student) => student.nim);
-            }
-
-            function normalizeMasterCsv(text) {
-                const lines = text
-                    .split(/\r?\n/)
-                    .filter((line) => line.trim().length > 0);
-                if (lines.length === 0) {
-                    return "";
-                }
-                const [headerRaw, ...body] = lines;
-                const header = headerRaw.replace(/^[\uFEFF]+/, "");
-                const cleanedBody = body.map((line) => {
-                    let trimmed = line.trim();
-                    if (
-                        trimmed.startsWith('"') &&
-                        trimmed.endsWith('"') &&
-                        trimmed.length >= 2
-                    ) {
-                        trimmed = trimmed.slice(1, -1);
-                    }
-                    return trimmed.replace(/""/g, '"');
-                });
-                return [header, ...cleanedBody].join("\n");
-            }
-
-            function normalizeNim(nimValue) {
-                if (!nimValue) return "";
-                return nimValue.toString().replace(/[^0-9]/g, "");
-            }
-
-            function computePendingStudents(masterList, submissions) {
-                const submissionSet = new Set(
-                    submissions
-                        .map((row) => normalizeNim(row[1]))
-                        .filter((nim) => nim),
-                );
-                return masterList
-                    .filter((student) => !submissionSet.has(student.nim))
-                    .sort((a, b) => {
-                        if (a.dosen === b.dosen) {
-                            return a.nama.localeCompare(b.nama);
-                        }
-                        return a.dosen.localeCompare(b.dosen);
-                    });
-            }
-
-            function renderPendingSection(list, totalMaster) {
-                pendingStudents = Array.isArray(list) ? list : [];
-                pendingFilteredStudents = [...pendingStudents];
-                pendingCurrentPage = 1;
-                updatePendingSummary(totalMaster);
-                updatePendingTableView();
-                renderPendingChart(pendingStudents);
-            }
-
-            function updatePendingSummary(totalMaster) {
-                const description = document.getElementById(
-                    "pending-description",
-                );
-                const pendingTotal = document.getElementById("pending-total");
-                const pendingMaster = document.getElementById(
-                    "pending-total-master",
-                );
-                if (!description || !pendingTotal || !pendingMaster) return;
-
-                const totalPending = pendingStudents.length;
-                pendingTotal.textContent = totalPending;
-                pendingMaster.textContent = totalMaster || 0;
-
-                if (!totalMaster) {
-                    description.textContent =
-                        "Data mahasiswa belum tersedia.";
-                } else if (totalPending === 0) {
-                    description.textContent =
-                        "Seluruh mahasiswa KK E telah melakukan submit tema proposal.";
-                } else {
-                    let percentage = ((totalPending / totalMaster) * 100).toFixed(1);
-                    if (percentage.endsWith(".0")) {
-                        percentage = percentage.slice(0, -2);
-                    }
-                    description.textContent = `${totalPending} mahasiswa belum submit (${percentage}%)`;
-                }
-            }
-
-            function updatePendingTableView() {
-                const totalItems = pendingFilteredStudents.length;
-                const totalPages = Math.max(
-                    1,
-                    Math.ceil(totalItems / pendingItemsPerPage) || 1,
-                );
-                if (pendingCurrentPage > totalPages) {
-                    pendingCurrentPage = totalPages;
-                }
-                if (pendingCurrentPage < 1) {
-                    pendingCurrentPage = 1;
-                }
-
-                const startIndex = (pendingCurrentPage - 1) * pendingItemsPerPage;
-                const pageData = pendingFilteredStudents.slice(
-                    startIndex,
-                    startIndex + pendingItemsPerPage,
-                );
-
-                renderPendingTableRows(pageData, startIndex);
-                renderPendingPagination(totalItems);
-                updatePendingResultCount(totalItems, startIndex, pageData.length);
-
-                const searchInput = document.getElementById("pending-search");
-                if (searchInput) {
-                    if (pendingStudents.length === 0) {
-                        searchInput.value = "";
-                        searchInput.disabled = true;
-                        searchInput.placeholder = "Data mahasiswa belum tersedia";
-                    } else {
-                        searchInput.disabled = false;
-                        searchInput.placeholder =
-                            "Cari NIM, Nama, atau Dosen...";
-                    }
-                }
-            }
-
-            function updatePendingResultCount(totalItems, startIndex, count) {
-                const resultDiv = document.getElementById(
-                    "pending-result-count",
-                );
-                if (!resultDiv) return;
-
-                if (totalItems === 0) {
-                    resultDiv.textContent =
-                        pendingStudents.length === 0
-                            ? "Tidak ada data mahasiswa"
-                            : "Tidak ada data sesuai pencarian";
-                    return;
-                }
-
-                const start = startIndex + 1;
-                const end = startIndex + count;
-                resultDiv.textContent = `Menampilkan ${start}-${end} dari ${totalItems} mahasiswa`;
-            }
-
-            function renderPendingTableRows(pageData, startIndex) {
-                const tbody = document.getElementById("pending-table-body");
-                if (!tbody) return;
-                tbody.innerHTML = "";
-
-                if (!pageData || pageData.length === 0) {
-                    const row = document.createElement("tr");
-                    const message =
-                        pendingStudents.length === 0
-                            ? "Tidak ada mahasiswa yang belum submit."
-                            : "Tidak ada data yang cocok dengan pencarian.";
-                    row.innerHTML = `<td colspan="4" style="text-align:center; color:#888;">${message}</td>`;
-                    tbody.appendChild(row);
-                    return;
-                }
-
-                pageData.forEach((student, index) => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${startIndex + index + 1}</td>
-                        <td>${student.rawNim || student.nim}</td>
-                        <td>${student.nama || "-"}</td>
-                        <td>${student.dosen}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
-
-            function renderPendingPagination(totalItems) {
-                const paginationEl = document.getElementById(
-                    "pending-pagination",
-                );
-                if (!paginationEl) return;
-                paginationEl.innerHTML = "";
-
-                if (totalItems <= pendingItemsPerPage) {
-                    return;
-                }
-
-                const totalPages = Math.ceil(totalItems / pendingItemsPerPage);
-
-                const createBtn = (label, page, disabled = false, active = false) => {
-                    const btn = document.createElement("button");
-                    btn.textContent = label;
-                    btn.className = `pending-page-btn ${active ? "active" : ""}`;
-                    btn.disabled = disabled;
-                    if (!disabled && page) {
-                        btn.addEventListener("click", () => goToPendingPage(page));
-                    }
-                    return btn;
-                };
-
-                paginationEl.appendChild(
-                    createBtn("«", pendingCurrentPage - 1, pendingCurrentPage === 1),
-                );
-
-                let startPage = Math.max(1, pendingCurrentPage - 2);
-                let endPage = Math.min(totalPages, pendingCurrentPage + 2);
-
-                if (startPage > 1) {
-                    paginationEl.appendChild(createBtn("1", 1));
-                }
-                if (startPage > 2) {
-                    const ellipsis = document.createElement("span");
-                    ellipsis.textContent = "...";
-                    ellipsis.style.color = "#95a5a6";
-                    paginationEl.appendChild(ellipsis);
-                }
-
-                for (let page = startPage; page <= endPage; page++) {
-                    paginationEl.appendChild(
-                        createBtn(page, page, false, page === pendingCurrentPage),
-                    );
-                }
-
-                if (endPage < totalPages - 1) {
-                    const ellipsis = document.createElement("span");
-                    ellipsis.textContent = "...";
-                    ellipsis.style.color = "#95a5a6";
-                    paginationEl.appendChild(ellipsis);
-                }
-                if (endPage < totalPages) {
-                    paginationEl.appendChild(createBtn(totalPages, totalPages));
-                }
-
-                paginationEl.appendChild(
-                    createBtn(
-                        "»",
-                        pendingCurrentPage + 1,
-                        pendingCurrentPage === totalPages,
-                    ),
-                );
-            }
-
-            function goToPendingPage(page) {
-                pendingCurrentPage = page;
-                updatePendingTableView();
-            }
-
-            function handlePendingSearch(event) {
-                const keyword = (event.target.value || "").toLowerCase().trim();
-                if (!keyword) {
-                    pendingFilteredStudents = [...pendingStudents];
-                } else {
-                    pendingFilteredStudents = pendingStudents.filter((student) => {
-                        const haystack = `${student.nim} ${student.nama} ${student.dosen}`
-                            .toLowerCase();
-                        return haystack.includes(keyword);
-                    });
-                }
-                pendingCurrentPage = 1;
-                updatePendingTableView();
-            }
-
-            function renderPendingChart(list) {
-                const canvas = document.getElementById("pendingChart");
-                const emptyState = document.getElementById(
-                    "pending-chart-empty",
-                );
-                if (!canvas || !emptyState) return;
-
-                if (pendingChartInstance) {
-                    pendingChartInstance.destroy();
-                    pendingChartInstance = null;
-                }
-
-                if (!list || list.length === 0) {
-                    emptyState.style.display = "flex";
-                    canvas.style.display = "none";
-                    return;
-                }
-
-                emptyState.style.display = "none";
-                canvas.style.display = "block";
-
-                const counts = {};
-                list.forEach((student) => {
-                    const key = student.dosen || "Belum Ditentukan";
-                    counts[key] = (counts[key] || 0) + 1;
-                });
-                const sortedEntries = Object.entries(counts).sort(
-                    (a, b) => b[1] - a[1],
-                );
-
-                pendingChartInstance = new Chart(
-                    canvas.getContext("2d"),
-                    {
-                        type: "bar",
-                        data: {
-                            labels: sortedEntries.map((item) => item[0]),
-                            datasets: [
-                                {
-                                    label: "Belum submit",
-                                    data: sortedEntries.map((item) => item[1]),
-                                    backgroundColor: "#e67e22",
-                                    borderRadius: 4,
-                                },
-                            ],
-                        },
-                        options: {
-                            indexAxis: "y",
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: { beginAtZero: true },
-                                y: { grid: { display: false } },
-                            },
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: {
-                                    callbacks: {
-                                        label: (context) =>
-                                            `${context.parsed.x} mahasiswa`,
-                                    },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) =>
+                                        `${context.parsed.x} mahasiswa`,
                                 },
                             },
                         },
                     },
-                );
-            }
+                },
+            );
+        }
 
-            function populateDropdown(data) {
-                const dosenSet = new Set();
-                data.forEach((row) => {
-                    const dosenName = row[13];
-                    if (dosenName && dosenName.trim() !== "") {
-                        dosenSet.add(dosenName.trim());
-                    }
-                });
-                const sortedDosen = Array.from(dosenSet).sort();
-                const select = document.getElementById("filter-dosen");
-                sortedDosen.forEach((nama) => {
-                    const option = document.createElement("option");
-                    option.value = nama;
-                    option.textContent = nama;
-                    select.appendChild(option);
-                });
-            }
+        function populateDropdown(data) {
+            const dosenSet = new Set();
+            data.forEach((row) => {
+                const dosenName = row[13];
+                if (dosenName && dosenName.trim() !== "") {
+                    dosenSet.add(dosenName.trim());
+                }
+            });
+            const sortedDosen = Array.from(dosenSet).sort();
+            const select = document.getElementById("filter-dosen");
+            sortedDosen.forEach((nama) => {
+                const option = document.createElement("option");
+                option.value = nama;
+                option.textContent = nama;
+                select.appendChild(option);
+            });
+        }
 
-            // Flag untuk stem-aware search (diaktifkan saat klik chart)
-            let useStemSearch = false;
-            
-            function applyFilters() {
-                const rawKeyword = document
-                    .getElementById("search-input")
-                    .value.toLowerCase()
-                    .replace(/[^\w\s]/gi, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim();
-                const selectedDosen =
-                    document.getElementById("filter-dosen").value;
+        // Flag untuk stem-aware search (diaktifkan saat klik chart)
+        let useStemSearch = false;
 
-                filteredData = allData.filter((row) => {
-                    // Tentukan sumber teks berdasarkan mode search
-                    let textToCheck;
-                    
-                    if (useStemSearch) {
-                        // Klik dari chart: cari di Judul + Metode (sama dengan sumber chart)
-                        textToCheck = (
-                            (row[3] || "") + " " +
-                            (row[7] || "")
-                        ).toLowerCase()
-                         .replace(/[^\w\s]/gi, ' ')
-                         .replace(/\s+/g, ' ');
-                    } else {
-                        // Search manual: cari di NIM + Nama + Judul + Bidang
-                        textToCheck = (
-                            (row[1] || "") + " " +
-                            (row[2] || "") + " " +
-                            (row[3] || "") + " " +
-                            (row[4] || "")
-                        ).toLowerCase()
-                         .replace(/[^\w\s]/gi, ' ')
-                         .replace(/\s+/g, ' ');
-                    }
-                    
-                    let matchesKeyword = false;
-                    
-                    if (rawKeyword === "") {
-                        matchesKeyword = true;
-                    } else if (useStemSearch) {
-                        // Stem-aware search: cari kata yang stem-nya sama
-                        const searchTerms = rawKeyword.split(' ').filter(t => t.length > 0);
-                        const searchStems = searchTerms.map(t => stem(t));
-                        
-                        const textWords = textToCheck.split(' ').filter(w => w.length > 2);
-                        const textStems = textWords.map(w => stem(w));
-                        
-                        // Untuk bigram, cek apakah semua search stems ada berurutan di text stems
-                        if (searchStems.length > 1) {
-                            // Bigram search
-                            for (let i = 0; i <= textStems.length - searchStems.length; i++) {
-                                let allMatch = true;
-                                for (let j = 0; j < searchStems.length; j++) {
-                                    if (textStems[i + j] !== searchStems[j]) {
-                                        allMatch = false;
-                                        break;
-                                    }
-                                }
-                                if (allMatch) {
-                                    matchesKeyword = true;
+        function applyFilters() {
+            const rawKeyword = document
+                .getElementById("search-input")
+                .value.toLowerCase()
+                .replace(/[^\w\s]/gi, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            const selectedDosen =
+                document.getElementById("filter-dosen").value;
+
+            filteredData = allData.filter((row) => {
+                // Tentukan sumber teks berdasarkan mode search
+                let textToCheck;
+
+                if (useStemSearch) {
+                    // Klik dari chart: cari di Judul + Metode (sama dengan sumber chart)
+                    textToCheck = (
+                        (row[3] || "") + " " +
+                        (row[7] || "")
+                    ).toLowerCase()
+                        .replace(/[^\w\s]/gi, ' ')
+                        .replace(/\s+/g, ' ');
+                } else {
+                    // Search manual: cari di NIM + Nama + Judul + Bidang
+                    textToCheck = (
+                        (row[1] || "") + " " +
+                        (row[2] || "") + " " +
+                        (row[3] || "") + " " +
+                        (row[4] || "")
+                    ).toLowerCase()
+                        .replace(/[^\w\s]/gi, ' ')
+                        .replace(/\s+/g, ' ');
+                }
+
+                let matchesKeyword = false;
+
+                if (rawKeyword === "") {
+                    matchesKeyword = true;
+                } else if (useStemSearch) {
+                    // Stem-aware search: cari kata yang stem-nya sama
+                    const searchTerms = rawKeyword.split(' ').filter(t => t.length > 0);
+                    const searchStems = searchTerms.map(t => stem(t));
+
+                    const textWords = textToCheck.split(' ').filter(w => w.length > 2);
+                    const textStems = textWords.map(w => stem(w));
+
+                    // Untuk bigram, cek apakah semua search stems ada berurutan di text stems
+                    if (searchStems.length > 1) {
+                        // Bigram search
+                        for (let i = 0; i <= textStems.length - searchStems.length; i++) {
+                            let allMatch = true;
+                            for (let j = 0; j < searchStems.length; j++) {
+                                if (textStems[i + j] !== searchStems[j]) {
+                                    allMatch = false;
                                     break;
                                 }
                             }
-                        } else {
-                            // Unigram search
-                            matchesKeyword = textStems.includes(searchStems[0]);
+                            if (allMatch) {
+                                matchesKeyword = true;
+                                break;
+                            }
                         }
                     } else {
-                        // Normal substring search
-                        matchesKeyword = textToCheck.includes(rawKeyword);
+                        // Unigram search
+                        matchesKeyword = textStems.includes(searchStems[0]);
                     }
-                    
-                    const dosen = row[13] || "";
-                    const matchesDosen = selectedDosen === "" || dosen === selectedDosen;
-
-                    return matchesKeyword && matchesDosen;
-                });
-                
-                // Reset flag setelah search
-                useStemSearch = false;
-
-                updateResultCount();
-                renderPage(1);
-            }
-
-            function updateResultCount() {
-                const countDiv = document.getElementById("result-count");
-                countDiv.textContent = `Menampilkan ${filteredData.length} proposal`;
-            }
-
-            function renderPage(page) {
-                currentPage = page;
-                const container = document.getElementById("card-container");
-                container.innerHTML = "";
-
-                if (filteredData.length === 0) {
-                    container.innerHTML =
-                        '<div style="text-align:center; color:#666; padding:20px;">Data tidak ditemukan.</div>';
-                    document.getElementById("pagination").innerHTML = "";
-                    return;
+                } else {
+                    // Normal substring search
+                    matchesKeyword = textToCheck.includes(rawKeyword);
                 }
 
-                const startIndex = (page - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                const pageData = filteredData.slice(startIndex, endIndex);
+                const dosen = row[13] || "";
+                const matchesDosen = selectedDosen === "" || dosen === selectedDosen;
 
-                pageData.forEach((row) => {
-                    container.appendChild(createCardElement(row));
-                });
+                return matchesKeyword && matchesDosen;
+            });
 
-                if (window.scrollY > 400) {
-                    document
-                        .querySelector(".search-wrapper")
-                        .scrollIntoView({ behavior: "smooth" });
-                }
+            // Reset flag setelah search
+            useStemSearch = false;
 
-                renderPagination();
+            updateResultCount();
+            renderPage(1);
+        }
+
+        function updateResultCount() {
+            const countDiv = document.getElementById("result-count");
+            countDiv.textContent = `Menampilkan ${filteredData.length} proposal`;
+        }
+
+        function renderPage(page) {
+            currentPage = page;
+            const container = document.getElementById("card-container");
+            container.innerHTML = "";
+
+            if (filteredData.length === 0) {
+                container.innerHTML =
+                    '<div style="text-align:center; color:#666; padding:20px;">Data tidak ditemukan.</div>';
+                document.getElementById("pagination").innerHTML = "";
+                return;
             }
 
-            function createCardElement(row) {
-                const nim = row[1] || "-";
-                const nama = row[2] || "Tanpa Nama";
-                const judul = row[3] || "Belum ada judul";
-                const bidang = row[4] || "Umum";
-                const deskripsi = row[5] || "-";
-                const masalah = row[6] || "-";
-                const metode = row[7] || "-";
-                const dataset = row[8] || "-";
-                const sumberDataset = row[9] || "-";
-                const tools = row[10] || "-";
-                const output = row[11] || "-";
-                const referensi = row[12] || "-";
-                const dosen = row[13] || "-";
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
 
-                const card = document.createElement("div");
-                card.className = "card";
+            pageData.forEach((row) => {
+                container.appendChild(createCardElement(row));
+            });
 
-                card.innerHTML = `
+            if (window.scrollY > 400) {
+                document
+                    .querySelector(".search-wrapper")
+                    .scrollIntoView({ behavior: "smooth" });
+            }
+
+            renderPagination();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return text;
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatUrlText(text) {
+            if (!text || text === "-") return "-";
+            // 1. Sanitize text first to prevent XSS
+            const safeText = escapeHtml(text);
+            // 2. Regex matches http/https URLs
+            return safeText.replace(/(https?:\/\/[^\s]+)/g, (url) => {
+                return `<a href="${url}" target="_blank" style="color:#3498db;text-decoration:none;">${url}</a>`;
+            });
+        }
+
+        function createCardElement(row) {
+            const nim = row[1] || "-";
+            const nama = row[2] || "Tanpa Nama";
+            const judul = row[3] || "Belum ada judul";
+            const bidang = row[4] || "Umum";
+            const deskripsi = row[5] || "-";
+            const masalah = row[6] || "-";
+            const metode = row[7] || "-";
+            const dataset = row[8] || "-";
+            const sumberDataset = row[9] || "-";
+            const tools = row[10] || "-";
+            const output = row[11] || "-";
+            const referensi = row[12] || "-";
+            const dosen = row[13] || "-";
+
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
                     <div class="card-header" onclick="toggleCard(this)">
                         <div class="card-summary">
                             <div class="card-title">${judul}</div>
@@ -2083,7 +2085,7 @@
                             </div>
                             <div class="detail-group">
                                 <span class="detail-label">Sumber Dataset</span>
-                                <div class="detail-content"><a href="${sumberDataset.startsWith("http") ? sumberDataset : "#"}" target="_blank" style="color:#3498db;text-decoration:none;">${sumberDataset}</a></div>
+                                <div class="detail-content">${formatUrlText(sumberDataset)}</div>
                             </div>
                             <div class="detail-group">
                                 <span class="detail-label">Tools Komputasi</span>
@@ -2104,332 +2106,333 @@
                         </div>
                     </div>
                 `;
-                return card;
-            }
+            return card;
+        }
 
-            window.toggleCard = function (headerElement) {
-                const card = headerElement.parentElement;
-                card.classList.toggle("expanded");
-            };
+        window.toggleCard = function (headerElement) {
+            const card = headerElement.parentElement;
+            card.classList.toggle("expanded");
+        };
 
-            function renderPagination() {
-                const paginationDiv = document.getElementById("pagination");
-                paginationDiv.innerHTML = "";
-                const totalPages = Math.ceil(
-                    filteredData.length / itemsPerPage,
-                );
-                if (totalPages <= 1) return;
-
-                const createBtn = (text, page, isActive, isDisabled) => {
-                    const btn = document.createElement("button");
-                    btn.className = `page-btn ${isActive ? "active" : ""}`;
-                    btn.textContent = text;
-                    btn.disabled = isDisabled;
-                    if (!isDisabled) btn.onclick = () => renderPage(page);
-                    return btn;
-                };
-
-                paginationDiv.appendChild(
-                    createBtn("«", currentPage - 1, false, currentPage === 1),
-                );
-
-                let start = Math.max(1, currentPage - 2);
-                let end = Math.min(totalPages, currentPage + 2);
-
-                if (start > 1)
-                    paginationDiv.appendChild(createBtn("1", 1, false, false));
-                if (start > 2)
-                    paginationDiv.appendChild(
-                        createBtn("...", null, false, true),
-                    );
-
-                for (let i = start; i <= end; i++) {
-                    paginationDiv.appendChild(
-                        createBtn(i, i, i === currentPage, false),
-                    );
-                }
-
-                if (end < totalPages - 1)
-                    paginationDiv.appendChild(
-                        createBtn("...", null, false, true),
-                    );
-                if (end < totalPages)
-                    paginationDiv.appendChild(
-                        createBtn(totalPages, totalPages, false, false),
-                    );
-
-                paginationDiv.appendChild(
-                    createBtn(
-                        "»",
-                        currentPage + 1,
-                        false,
-                        currentPage === totalPages,
-                    ),
-                );
-            }
-
-            function showError(msg) {
-                const errDiv = document.getElementById("error");
-                errDiv.textContent = msg;
-                errDiv.style.display = "block";
-            }
-
-            async function exportToExcel() {
-                if (!filteredData || filteredData.length === 0) {
-                    alert("Tidak ada data untuk diunduh");
-                    return;
-                }
-
-                const workbook = new ExcelJS.Workbook();
-                const worksheet = workbook.addWorksheet("Data Proposal");
-
-                worksheet.mergeCells("A1:N1");
-                const titleCell = worksheet.getCell("A1");
-                titleCell.value =
-                    "Rekap Data Proposal Skripsi - KK E (Ilmu Komputer)";
-                titleCell.font = {
-                    size: 16,
-                    bold: true,
-                    color: { argb: "FFFFFFFF" },
-                };
-                titleCell.fill = {
-                    type: "pattern",
-                    pattern: "solid",
-                    fgColor: { argb: "FF2C3E50" },
-                };
-                titleCell.alignment = {
-                    vertical: "middle",
-                    horizontal: "center",
-                };
-
-                worksheet.mergeCells("A2:N2");
-                const dateCell = worksheet.getCell("A2");
-                dateCell.value =
-                    "Tanggal Download: " + new Date().toLocaleString("id-ID");
-                dateCell.font = { italic: true, size: 10 };
-                dateCell.alignment = {
-                    vertical: "middle",
-                    horizontal: "center",
-                };
-
-                worksheet.getRow(4).values = [
-                    "Timestamp",
-                    "NIM",
-                    "Nama",
-                    "Judul Proposal",
-                    "Bidang",
-                    "Deskripsi Singkat",
-                    "Rumusan Masalah",
-                    "Metode",
-                    "Dataset",
-                    "Sumber Dataset",
-                    "Tools",
-                    "Output",
-                    "Referensi",
-                    "Pembimbing",
-                ];
-
-                worksheet.columns = [
-                    { key: "ts", width: 15 },
-                    { key: "nim", width: 12 },
-                    { key: "nama", width: 25 },
-                    { key: "judul", width: 40 },
-                    { key: "bidang", width: 15 },
-                    { key: "desk", width: 35 },
-                    { key: "masalah", width: 35 },
-                    { key: "metode", width: 25 },
-                    { key: "dataset", width: 20 },
-                    { key: "sumber", width: 20 },
-                    { key: "tools", width: 15 },
-                    { key: "output", width: 20 },
-                    { key: "ref", width: 30 },
-                    { key: "dosen", width: 20 },
-                ];
-
-                const headerRow = worksheet.getRow(4);
-                headerRow.font = { bold: true, color: { argb: "FFFFFFFF" } };
-                headerRow.fill = {
-                    type: "pattern",
-                    pattern: "solid",
-                    fgColor: { argb: "FF3498DB" },
-                };
-                headerRow.alignment = {
-                    vertical: "middle",
-                    horizontal: "center",
-                };
-
-                filteredData.forEach((row) => {
-                    worksheet.addRow([
-                        row[0],
-                        row[1],
-                        row[2],
-                        row[3],
-                        row[4],
-                        row[5],
-                        row[6],
-                        row[7],
-                        row[8],
-                        row[9],
-                        row[10],
-                        row[11],
-                        row[12],
-                        row[13],
-                    ]);
-                });
-
-                worksheet.eachRow((row, rowNumber) => {
-                    if (rowNumber > 4) {
-                        row.alignment = {
-                            vertical: "top",
-                            horizontal: "left",
-                            wrapText: true,
-                        };
-                        if (rowNumber % 2 === 0) {
-                            row.fill = {
-                                type: "pattern",
-                                pattern: "solid",
-                                fgColor: { argb: "FFF7F9F9" },
-                            };
-                        }
-                        row.eachCell((cell) => {
-                            cell.border = {
-                                top: {
-                                    style: "thin",
-                                    color: { argb: "FFCCCCCC" },
-                                },
-                                left: {
-                                    style: "thin",
-                                    color: { argb: "FFCCCCCC" },
-                                },
-                                bottom: {
-                                    style: "thin",
-                                    color: { argb: "FFCCCCCC" },
-                                },
-                                right: {
-                                    style: "thin",
-                                    color: { argb: "FFCCCCCC" },
-                                },
-                            };
-                        });
-                    }
-                });
-
-                const buffer = await workbook.xlsx.writeBuffer();
-                const blob = new Blob([buffer], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                });
-                saveAs(
-                    blob,
-                    "Rekap_Proposal_Skripsi_" +
-                        new Date().toISOString().slice(0, 10) +
-                        ".xlsx",
-                );
-            }
-
-            window.onscroll = function () {
-                const btn = document.getElementById("back-to-top");
-                if (
-                    document.body.scrollTop > 300 ||
-                    document.documentElement.scrollTop > 300
-                ) {
-                    btn.style.display = "flex";
-                } else {
-                    btn.style.display = "none";
-                }
-            };
-
-            window.scrollToTop = function () {
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            };
-
-            function exportToPDF() {
-                if (!filteredData || filteredData.length === 0) {
-                    alert("Tidak ada data untuk diunduh");
-                    return;
-                }
-
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF("landscape");
-
-                doc.setFontSize(16);
-                doc.text(
-                    "Rekap Proposal Skripsi - KK E (Ilmu Komputer)",
-                    14,
-                    15,
-                );
-
-                doc.setFontSize(10);
-                doc.text(
-                    "Tanggal Download: " + new Date().toLocaleString("id-ID"),
-                    14,
-                    22,
-                );
-
-                const tableColumn = [
-                    "No",
-                    "NIM",
-                    "Nama",
-                    "Judul Proposal",
-                    "Bidang",
-                    "Pembimbing",
-                ];
-                const tableRows = [];
-
-                filteredData.forEach((row, index) => {
-                    const rowData = [
-                        index + 1,
-                        row[1],
-                        row[2],
-                        row[3],
-                        row[4],
-                        row[13],
-                    ];
-                    tableRows.push(rowData);
-                });
-
-                doc.autoTable({
-                    head: [tableColumn],
-                    body: tableRows,
-                    startY: 30,
-                    theme: "grid",
-                    styles: { fontSize: 9, cellPadding: 3 },
-                    headStyles: { fillColor: [44, 62, 80] },
-                    columnStyles: {
-                        0: { cellWidth: 10 },
-                        1: { cellWidth: 25 },
-                        2: { cellWidth: 45 },
-                        3: { cellWidth: "auto" },
-                        4: { cellWidth: 30 },
-                        5: { cellWidth: 40 },
-                    },
-                });
-
-                doc.save(
-                    "Rekap_Proposal_Skripsi_" +
-                        new Date().toISOString().slice(0, 10) +
-                        ".pdf",
-                );
-            }
-
-            // Event Listeners
-            document
-                .getElementById("search-input")
-                .addEventListener("input", applyFilters);
-            document
-                .getElementById("filter-dosen")
-                .addEventListener("change", applyFilters);
-
-            const pendingSearchInput = document.getElementById(
-                "pending-search",
+        function renderPagination() {
+            const paginationDiv = document.getElementById("pagination");
+            paginationDiv.innerHTML = "";
+            const totalPages = Math.ceil(
+                filteredData.length / itemsPerPage,
             );
-            if (pendingSearchInput) {
-                pendingSearchInput.addEventListener(
-                    "input",
-                    handlePendingSearch,
+            if (totalPages <= 1) return;
+
+            const createBtn = (text, page, isActive, isDisabled) => {
+                const btn = document.createElement("button");
+                btn.className = `page-btn ${isActive ? "active" : ""}`;
+                btn.textContent = text;
+                btn.disabled = isDisabled;
+                if (!isDisabled) btn.onclick = () => renderPage(page);
+                return btn;
+            };
+
+            paginationDiv.appendChild(
+                createBtn("«", currentPage - 1, false, currentPage === 1),
+            );
+
+            let start = Math.max(1, currentPage - 2);
+            let end = Math.min(totalPages, currentPage + 2);
+
+            if (start > 1)
+                paginationDiv.appendChild(createBtn("1", 1, false, false));
+            if (start > 2)
+                paginationDiv.appendChild(
+                    createBtn("...", null, false, true),
+                );
+
+            for (let i = start; i <= end; i++) {
+                paginationDiv.appendChild(
+                    createBtn(i, i, i === currentPage, false),
                 );
             }
 
-            document.addEventListener("DOMContentLoaded", loadData);
-        </script>
-    </body>
+            if (end < totalPages - 1)
+                paginationDiv.appendChild(
+                    createBtn("...", null, false, true),
+                );
+            if (end < totalPages)
+                paginationDiv.appendChild(
+                    createBtn(totalPages, totalPages, false, false),
+                );
+
+            paginationDiv.appendChild(
+                createBtn(
+                    "»",
+                    currentPage + 1,
+                    false,
+                    currentPage === totalPages,
+                ),
+            );
+        }
+
+        function showError(msg) {
+            const errDiv = document.getElementById("error");
+            errDiv.textContent = msg;
+            errDiv.style.display = "block";
+        }
+
+        async function exportToExcel() {
+            if (!filteredData || filteredData.length === 0) {
+                alert("Tidak ada data untuk diunduh");
+                return;
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Data Proposal");
+
+            worksheet.mergeCells("A1:N1");
+            const titleCell = worksheet.getCell("A1");
+            titleCell.value =
+                "Rekap Data Proposal Skripsi - KK E (Ilmu Komputer)";
+            titleCell.font = {
+                size: 16,
+                bold: true,
+                color: { argb: "FFFFFFFF" },
+            };
+            titleCell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FF2C3E50" },
+            };
+            titleCell.alignment = {
+                vertical: "middle",
+                horizontal: "center",
+            };
+
+            worksheet.mergeCells("A2:N2");
+            const dateCell = worksheet.getCell("A2");
+            dateCell.value =
+                "Tanggal Download: " + new Date().toLocaleString("id-ID");
+            dateCell.font = { italic: true, size: 10 };
+            dateCell.alignment = {
+                vertical: "middle",
+                horizontal: "center",
+            };
+
+            worksheet.getRow(4).values = [
+                "Timestamp",
+                "NIM",
+                "Nama",
+                "Judul Proposal",
+                "Bidang",
+                "Deskripsi Singkat",
+                "Rumusan Masalah",
+                "Metode",
+                "Dataset",
+                "Sumber Dataset",
+                "Tools",
+                "Output",
+                "Referensi",
+                "Pembimbing",
+            ];
+
+            worksheet.columns = [
+                { key: "ts", width: 15 },
+                { key: "nim", width: 12 },
+                { key: "nama", width: 25 },
+                { key: "judul", width: 40 },
+                { key: "bidang", width: 15 },
+                { key: "desk", width: 35 },
+                { key: "masalah", width: 35 },
+                { key: "metode", width: 25 },
+                { key: "dataset", width: 20 },
+                { key: "sumber", width: 20 },
+                { key: "tools", width: 15 },
+                { key: "output", width: 20 },
+                { key: "ref", width: 30 },
+                { key: "dosen", width: 20 },
+            ];
+
+            const headerRow = worksheet.getRow(4);
+            headerRow.font = { bold: true, color: { argb: "FFFFFFFF" } };
+            headerRow.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FF3498DB" },
+            };
+            headerRow.alignment = {
+                vertical: "middle",
+                horizontal: "center",
+            };
+
+            filteredData.forEach((row) => {
+                worksheet.addRow([
+                    row[0],
+                    row[1],
+                    row[2],
+                    row[3],
+                    row[4],
+                    row[5],
+                    row[6],
+                    row[7],
+                    row[8],
+                    row[9],
+                    row[10],
+                    row[11],
+                    row[12],
+                    row[13],
+                ]);
+            });
+
+            worksheet.eachRow((row, rowNumber) => {
+                if (rowNumber > 4) {
+                    row.alignment = {
+                        vertical: "top",
+                        horizontal: "left",
+                        wrapText: true,
+                    };
+                    if (rowNumber % 2 === 0) {
+                        row.fill = {
+                            type: "pattern",
+                            pattern: "solid",
+                            fgColor: { argb: "FFF7F9F9" },
+                        };
+                    }
+                    row.eachCell((cell) => {
+                        cell.border = {
+                            top: {
+                                style: "thin",
+                                color: { argb: "FFCCCCCC" },
+                            },
+                            left: {
+                                style: "thin",
+                                color: { argb: "FFCCCCCC" },
+                            },
+                            bottom: {
+                                style: "thin",
+                                color: { argb: "FFCCCCCC" },
+                            },
+                            right: {
+                                style: "thin",
+                                color: { argb: "FFCCCCCC" },
+                            },
+                        };
+                    });
+                }
+            });
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
+            saveAs(
+                blob,
+                "Rekap_Proposal_Skripsi_" +
+                new Date().toISOString().slice(0, 10) +
+                ".xlsx",
+            );
+        }
+
+        window.onscroll = function () {
+            const btn = document.getElementById("back-to-top");
+            if (
+                document.body.scrollTop > 300 ||
+                document.documentElement.scrollTop > 300
+            ) {
+                btn.style.display = "flex";
+            } else {
+                btn.style.display = "none";
+            }
+        };
+
+        window.scrollToTop = function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        function exportToPDF() {
+            if (!filteredData || filteredData.length === 0) {
+                alert("Tidak ada data untuk diunduh");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF("landscape");
+
+            doc.setFontSize(16);
+            doc.text(
+                "Rekap Proposal Skripsi - KK E (Ilmu Komputer)",
+                14,
+                15,
+            );
+
+            doc.setFontSize(10);
+            doc.text(
+                "Tanggal Download: " + new Date().toLocaleString("id-ID"),
+                14,
+                22,
+            );
+
+            const tableColumn = [
+                "No",
+                "NIM",
+                "Nama",
+                "Judul Proposal",
+                "Bidang",
+                "Pembimbing",
+            ];
+            const tableRows = [];
+
+            filteredData.forEach((row, index) => {
+                const rowData = [
+                    index + 1,
+                    row[1],
+                    row[2],
+                    row[3],
+                    row[4],
+                    row[13],
+                ];
+                tableRows.push(rowData);
+            });
+
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 30,
+                theme: "grid",
+                styles: { fontSize: 9, cellPadding: 3 },
+                headStyles: { fillColor: [44, 62, 80] },
+                columnStyles: {
+                    0: { cellWidth: 10 },
+                    1: { cellWidth: 25 },
+                    2: { cellWidth: 45 },
+                    3: { cellWidth: "auto" },
+                    4: { cellWidth: 30 },
+                    5: { cellWidth: 40 },
+                },
+            });
+
+            doc.save(
+                "Rekap_Proposal_Skripsi_" +
+                new Date().toISOString().slice(0, 10) +
+                ".pdf",
+            );
+        }
+
+        // Event Listeners
+        document
+            .getElementById("search-input")
+            .addEventListener("input", applyFilters);
+        document
+            .getElementById("filter-dosen")
+            .addEventListener("change", applyFilters);
+
+        const pendingSearchInput = document.getElementById(
+            "pending-search",
+        );
+        if (pendingSearchInput) {
+            pendingSearchInput.addEventListener(
+                "input",
+                handlePendingSearch,
+            );
+        }
+
+        document.addEventListener("DOMContentLoaded", loadData);
+    </script>
+</body>
+
 </html>
