@@ -235,16 +235,20 @@ data-proksi/
 ├── config.js                  # Konfigurasi URL & kolom CSV
 ├── embedding-service.js       # Service untuk embedding API
 ├── supabase_schema.sql        # Database schema untuk Supabase
-├── KK E.xlsx - ....csv        # Data master mahasiswa
+├── KK E.xlsx - ....csv        # Data master mahasiswa (local only)
 ├── README.md                  # Dokumentasi
+├── .gitignore                 # File yang tidak di-track
 ├── .github/workflows/
 │   ├── keep-alive.yml         # HF Space ping (daily)
 │   └── repo-heartbeat.yml     # Repo activity (monthly)
-├── Semantic_Similarity/       # Kode HF Space (Gradio)
-│   ├── app.py                 # API endpoint + Gemini integration
-│   ├── requirements.txt       # Dependencies
-│   └── .env                   # API keys (local only)
 └── Monitoring Proksi - *.png  # Infografis sistem
+
+# Folders (local only, not in git):
+├── Semantic_Similarity/       # Kode HF Space (deployed terpisah)
+├── semantic_similarity_supabase/  # Setup Supabase (archived)
+├── Theme_Reasoning_Space/     # Kode HF Space reasoning (archived)
+├── backup/                    # Backup file lama
+└── Coretan/                   # Draft & notes
 ```
 
 ---
