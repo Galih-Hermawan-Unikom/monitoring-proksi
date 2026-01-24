@@ -1,0 +1,45 @@
+name: Repo Heartbeat (Monthly Commit)
+
+on:
+  schedule:
+    # Tanggal 1 setiap bulan, jam 07:10 WIB (00:10 UTC)
+    - cron: "10 0 1 * *"
+  workflow_dispatch:  # Manual trigger (optional)
+
+permissions:
+  contents: write
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Create heartbeat commit
+        run: |
+          echo "Creating monthly heartbeat commit..."
+          
+          # Set git config
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Create/update heartbeat file with timestamp
+          echo "Last automated run: $(date -u -Iseconds)" > .github/last_run.txt
+          echo "Purpose: Keep scheduled workflows active" >> .github/last_run.txt
+
+          # Add and commit
+          git add .github/last_run.txt
+          
+          # Commit only if there are changes
+          git diff --staged --quiet || git commit -m "chore: monthly heartbeat ($(date -u +%Y-%m-%d))"
+
+          # Pull rebase to avoid conflicts
+          git pull --rebase origin main || git pull --rebase origin master || true
+
+          # Push changes
+          git push || echo "⚠ Push failed, might need manual intervention"
+          
+          echo "✓ Heartbeat completed at $(date -u) UTC"

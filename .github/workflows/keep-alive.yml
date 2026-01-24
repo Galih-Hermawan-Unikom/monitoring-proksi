@@ -2,9 +2,9 @@ name: Keep HF Space Alive
 
 on:
   schedule:
-    # Setiap 14 menit (agar tidak melebihi quota GitHub Actions)
-    - cron: '*/14 * * * *'
-  workflow_dispatch:  # Manual trigger
+    # 1x sehari jam 07:15 WIB (00:15 UTC) - cukup untuk prevent 48-hour sleep
+    - cron: '15 0 * * *'
+  workflow_dispatch:  # Manual trigger (optional)
 
 jobs:
   ping:
@@ -14,20 +14,39 @@ jobs:
         run: |
           echo "Pinging HF Space to keep it awake..."
           
-          # Simple GET request ke Space
-          curl -s -o /dev/null -w "%{http_code}" \
-            "https://galihboy-semantic-embedding-api.hf.space/" \
-            || echo "Space might be starting up..."
+          # GET request dengan timeout dan status logging
+          status=$(curl -s -o /dev/null -w "%{http_code}" \
+            --max-time 30 \
+            "https://galihboy-semantic-embedding-api.hf.space/" || echo "000")
           
-          echo "Ping completed at $(date)"
+          echo "HTTP status: $status"
+          
+          if [ "$status" = "200" ] || [ "$status" = "302" ]; then
+            echo "✓ Space is alive"
+          elif [ "$status" = "503" ]; then
+            echo "⚠ Space starting up (503)"
+          else
+            echo "⚠ Unexpected status: $status"
+          fi
+          
+          echo "Ping completed at $(date -u) UTC"
       
-      - name: Test API endpoint
+      - name: Warm up model
         run: |
-          # Test embedding endpoint untuk warm up model
+          echo "Warming up embedding model..."
+          
+          # POST request dengan error handling
           response=$(curl -s -X POST \
             "https://galihboy-semantic-embedding-api.hf.space/gradio_api/call/get_embedding" \
             -H "Content-Type: application/json" \
-            -d '{"data": ["test"]}' \
-            --max-time 120)
+            -d '{"data": ["test warm-up"]}' \
+            --max-time 120 || echo '{"error": "request failed"}')
           
           echo "API Response: $response"
+          
+          # Cek apakah ada event_id (tanda request diterima)
+          if echo "$response" | grep -q "event_id"; then
+            echo "✓ Warm-up request accepted"
+          else
+            echo "⚠ Warm-up might have failed (no event_id)"
+          fi

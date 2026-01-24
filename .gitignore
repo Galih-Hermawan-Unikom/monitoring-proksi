@@ -2,6 +2,7 @@ Coretan/
 backup/
 Semantic_Similarity/
 semantic_similarity_supabase/
+Theme_Reasoning_Space/
 .factory/
 debug_semantic.html
 debug_similarity.html

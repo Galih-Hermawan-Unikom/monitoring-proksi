@@ -238,7 +238,8 @@ data-proksi/
 ├── KK E.xlsx - ....csv        # Data master mahasiswa
 ├── README.md                  # Dokumentasi
 ├── .github/workflows/
-│   └── keep-alive.yml         # GitHub Actions keep-alive
+│   ├── keep-alive.yml         # HF Space ping (daily)
+│   └── repo-heartbeat.yml     # Repo activity (monthly)
 ├── Semantic_Similarity/       # Kode HF Space (Gradio)
 │   ├── app.py                 # API endpoint + Gemini integration
 │   ├── requirements.txt       # Dependencies
@@ -305,7 +306,39 @@ Aplikasi ini dibangun menggunakan teknologi web standar tanpa backend (Serverles
   - [Hugging Face Space](https://huggingface.co/spaces/galihboy/semantic-embedding-api) (AI Embedding + LLM Proxy)
   - [Supabase](https://supabase.com/) (PostgreSQL Cache Database)
   - [Google Gemini API](https://ai.google.dev/) (LLM Analysis)
-  - [GitHub Actions](https://github.com/features/actions) (Keep-alive Scheduler)
+  - [GitHub Actions](https://github.com/features/actions)
+    - Keep-alive (1x/hari) - HF Space ping + model warm-up
+    - Repo heartbeat (1x/bulan) - Prevent workflow auto-disable
+
+---
+
+## 🤖 GitHub Actions Workflows
+
+Proyek ini menggunakan 2 workflow otomatis:
+
+### 1. Keep HF Space Alive (`keep-alive.yml`)
+
+**Jadwal:** Setiap hari jam 07:15 WIB (00:15 UTC)
+
+**Fungsi:**
+- Ping HF Space untuk prevent 48-hour sleep (CPU free tier)
+- Warm-up model embedding otomatis
+- Logging HTTP status
+
+**Quota:** ~70 menit/bulan (3.5% free tier)
+
+### 2. Repo Heartbeat (`repo-heartbeat.yml`)
+
+**Jadwal:** Tanggal 1 setiap bulan jam 07:10 WIB (00:10 UTC)
+
+**Fungsi:**
+- Auto commit file `.github/last_run.txt`
+- Prevent GitHub auto-disable workflows setelah 60 hari inaktif
+- Conflict handling (pull rebase sebelum push)
+
+**Quota:** ~1 menit/bulan (0.05% free tier)
+
+**Total Quota:** ~71 menit/bulan (~3.5% dari 2000 menit GitHub Actions gratis)
 
 ---
 
@@ -373,7 +406,7 @@ const result = JSON.parse(dataLine.substring(5));
 - 🌐 Website: [galih.eu](https://galih.eu)
 - 🏫 Program Studi Teknik Informatika
 - 🎓 Universitas Komputer Indonesia (UNIKOM)
-- 📅 Terakhir Diperbarui: 30 November 2025
+- 📅 Terakhir Diperbarui: 24 Januari 2026
 
 ---
 *Dibuat untuk memudahkan pengelolaan dan transparansi data proposal skripsi semester Ganjil TA 2025-2026.*
