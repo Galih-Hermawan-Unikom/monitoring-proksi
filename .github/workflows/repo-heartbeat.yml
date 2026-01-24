@@ -23,8 +23,8 @@ jobs:
           echo "Creating monthly heartbeat commit..."
           
           # Set git config
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "Galih-Hermawan-Unikom"
+          git config user.email "galih.hermawan@email.unikom.ac.id"
 
           # Create/update heartbeat file with timestamp
           echo "Last automated run: $(date -u -Iseconds)" > .github/last_run.txt
