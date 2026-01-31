@@ -410,7 +410,7 @@ const result = JSON.parse(dataLine.substring(5));
 - 🌐 Website: [galih.eu](https://galih.eu)
 - 🏫 Program Studi Teknik Informatika
 - 🎓 Universitas Komputer Indonesia (UNIKOM)
-- 📅 Terakhir Diperbarui: 24 Januari 2026
+- 📅 Terakhir Diperbarui: 31 Januari 2026
 
 ---
 *Dibuat untuk memudahkan pengelolaan dan transparansi data proposal skripsi semester Ganjil TA 2025-2026.*
