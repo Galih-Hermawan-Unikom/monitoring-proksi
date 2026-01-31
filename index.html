@@ -886,7 +886,7 @@
 
     <script>
         const csvUrl =
-            "https://docs.google.com/spreadsheets/d/e/2PACX-1vTByDo6WQAT0rQMEVcL24WyJdm4gMKm4Zfjm6RYQ-prEaLvEcruqmRXKKNWXesxReA-nPqyhmH_BMAg/pub?gid=14519582&single=true&output=csv";
+            "https://docs.google.com/spreadsheets/d/e/2PACX-1vTByDo6WQAT0rQMEVcL24WyJdm4gMKm4Zfjm6RYQ-prEaLvEcruqmRXKKNWXesxReA-nPqyhmH_BMAg/pub?gid=1488591433&single=true&output=csv";
         const masterCsvPath =
             "KK E.xlsx - Mahasiswa Skripsi -TGL-02-10-20.csv";
 
@@ -2046,6 +2046,16 @@
             const output = row[11] || "-";
             const referensi = row[12] || "-";
             const dosen = row[13] || "-";
+            const tema = row[14] || "-";
+            const statusGDrive = row[15] || "Tidak ada";
+            
+            // Format warna status GDrive
+            let gdriveColor = "#e74c3c";
+            if (statusGDrive.includes("✓") || statusGDrive.toLowerCase().includes("valid")) {
+                gdriveColor = "#27ae60";
+            } else if (statusGDrive.includes("✗") || statusGDrive.toLowerCase().includes("invalid")) {
+                gdriveColor = "#f39c12";
+            }
 
             const card = document.createElement("div");
             card.className = "card";
@@ -2098,6 +2108,22 @@
                             <div class="detail-group full-width">
                                 <span class="detail-label">Referensi Utama</span>
                                 <div class="detail-content" style="font-size:0.85rem">${referensi}</div>
+                            </div>
+                            <div class="detail-group">
+                                <span class="detail-label">Bidang / Area Teknis</span>
+                                <div class="detail-content"><span class="badge" style="background:#3498db; color:white;">${bidang}</span></div>
+                            </div>
+                            <div class="detail-group">
+                                <span class="detail-label">Tema</span>
+                                <div class="detail-content"><span class="badge" style="background:#9b59b6; color:white;">${tema}</span></div>
+                            </div>
+                            <div class="detail-group">
+                                <span class="detail-label">Status Tautan GDrive</span>
+                                <div class="detail-content">
+                                    <span style="color:${gdriveColor}; font-weight:bold; font-size:0.95rem; line-height:1.2;">
+                                        ${statusGDrive}
+                                    </span>
+                                </div>
                             </div>
                             <div class="detail-group full-width">
                                 <span class="detail-label">Dosen Pembimbing</span>
