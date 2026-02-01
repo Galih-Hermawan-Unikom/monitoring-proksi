@@ -10,7 +10,7 @@ const CONFIG = {
     // Untuk testing lokal: http://127.0.0.1:7860
     // Untuk production: URL Hugging Face Space Anda
     // GRADIO_API_URL: "http://127.0.0.1:7860",  // TESTING (lokal)
-    GRADIO_API_URL: "https://galihboy-semantic-embedding-api.hf.space",  // PRODUCTION
+    GRADIO_API_URL: "https://galihboy-semantic-embedding-api.hf.space/gradio_api",  // PRODUCTION
 
     // ===================
     // DATA SOURCE
