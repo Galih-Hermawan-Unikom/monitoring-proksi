@@ -290,7 +290,17 @@ Menyimpan hasil analisis LLM untuk pasangan proposal.
 | differentiator | TEXT | Pembeda utama |
 | model_used | VARCHAR(100) | Model yang digunakan |
 
-> File SQL lengkap: [`supabase_schema.sql`](supabase_schema.sql)
+### 🔒 Keamanan & RLS (Row Level Security)
+
+Database ini diamankan dengan **Row Level Security (RLS)** untuk mencegah akses tidak sah:
+
+- **Akses Publik (anon key):** Hanya diizinkan untuk operasional `SELECT` (baca data).
+- **Akses Backend (service_role key):** Diperlukan untuk operasional `INSERT` dan `UPDATE`.
+
+> [!IMPORTANT]
+> Pastikan file `.env` di server/backend Anda menggunakan **`service_role` key** agar aplikasi tetap bisa menyimpan data setelah RLS diaktifkan.
+
+> File SQL lengkap dengan konfigurasi RLS: [`supabase_schema.sql`](supabase_schema.sql)
 
 ---
 
@@ -325,6 +335,7 @@ Proyek ini menggunakan 2 workflow otomatis:
 **Jadwal:** Setiap hari jam 07:15 WIB (00:15 UTC)
 
 **Fungsi:**
+
 - Ping HF Space untuk prevent 48-hour sleep (CPU free tier)
 - Warm-up model embedding otomatis
 - Logging HTTP status
@@ -336,6 +347,7 @@ Proyek ini menggunakan 2 workflow otomatis:
 **Jadwal:** Tanggal 1 setiap bulan jam 07:10 WIB (00:10 UTC)
 
 **Fungsi:**
+
 - Auto commit file `.github/last_run.txt`
 - Prevent GitHub auto-disable workflows setelah 60 hari inaktif
 - Conflict handling (pull rebase sebelum push)
@@ -410,7 +422,7 @@ const result = JSON.parse(dataLine.substring(5));
 - 🌐 Website: [galih.eu](https://galih.eu)
 - 🏫 Program Studi Teknik Informatika
 - 🎓 Universitas Komputer Indonesia (UNIKOM)
-- 📅 Terakhir Diperbarui: 31 Januari 2026
+- 📅 Terakhir Diperbarui: 2 Februari 2026
 
 ---
 *Dibuat untuk memudahkan pengelolaan dan transparansi data proposal skripsi semester Ganjil TA 2025-2026.*

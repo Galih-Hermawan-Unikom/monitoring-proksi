@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS proposal_embeddings (
 CREATE INDEX IF NOT EXISTS idx_proposal_embeddings_nim ON proposal_embeddings(nim);
 CREATE INDEX IF NOT EXISTS idx_proposal_embeddings_content_hash ON proposal_embeddings(content_hash);
 
--- Enable Row Level Security (opsional, untuk production)
--- ALTER TABLE proposal_embeddings ENABLE ROW LEVEL SECURITY;
+-- Enable Row Level Security
+ALTER TABLE proposal_embeddings ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================
 -- TABEL 2: llm_analysis
@@ -70,8 +70,8 @@ CREATE INDEX IF NOT EXISTS idx_llm_analysis_pair_hash ON llm_analysis(pair_hash)
 CREATE INDEX IF NOT EXISTS idx_llm_analysis_verdict ON llm_analysis(verdict);
 CREATE INDEX IF NOT EXISTS idx_llm_analysis_created_at ON llm_analysis(created_at);
 
--- Enable Row Level Security (opsional, untuk production)
--- ALTER TABLE llm_analysis ENABLE ROW LEVEL SECURITY;
+-- Enable Row Level Security
+ALTER TABLE llm_analysis ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================
 -- FUNCTIONS (Opsional - untuk maintenance)
@@ -133,17 +133,21 @@ ORDER BY created_at DESC
 LIMIT 100;
 
 -- ============================================================
--- POLICIES (Untuk Row Level Security - Production)
--- Uncomment jika menggunakan RLS
+-- POLICIES (Row Level Security)
 -- ============================================================
 
--- Policy untuk read access (public)
--- CREATE POLICY "Allow public read" ON proposal_embeddings FOR SELECT USING (true);
--- CREATE POLICY "Allow public read" ON llm_analysis FOR SELECT USING (true);
+-- 1. Table: proposal_embeddings
+-- Anyone can only read data (Public Access)
+CREATE POLICY "Allow public select" ON public.proposal_embeddings
+FOR SELECT USING (true);
 
--- Policy untuk write access (dengan service role key)
--- CREATE POLICY "Allow service write" ON proposal_embeddings FOR ALL USING (auth.role() = 'service_role');
--- CREATE POLICY "Allow service write" ON llm_analysis FOR ALL USING (auth.role() = 'service_role');
+-- 2. Table: llm_analysis
+-- Anyone can only read data (Public Access)
+CREATE POLICY "Allow public select" ON public.llm_analysis
+FOR SELECT USING (true);
+
+-- NOTE: Service Role Key (Server Side) automatically bypasses these policies
+-- and retains full access (INSERT/UPDATE/DELETE).
 
 -- ============================================================
 -- NOTES
